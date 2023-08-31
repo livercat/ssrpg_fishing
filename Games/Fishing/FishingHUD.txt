@@ -1,0 +1,29 @@
+
+var currencyGlyph = "♠"
+var progress = import Games/Fishing/FishingProgress
+var topPanel
+var moneyText
+
+func Init()
+  topPanel = ui.AddPanel()
+  topPanel.style = 0
+  topPanel.anchor = top_center
+  topPanel.dock = top_center
+  topPanel.w = screen.w
+  topPanel.h = 1
+  
+  moneyText = ui.AddText()
+  moneyText.anchor = top_center
+  moneyText.dock = top_center
+  moneyText.align = center
+  moneyText.x = 0
+  moneyText.y = 0
+  moneyText.w = 31
+
+  topPanel.Add(moneyText)
+
+  Update()
+
+
+func Update()
+  moneyText.text = currencyGlyph + progress.scales

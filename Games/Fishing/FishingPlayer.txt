@@ -1,0 +1,522 @@
+var playerAnimRoot = null
+var playerAnimWalk = null
+var playerAnimArrived = null
+var playerAnimThrowing = null
+var playerAnimCatching = null
+var playerAnimBigHead = null
+var playerAnimExpressions = null
+
+func UpdatePlayerAnimPosition()
+  playerAnimRoot.x = screen.FromWorldX(pos.x)
+  playerAnimRoot.y = screen.FromWorldZ(pos.z - pos.y) - 2
+
+
+func InitPlayerAnimations()
+  playerAnimRoot = ui.AddPanel()
+  playerAnimRoot.w = 1
+  playerAnimRoot.h = 1
+  playerAnimRoot.dock = top_left
+
+  AddPlayerAnimWalk()
+  AddPlayerAnimArrived()
+  AddPlayerAnimThrowing()
+  AddPlayerAnimCatching()
+  AddPlayerAnimBigHead()
+
+
+func AddPlayerAnimWalk()
+  // Base layer
+  playerAnimWalk = ui.AddAnim(artPlayerWalk1)
+  playerAnimRoot.Add(playerAnimWalk)
+  playerAnimWalk.visible = false
+  playerAnimWalk.anchor = top_left
+  playerAnimWalk.pivotX = 5
+  playerAnimWalk.pivotY = 0
+  playerAnimWalk.duration = 15
+  playerAnimWalk.loop = true
+  // Rod
+  var layer3 = playerAnimWalk.AddLayer(artPlayerWalk2)
+  layer3.color = rod.color
+  layer3.pivotX = 5
+  layer3.pivotY = 0
+  // Line
+  var layer4 = playerAnimWalk.AddLayer(artPlayerWalk3)
+  layer4.color = rod.lineColor
+  layer4.pivotX = 5
+  layer4.pivotY = 0
+
+
+func AddPlayerAnimArrived()
+  // Base layer
+  playerAnimArrived = ui.AddAnim(artPlayerArrived1)
+  playerAnimRoot.Add(playerAnimArrived)
+  playerAnimArrived.visible = false
+  playerAnimArrived.anchor = top_left
+  playerAnimArrived.pivotX = 5
+  playerAnimArrived.pivotY = 2
+  playerAnimArrived.duration = 9
+  // Rod
+  var layer3 = playerAnimArrived.AddLayer(artPlayerArrived2)
+  layer3.color = rod.color
+  layer3.pivotX = 5
+  layer3.pivotY = 2
+  // Line
+  var layer4 = playerAnimArrived.AddLayer(artPlayerArrived3)
+  layer4.color = rod.lineColor
+  layer4.pivotX = 5
+  layer4.pivotY = 2
+
+
+func AddPlayerAnimThrowing()
+  // Base layer
+  playerAnimThrowing = ui.AddAnim(artPlayerThrowing1)
+  playerAnimRoot.Add(playerAnimThrowing)
+  playerAnimThrowing.visible = false
+  playerAnimThrowing.anchor = top_left
+  playerAnimThrowing.pivotX = 18
+  playerAnimThrowing.pivotY = 3
+  playerAnimThrowing.duration = 18
+  // Rod
+  var layer3 = playerAnimThrowing.AddLayer(artPlayerThrowing2)
+  layer3.color = rod.color
+  layer3.pivotX = 18
+  layer3.pivotY = 3
+  // Line
+  var layer4 = playerAnimThrowing.AddLayer(artPlayerThrowing3)
+  layer4.color = rod.lineColor
+  layer4.pivotX = 18
+  layer4.pivotY = 3
+
+
+func AddPlayerAnimCatching()
+  // Base layer
+  playerAnimCatching = ui.AddAnim(artPlayerCatching1)
+  playerAnimRoot.Add(playerAnimCatching)
+  playerAnimCatching.visible = false
+  playerAnimCatching.anchor = top_left
+  playerAnimCatching.pivotX = 18
+  playerAnimCatching.pivotY = 3
+  // Rod
+  var layer3 = playerAnimCatching.AddLayer(artPlayerCatching2)
+  layer3.color = rod.color
+  layer3.pivotX = 4
+  layer3.pivotY = 3
+  // Line
+  var layer4 = playerAnimCatching.AddLayer(artPlayerCatching3)
+  layer4.color = rod.lineColor
+  layer4.pivotX = 18
+  layer4.pivotY = 3
+  // Water
+  var layer2 = playerAnimCatching.AddLayer(artPlayerCatching4)
+  layer2.color = #bbbbbb
+  layer2.pivotX = 18
+  layer2.pivotY = -7
+
+
+func AddPlayerAnimBigHead()
+  ?bighead
+    playerAnimBigHead = ui.AddAnim(artBigHead)
+    playerAnimRoot.Add(playerAnimBigHead)
+    playerAnimBigHead.anchor = top_left
+    playerAnimBigHead.pivotX = 2
+    playerAnimBigHead.pivotY = 2
+    playerAnimBigHead.duration = 90
+    playerAnimBigHead.loop = true
+    playerAnimBigHead.Play()
+
+    playerAnimExpressions = ui.AddAnim(artBigHeadExpressions)
+    playerAnimRoot.Add(playerAnimExpressions)
+    playerAnimExpressions.anchor = top_left
+    playerAnimExpressions.pivotX = 2
+    playerAnimExpressions.pivotY = 1
+
+
+const artPlayerWalk1 = ascii
+#____O__
+`-´"/|´ !
+####/ \
+%%
+#____O__
+`-´"/|´ !
+#####>\
+%%
+#____O__
+`-´"/|´ !
+#####|\
+%%
+#____O__
+`-´"/|´ !
+#####|>
+asciiend
+
+const artPlayerWalk2 = ascii
+#____#__
+`-´"### !
+asciiend
+
+const artPlayerWalk3 = ascii
+#
+`-´"### !
+asciiend
+
+
+const artPlayerArrived1 = ascii
+###,
+###!\
+####`O
+####(|\
+####/ \
+%%
+######,
+#####;|
+#####O|
+#####\|
+####/ \
+%%
+#########,
+########/;
+#####O_/´
+#####\/!
+####/ \
+asciiend
+
+const artPlayerArrived2 = ascii
+###,
+###!\
+####`#
+######\
+%%
+######,
+#####;|
+######|
+######|
+%%
+#########,
+########/;
+#######/´
+######/!
+asciiend
+
+const artPlayerArrived3 = ascii
+###,
+###!
+####`
+%%
+######,
+#####;
+%%
+#
+#########;
+########´
+#######!
+asciiend
+
+
+const artPlayerThrowing1 = ascii
+#
+#
+######################,
+##################O  /;
+#################(|`/´
+#################/ /!
+%%
+#
+###################,
+#################,´|
+#################`O|
+##################\|`,
+#################/ \
+%%
+#
+####################/)
+###################/;
+##################/)'-.
+#################`|   '
+#################/ \
+%%
+####################,
+###################/`,
+##################/ (
+################°(O  `-.
+################ `|
+################ / \
+%%
+#################,_
+#################| `.
+#################|   \
+################°(O   `.
+################ `|
+################ / \
+%%
+################,
+################|`-.
+################|   `.
+###############°|\O   `
+###############  `|
+###############  / \
+%%
+#
+############.-,--._
+###########'-´#\   `
+################\_O
+################°\/
+################ / \
+%%
+#
+###########_.-,
+#########,´ .´#\
+#########`-´### \_O
+############### °\/
+###############  / \
+%%
+#
+##############,
+######.'´###.´#\
+#####(___.-´### \_O
+############### °\/
+###############  / \
+%%
+#
+##############,
+############.´ \
+###########/    \_O
+#########.´     °\/
+###,####/        / \
+##(__.-´
+%%
+asciiend
+
+const artPlayerThrowing2 = ascii
+#
+#
+######################,
+#####################/;
+####################/´
+###################/!
+%%
+#
+###################,
+#################,´|
+#################`#|
+###################|`,
+%%
+#
+####################/)
+###################/;
+##################/#'-.
+###################   '
+%%
+####################,
+###################/`,
+##################/ (
+################°##  `-.
+%%
+#################,_
+#################| `.
+#################|   \
+################°##   `.
+%%
+################,
+################|`-.
+################|   `.
+###############°|##   `
+%%
+#
+############.-,--._
+###########'-´#\   `
+################\
+################°\
+%%
+#
+###########_.-,
+#########,´ .´#\
+#########`-´### \
+############### °\
+%%
+#
+##############,
+######.'´###.´#\
+#####(___.-´### \
+############### °\
+%%
+#
+##############,
+############.´ \
+###########/    \
+#########.´     °\
+###,####/
+##(__.-´
+%%
+asciiend
+
+const artPlayerThrowing3 = ascii
+#
+#
+#
+######################;
+#####################´
+####################!
+%%
+#
+###################
+#################,´
+#################`
+####################`,
+%%
+#
+#####################)
+####################;
+####################'-.
+###################   '
+%%
+#
+####################`,
+################### (
+###################  `-.
+%%
+##################_
+################## `.
+##################   \
+###################   `.
+%%
+#
+#################`-.
+#################   `.
+###################   `
+%%
+#
+############.-#--._
+###########'-´##   `
+%%
+#
+###########_.-
+#########,´ .´
+#########`-´
+%%
+#
+#
+######.'´###.´
+#####(___.-´
+%%
+#
+#
+############.´
+###########/
+#########.´
+###,####/
+##(__.-´
+%%
+asciiend
+
+
+const artPlayerCatching1 = ascii
+#
+##############,
+############.´ \
+###########/    \_O
+#########.´     °\/
+########/        / \
+######.´
+#####/
+###.´
+##/
+,´__ _
+%%
+################,
+##############.´|
+#############/  |
+############/  °|\O
+##########.´     `|
+#########/       / \
+########/
+######.´
+#####/
+####/
+##,´__ _
+%%
+#################__
+##############.´  /
+#############/  ./  !
+####,-.#####/   /(O
+###´###`._.´     `|
+########         / \
+asciiend
+
+const artPlayerCatching2 = ascii
+#
+,
+ \
+  \
+  °\
+%%
+##,
+  |
+  |
+ °|
+%%
+#
+    /
+  ./
+  /
+asciiend
+
+const artPlayerCatching3 = ascii
+#
+#
+############.´
+###########/
+#########.´
+########/
+######.´
+#####/
+###.´
+##/
+,´
+%%
+#
+##############.´
+#############/
+############/
+##########.´
+#########/
+########/
+######.´
+#####/
+####/
+##,´
+%%
+#################__
+##############.´
+#############/
+####,-.#####/
+###´###`._.´
+asciiend
+
+const artPlayerCatching4 = ascii
+##__ _
+%%
+####__ _
+%%
+###
+asciiend
+
+
+const artBigHead = ascii
+#.-.
+(   )
+#`·´
+%% {repeat:14}
+#.-.
+( '')
+#`·´
+asciiend
+
+const artBigHeadExpressions = ascii
+#####
+%%
+(--')
+%%
+(TT )
+%%
+(^^ )
+asciiend

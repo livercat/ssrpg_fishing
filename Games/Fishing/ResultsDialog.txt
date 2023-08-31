@@ -1,0 +1,84 @@
+
+var panel
+var nameText
+var icon
+var weightText
+var isRecordText
+
+
+func Show(fish, isRecord)
+  panel.visible = true
+  nameText.text = fish.name
+  icon.Load(fish.art)
+  var weightTemplateStr = te.xt(tid_fish_ui_weight)
+  weightText.text = string.Format(weightTemplateStr, fish.weight)
+  ?isRecord
+    isRecordText.visible = inherit
+  :
+    isRecordText.visible = false
+
+
+func Hide()
+  panel.visible = false
+  
+
+func Init()
+  panel = ui.AddPanel()
+  panel.visible = false
+  panel.ax = right
+  panel.dx = right
+  panel.x = -16
+  panel.w = 1
+  panel.h = 1
+  // Background frame
+  var bg = ui.AddAnim(ascii
+#########/\
+#_#######\/#######_
+(______/\/\/\______)
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#______      ______#
+(_#####\/\/\/#####_)
+#########/\
+#########\/
+asciiend)
+  bg.color = #666666
+  panel.Add(bg)
+  // Title
+  nameText = ui.AddText()
+  nameText.align = center
+  nameText.x = 1
+  nameText.y = -2
+  nameText.w = 18
+  panel.Add(nameText)
+  // Fish icon
+  icon = ui.AddAnim("")
+  icon.ax = left
+  icon.dock = center_center
+  icon.x = -4
+  icon.y = -2
+  panel.Add(icon)
+  // Fish weight
+  weightText = ui.AddText()
+  weightText.align = center
+  weightText.y = 4
+  weightText.w = 18
+  panel.Add(weightText)
+  // Label displayed if the fish's weight is your best
+  isRecordText = ui.AddText()
+  isRecordText.align = center
+  isRecordText.y = 5
+  isRecordText.w = 18
+  isRecordText.text = te.xt(tid_fish_ui_record)
+  panel.Add(isRecordText)
+
+
+

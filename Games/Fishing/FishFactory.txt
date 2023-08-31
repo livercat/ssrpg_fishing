@@ -1,0 +1,146 @@
+
+
+func MakeFish(min, max)
+  var fish = new Games/Fishing/FishData
+
+  var selectedFish = RngRange(min, max)
+
+  ?selectedFish >= 0 & selectedFish < 128
+    fish.name = te.xt(tid_fish_speedyfin)
+    fish.art = ascii
+#########
+#><))8>##
+asciiend
+    fish.rodPivotX = 7
+    fish.rodPivotY = 0
+    fish.height = 3
+    fish.scalesMin = 1
+    fish.scalesMax = 3
+    fish.acceleration = 15
+
+
+  :?selectedFish >= 128 & selectedFish < 192
+    fish.name = te.xt(tid_fish_bowfish)
+    fish.art = ascii
+#.  )  ##
+# )( o>##
+#´  )´ ##
+asciiend
+    fish.rodPivotX = 7
+    fish.rodPivotY = 0
+    fish.height = 3
+    fish.scalesMin = 5
+    fish.scalesMax = 10
+    fish.acceleration = 16
+
+
+  :?selectedFish >= 192 & selectedFish < 224
+    fish.name = te.xt(tid_fish_spookfin)
+    fish.art = ascii
+#  (°_ ##
+#_/_ o\##
+#´  `'"##
+asciiend
+    fish.rodPivotX = 7
+    fish.rodPivotY = 0
+    fish.height = 3
+    fish.scalesMin = 15
+    fish.scalesMax = 20
+    fish.acceleration = 17
+
+
+  :?selectedFish >= 224 & selectedFish < 240
+    fish.name = te.xt(tid_fish_poker)
+    fish.art = ascii
+##,\_####
+≥´_ °`──-
+##/´‾####
+asciiend
+    fish.rodPivotX = 6
+    fish.rodPivotY = 0
+    fish.height = 3
+    fish.scalesMin = 25
+    fish.scalesMax = 30
+    fish.acceleration = 18
+
+
+  :?selectedFish >= 240 & selectedFish < 248
+    fish.name = te.xt(tid_fish_outchboi)
+    fish.art = ascii
+# .`'´,##
+#); <°c##
+# ´.,.`##
+asciiend
+    fish.rodPivotX = 7
+    fish.rodPivotY = 0
+    fish.height = 3
+    fish.scalesMin = 35
+    fish.scalesMax = 40
+    fish.acceleration = 19
+
+  :?selectedFish >= 248 & selectedFish < 252
+    fish.name = te.xt(tid_fish_whopper)
+    fish.art = ascii
+##(‾‾`._#
+(\,' ‾ o\
+(:   >( <
+(/`;-.,-´
+###‾‾####
+asciiend
+    fish.rodPivotX = 9
+    fish.rodPivotY = 1
+    fish.height = 5
+    fish.scalesMin = 45
+    fish.scalesMax = 50
+    fish.acceleration = 20
+
+  :?selectedFish >= 252 & selectedFish < 254
+    fish.name = te.xt(tid_fish_moonfin)
+    fish.art = ascii
+###.--.##
+(./ o,-\#
+#)) (   #
+(´\  `-;#
+###`--´##
+asciiend
+    fish.rodPivotX = 7
+    fish.rodPivotY = 1
+    fish.height = 5
+    fish.scalesMin = 55
+    fish.scalesMax = 65
+    fish.acceleration = 21
+
+  :
+    fish.name = te.xt(tid_fish_angrish)
+    fish.art = ascii
+###__####
+_.-. `. _
+`.  `; ò/
+-´_.´`,´#
+####/´###
+asciiend
+    fish.rodPivotX = 8
+    fish.rodPivotY = 1
+    fish.height = 5
+    fish.scalesMin = 70
+    fish.scalesMax = 99
+    fish.acceleration = 22
+
+
+  fish.scales = RngRange(fish.scalesMin, fish.scalesMax)
+  var weightD = (fish.scales / 10)
+  fish.weight = weightD + "." + (fish.scales - weightD * 10)
+  //>@fish.scalesMin@, @fish.scalesMax@, @fish.scales@; @weightD@, @fish.weight@
+
+  return fish
+
+
+
+func RngRange(min, max)
+  var n
+  n = min + rng % (max - min + 1)
+  return n
+
+
+
+

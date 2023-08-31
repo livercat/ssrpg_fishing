@@ -1,0 +1,409 @@
+
+var x = 0
+var y = 0
+var dialogX = 0
+var dialogY = 0
+var dialogW = 60
+var dialogH = 22
+var slotX = 0
+var slotY = 0
+var slotW = 8
+var slotH = 6
+var seleX = 0
+var seleY = 0
+
+var progress = import Games/Fishing/FishingProgress
+
+
+func DrawBorder(x, y)
+  >`@x@,@y@,#333333,ascii
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+asciiend
+
+
+func DrawSelection(x, y)
+  >`@x@,@y@,#white,ascii
+┌──────┐
+│######│
+│######│
+│######│
+│######│
+│######│
+└──────┘
+asciiend
+
+func DrawSelectionBottom(x, y)
+  y = y + 6
+  >`@x@,@y@,#white,ascii
+└──────┘
+asciiend
+
+
+func DrawDetails(x, y)
+  >`@x@,@y@,#888888,ascii
+#####/\
+|‾‾‾‾  ‾‾‾‾|
+|          |
+|          |
+|__________|
+asciiend
+
+
+func DrawSoldOut(x, y)
+  x = x - 3
+  >`@x@,@y@,#888888,*SOLD*
+
+
+func DrawSlot(x, y, sprite, color, price, isPriceKnown, isSoldOut)
+
+  ?slotX = seleX & slotY = seleY
+    DrawSelection(x, y)
+
+  // Draw Sprite
+  >`@x@,@y@,@color@,@sprite@
+
+  x = x + 4
+  y = y + 5
+  //?isPriceKnown
+  //  money.Draw(x, y, price)
+  //:
+  //  money.DrawStr(x, y, "???")
+
+  ?isSoldOut
+    DrawSoldOut(x, y - 2)
+// func end
+
+
+func DrawRodSlot(x, y, color, price, isPriceKnown, isSoldOut)
+  var rodSpriteA = ascii
+#
+#####,
+####/;
+###/´
+##/!
+asciiend
+
+  var rodSpriteB = ascii
+#
+#####,
+####/
+###/
+##/
+asciiend
+  DrawSlot(x, y, rodSpriteA, #888888, price, isPriceKnown, isSoldOut)
+  DrawSlot(x, y, rodSpriteB, color, price, isPriceKnown, isSoldOut)
+
+
+func Update()
+  dialogX = (screen.w - dialogW) / 2
+  dialogY = (screen.h - dialogH) / 2
+  x = dialogX
+  y = dialogY
+  DrawBorder(x, y)
+
+  // Title
+  var titleStr = "SHOP"
+  x = x + (dialogW - string.Size(titleStr)) / 2
+  y++
+  >`@x@,@y@,#888888,@titleStr@
+
+  // Instructions
+  x = dialogX + 1
+  y = dialogY + dialogH - 1
+  >`@x@,@y@,[x]Back
+
+
+  // Move Selection
+
+  ?key = leftBegin & seleX > 0
+    seleX--
+  ?key = rightBegin & seleX < 6
+    seleX++
+
+  ?key = upBegin & seleY > 0
+    seleY--
+  ?key = downBegin & seleY < 2
+    seleY++
+
+
+  // Rods
+
+  slotX = 0
+  slotY = 0
+
+  x = dialogX + 2
+  y = dialogY + 2
+  DrawRodSlot(x, y, #white, 100, true, true)
+
+  slotX++
+  x = x + slotW
+  DrawRodSlot(x, y, #cyan, 200, true, false)
+
+  slotX++
+  x = x + slotW
+  DrawRodSlot(x, y, #yellow, 400, true, false)
+
+  slotX++
+  x = x + slotW
+  DrawRodSlot(x, y, #green, 800, true, false)
+
+  slotX++
+  x = x + slotW
+  DrawRodSlot(x, y, #blue, 1600, true, false)
+
+  slotX++
+  x = x + slotW
+  DrawRodSlot(x, y, #red, 3200, false, false)
+
+  slotX++
+  x = x + slotW
+  DrawRodSlot(x, y, #rainbow, 6400, false, false)
+
+
+  //DrawDetails(x - 36, y + 5)
+
+
+  // Helpers
+
+
+  // Skeletimmy
+
+  slotX = 0
+  slotY++
+  x = dialogX + 2
+  y = y + slotH
+
+  var skeletimmySprite = ascii
+##
+##
+###_{)
+##''¯)
+####/(
+asciiend
+
+  DrawSlot(x, y, skeletimmySprite, #white, 1000, true, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, skeletimmySprite, #cyan, 2000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, skeletimmySprite, #yellow, 4000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, skeletimmySprite, #green, 8000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, skeletimmySprite, #blue, 16000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, skeletimmySprite, #red, 32000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, skeletimmySprite, #rainbow, 64000, false, false)
+
+
+  // Spider
+
+  slotX = 0
+  slotY++
+  x = dialogX + 2
+  y = y + slotH
+
+  var spiderSprite = ascii
+##
+####_
+###( )
+#/∞|´\\
+#`#'#´´
+asciiend
+
+  DrawSlot(x, y, spiderSprite, #white, 10000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, spiderSprite, #cyan, 20000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, spiderSprite, #yellow, 40000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, spiderSprite, #green, 80000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, spiderSprite, #blue, 160000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, spiderSprite, #red, 320000, false, false)
+  slotX++
+  x = x + slotW
+  DrawSlot(x, y, spiderSprite, #rainbow, 640000, false, false)
+
+
+  // Bottom part of selector
+
+  x = dialogX + 2 + seleX * slotW
+  y = dialogY + 2 + seleY * slotH
+  DrawSelectionBottom(x, y)
+// func end
+
+
+// Ghost
+var ghostSprite = ascii
+##.-.
+#(* *)
+#/ ° \
+##\ (_,
+###`-'
+asciiend
+
+// Bat
+var batSprite = ascii
+_####__
+`\,,/.'
+##"-'
+asciiend
+
+// Pusher
+var pusherSprite = ascii
+#O
+/|\
+/#\
+asciiend
+
+// Snail
+var snailSprite = ascii
+.#,#.---.
+#)//  __ \
+( )  / _) )
+#\ `-\___/-/
+##`-------´
+asciiend
+
+// Skeletony
+var skeletonySprite = ascii
+###__
+##,o_)
+##"':_
+#_.-/)\
+"`,-´_/
+asciiend
+
+// Controller
+var controllerSprite = ascii
+#########└O┘
+########_/|\
+_______/#/#\
+asciiend
+
+// Dominotaur
+var dominotaurSprite = ascii
+#############(#__#)
+##############¯\/¯
+#############,-´'-.
+############//\. ¯`)
+#########,==´#/-´\"
+########/####( `\ \
+_______/######)/#)/
+##############"##"
+asciiend
+
+// Ki Eater
+var kiEaterSprite = ascii
+#_.-._
+/`\"/-\
+|\###/|
+#\|#|/
+asciiend
+
+// Ice Elemental
+var iceElementalSprite = ascii
+##/|
+`/| \,
+#\o_/
+asciiend
+
+// Cultist
+var cultistSprite = ascii
+####/
+###/_
+##/{))
+#/¯\ `,
+('#/ \-,
+###`¯`´
+asciiend
+
+// Poison Adept
+var poisonAdeptSprite = ascii
+###,
+∞_/(_
+|{\\
+|-´ )
+|/__\
+#`##´
+asciiend
+
+// Snake
+var snakesSprite = ascii
+#.-.
+'-´))#|#/)
+##// #|/ )
+#((_.-´_¯'.
+##`--´####`)
+#######_.-´
+asciiend
+
+// Acronian Scout
+var scoutSprite = ascii
+######/
+###),_#____
+###`o/(  -´
+##,/_\#);
+##/##/\´
+#/#-´#_)_
+L####/#.´
+####;#(
+###/###\
+asciiend
+
+// Wasp Nest
+var waspNestSprite = ascii
+######,
+#.###\|###,
+#-\##_|#|/
+###\/´ \/-´
+.__{(_)/}#_/-
+####\./´-'
+#`-\}  {
+####{  }
+####}  {
+####{  }
+###//´\`\
+asciiend
+
+
+
+
+
+
+
+

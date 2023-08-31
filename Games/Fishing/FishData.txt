@@ -1,0 +1,23 @@
+
+var name = ""
+var art = ""
+var color = #ffffff
+var rodPivotX = 7
+var rodPivotY = 1
+var height = 3
+
+var scalesMin = 0
+var scalesMax = 0
+var scales = 0
+var weight = ""
+
+var acceleration = 10
+
+
+func Draw(x, y)
+  >`@x@,@y@,@color@,@art@
+
+func DrawO(x, y)
+  x = x - rodPivotX
+  y = y - rodPivotY
+  >o@x@,@y@,@color@,@art@

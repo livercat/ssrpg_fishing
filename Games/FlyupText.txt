@@ -1,0 +1,30 @@
+
+var message = ""
+var color = #white
+var x = 0
+var y = 0
+var frames = 0
+var flyupTime = 7
+var holdTime = 13
+var isActive = false
+
+
+func Show(x, y, msg)
+  isActive = true
+  this.x = x
+  this.y = y
+  message = msg
+  frames = 0
+
+
+func Update()
+  ?isActive
+    frames++
+    ?frames <= flyupTime
+      ?frames % 2 = 0
+        y--
+    
+    ?frames <= flyupTime + holdTime
+      >`@x@,@y@,@color@,@message@
+    :
+      isActive = false

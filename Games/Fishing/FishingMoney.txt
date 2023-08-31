@@ -1,0 +1,14 @@
+
+// Deprecated script
+
+var currencyGlyph = "♠"
+//var currencyGlyph = "α"
+
+func DrawStr(x, y, value)
+  var str = currencyGlyph + value
+  x = x - string.Size(str) / 2
+  >`@x@,@y@,@str@
+
+func Draw(x, y, value)
+  // TODO - Format number e.g. 1,000,000
+  DrawStr(x, y, value)

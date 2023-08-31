@@ -1,0 +1,20 @@
+
+var scales = storage.Get("key_scales", 0)
+var recordWeight = storage.Get("key_record", 0)
+var rod = 0
+
+func AddScales(amount)
+  scales = scales + amount
+  storage.Set("key_scales", scales)
+
+func CheckRecord(newWeight)
+  ?recordWeight < newWeight
+    recordWeight = newWeight
+    storage.Set("key_record", recordWeight)
+    return true
+  return false
+
+func IsFTUE()
+  ?scales = 0
+    return true
+  return false

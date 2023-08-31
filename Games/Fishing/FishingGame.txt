@@ -1,0 +1,540 @@
+
+// Deadwood Fishing
+// by: standardcombo
+var version = "0.8.1"
+
+var x = 0
+var y = 0
+var s = ""
+
+var uiX = -11
+var uiY = 7
+var barColor = #303030
+var progressValue = 1000
+var progressPositive = 7
+var progressNegative = 14
+var progressX = uiX + 1
+var progressY = uiY + 3
+var progressColor = 00ff00
+
+var fishWidth = 600
+var fishArea = 2300
+var fishLimit = fishArea - fishWidth
+var fishMinSpeed = -70
+var fishMaxSpeed = 100
+var fishAccelDelay = 30
+var reelImpulse = 260
+var reelBadLow = 200
+var reelGoodLow = 600
+var reelGoodHigh = 1200
+var reelBadHigh = 1600
+
+var catchingPanel = null
+var catchingFrame = null
+var catchingZoneOutside = null
+var catchingZoneInside = null
+var catchingBar = null
+var catchingFish = null
+var catchingFtueText = null
+
+var horizontalBarsStyle = ui.AddStyle("
+^───
+^###
+^───")
+var fullBoxStyle = ui.AddStyle("
+^███
+^███
+^███")
+
+var fishPos = 0
+var fishSpeed = 0
+var fishAccel = 0
+var fishDrawX = 0
+var fishDrawY = uiY + 1
+var fish
+
+var waitTimeMin = 30 * 2
+var waitTimeMax = 30 * 10
+
+var fisher = import Games/Fishing/FishingPlayer
+
+var progress = import Games/Fishing/FishingProgress
+var topHud = new Games/Fishing/FishingHUD
+
+var shop = new Games/Fishing/FishingShop
+var logo = new Games/Fishing/FishingLogo
+
+var resultDialog = new Games/Fishing/ResultsDialog
+
+var fishFactory = import Games/Fishing/FishFactory
+var rodFactory = import Games/Fishing/RodFactory
+var flyup = new Games/FlyupText
+
+// States:
+// - Hidden
+// - Arriving
+// - Menu
+// - Throwing
+// - Waiting
+// - FTUE
+// - Catching
+// - Fail1
+// - Fail2
+// - Success1
+// - Success2
+// - Success3
+// - Collection
+// - Shop
+
+var state = null
+var stateTime = 0
+var currentStateFunction = null
+
+// Used by Throwing Stones quest to delay showing the results dialog
+var preventStateSuccess3 = false
+
+var playButton = null
+func AddMenuUI()
+  ?playButton = null
+    var button = ui.AddButton()
+    button.anchor = top_right
+    button.dock = top_right
+    button.x = -13
+    button.y = 13
+    button.text = te.xt(Play)
+    button.SetPressed(OnPlayPressed)
+    playButton = button
+
+func RemoveMenuUI()
+  ?playButton ! null
+    playButton.Recycle()
+  playButton = null
+
+
+func AddCatchingUI()
+  ?catchingPanel
+    catchingPanel.visible = true
+    return
+
+  // Base panel
+  catchingPanel = ui.AddPanel()
+  catchingPanel.x = 0
+  catchingPanel.y = -1
+  catchingPanel.w = 25
+  catchingPanel.h = 5
+  catchingPanel.ay = bottom
+  catchingPanel.dy = bottom
+
+  // The visual design of the panel
+  catchingFrame = ui.AddAnim(ascii
+┌───────────────────────┐
+│                       │
+├───────────────────────┤
+│                       │
+└───┴───┴───┴───┴───┴───┘
+asciiend)
+  catchingPanel.Add(catchingFrame)
+  catchingFrame.color = barColor
+
+  // The grey sections above and below the fish, indicating valid zone
+  catchingZoneOutside = ui.AddPanel()
+  catchingPanel.Add(catchingZoneOutside)
+  catchingZoneOutside.style = horizontalBarsStyle
+  catchingZoneOutside.w = 11
+  catchingZoneOutside.h = 3
+  catchingZoneOutside.x = 7
+  catchingZoneOutside.y = 0
+  catchingZoneOutside.anchor = top_left
+  catchingZoneOutside.dock = top_left
+  catchingZoneOutside.color = #888888
+  catchingZoneInside = ui.AddPanel()
+  catchingPanel.Add(catchingZoneInside)
+  catchingZoneInside.style = horizontalBarsStyle
+  catchingZoneInside.w = 7
+  catchingZoneInside.h = 3
+  catchingZoneInside.x = 9
+  catchingZoneInside.y = 0
+  catchingZoneInside.anchor = top_left
+  catchingZoneInside.dock = top_left
+
+  // The progress bar inside the panel
+  catchingBar = ui.AddPanel()
+  catchingPanel.Add(catchingBar)
+  catchingBar.style = fullBoxStyle
+  catchingBar.x = 1
+  catchingBar.y = 3
+  catchingBar.w = 12
+  catchingBar.h = 1
+  catchingBar.anchor = top_left
+  catchingBar.dock = top_left
+
+  // Fish sprite inside panel
+  catchingFish = ui.AddAnim(ascii
+<°((><
+asciiend)
+  catchingPanel.Add(catchingFish)
+  catchingFish.x = 9
+  catchingFish.y = 1
+  catchingFish.anchor = top_left
+  catchingFish.dock = top_left
+  catchingFish.pivotX = -1
+
+
+func AddFTUE_UI()
+  var msg = te.xt("tid_fish_ftue_1")
+  catchingFtueText = ui.AddText(msg)
+  catchingPanel.Add(catchingFtueText)
+  catchingFtueText.x = 0
+  catchingFtueText.y = 0
+  catchingFtueText.w = 69
+  catchingFtueText.h = 1
+  catchingFtueText.anchor = bottom_center
+  catchingFtueText.dock = top_center
+  catchingFtueText.align = center
+
+
+func RemoveCatchingUI()
+  catchingPanel.visible = false
+  ?catchingFtueText
+    catchingFtueText.text = ""
+  
+
+func OnPlayPressed()
+  SetState(Throwing)
+
+
+func Reset()
+  RemoveMenuUI()
+  SetState(Hidden)
+
+
+func GetState()
+  return state
+
+
+func SetState(newState)
+  //debug.Log("state = " + state + ", newState = " + newState)
+
+  // Exit state
+
+  ?state = Arriving
+    playerAnimWalk.visible = false
+    playerAnimArrived.visible = false
+
+  :?state = Menu
+    RemoveMenuUI()
+
+  :?state = Throwing
+    playerAnimThrowing.visible = false
+
+  :?state = Catching
+    RemoveCatchingUI()
+
+  :?state = Fail2
+    playerAnimCatching.visible = false
+
+  :?state = Success3
+    resultDialog.Hide()
+    playerAnimCatching.visible = false
+  
+
+  // Enter state
+
+  ?newState = Hidden
+    currentStateFunction = UpdateStateHidden
+
+  :?newState = Arriving
+    currentStateFunction = UpdateStateArriving
+    logo.Reset()
+    playerAnimWalk.visible = true
+    playerAnimWalk.Play()
+
+  :?newState = Menu
+    currentStateFunction = UpdateStateMenu
+    enable pause
+    AddMenuUI()
+    playerAnimThrowing.visible = true
+    playerAnimThrowing.frame = 0
+    ?playerAnimBigHead
+      playerAnimBigHead.flipX = true
+      playerAnimExpressions.frame = 0
+    
+  :?newState = Throwing
+    currentStateFunction = UpdateStateThrowing
+    logo.Hide()
+    disable pause
+    playerAnimThrowing.Play()
+
+  :?newState = Waiting
+    currentStateFunction = UpdateStateWaiting
+    playerAnimCatching.visible = true
+    playerAnimCatching.frame = 0
+
+  :?newState = FTUE
+    currentStateFunction = UpdateStateFTUE
+    AddCatchingUI()
+    AddFTUE_UI()
+    
+  :?newState = Catching
+    currentStateFunction = UpdateStateCatching
+    AddCatchingUI()
+  
+  :?newState = Fail1
+    currentStateFunction = UpdateStateFail1
+    playerAnimCatching.frame = 1
+    ?playerAnimExpressions
+      playerAnimExpressions.frame = 1
+
+  :?newState = Fail2
+    currentStateFunction = UpdateStateFail2
+    play error
+    playerAnimCatching.frame = 2
+    ?playerAnimExpressions
+      playerAnimExpressions.frame = 2
+
+  :?newState = Success1
+    currentStateFunction = UpdateStateSuccess1
+    playerAnimCatching.frame = 1
+    ?playerAnimExpressions
+      playerAnimExpressions.frame = 1
+
+  :?newState = Success2
+    currentStateFunction = UpdateStateSuccess2
+    play pickup_success
+    playerAnimCatching.frame = 2
+    ?playerAnimExpressions
+      playerAnimExpressions.frame = 3
+
+  :?newState = Success3
+    currentStateFunction = UpdateStateSuccess3
+    x = screen.w / 2 - 27
+    y = screen.h / 2 - 5
+    flyup.Show(x, y, string.Format(te.xt(tid_fish_scales), fish.scales))
+    progress.AddScales(fish.scales)
+    topHud.Update()
+    var isRecordWeight = progress.CheckRecord(fish.scales)
+    resultDialog.Show(fish, isRecordWeight)
+
+  :?newState = Shop
+    currentStateFunction = UpdateStateShop
+
+  state = newState
+  stateTime = 0
+
+
+var rod
+
+func Init()
+  ?!rod
+    rod = rodFactory.MakeRod(progress.rod)
+
+    disable hud
+    disable player
+
+    topHud.Init()
+    logo.Init(version)
+    resultDialog.Init()
+    fisher.InitPlayerAnimations()
+
+
+func UpdateStateHidden()
+  Init()
+  SetState(Arriving)
+
+
+func UpdateStateArriving()
+  logo.Update()
+  fisher.UpdatePlayerAnimPosition()
+
+  ?stateTime = 105
+    logo.Show()
+
+  :?stateTime = 168
+    playerAnimWalk.visible = false
+    playerAnimArrived.visible = true
+    playerAnimArrived.Play()
+
+  :?stateTime >= 177
+    SetState(Menu)
+
+
+func UpdateStateMenu()
+  logo.Update()
+  flyup.Update()
+  // Wait for button event to OnPlayPressed
+
+
+func UpdateStateThrowing()
+  logo.Update()
+
+  ?key = backBegin
+    SetState(Menu)
+
+  ?stateTime = 5
+    play grappling_idle
+
+  :?stateTime = 13
+    play cross_deadwood_row
+
+  :?stateTime >= 18
+    SetState(Waiting)
+
+
+func UpdateStateWaiting()
+  logo.Update()
+
+  ?key = backBegin
+    SetState(Menu)
+    logo.Show()
+
+  :?stateTime >= waitTimeMin
+    ?catchingFtueText = null & progress.IsFTUE()
+      SetState(FTUE)
+    :
+      SetState(Catching)
+
+    play haunted_gate_shuffle_fast
+
+    // Reset progress bar
+    progressValue = fishArea * 3 / 5
+
+    // Reset fish
+    fishPos = fishLimit / 2
+    fishSpeed = 0
+
+    fish = fishFactory.MakeFish(rod.minFish, rod.maxFish)
+    catchingFish.color = fish.color
+    fishAccel = fish.acceleration
+
+
+func UpdateStateFTUE()
+  catchingFtueText.visible = true
+
+  ?key = primaryBegin
+    var msg = te.xt("tid_fish_ftue_2") + "\n" + te.xt("tid_fish_ftue_3") + "\n" + " ↓ "
+    catchingFtueText.text = msg
+    catchingFtueText.h = 3
+
+    SetState(Catching)
+
+  // Blink FTUE text
+  :?time % 18 >= 9
+    catchingFtueText.visible = false
+
+
+func UpdateStateCatching()
+
+// TODO - For debug only
+    ?key = backBegin
+     SetState(Menu)
+    :?key = ability1Begin
+     SetState(Success1)
+
+    // Select player anim frame based on primary input or not
+    ?key = primary
+      playerAnimCatching.frame = 1
+    :
+      playerAnimCatching.frame = 0
+
+    // Control the fishing rod
+    ?key = primaryBegin
+      fishSpeed += reelImpulse
+
+    // Apply force of fish pulling away
+    fishSpeed -= fishAccel
+
+    // Frame skip to gain performance
+    ?stateTime % 2 = 0
+      return
+
+    // Constrain speed
+    fishSpeed = math.Clamp(fishSpeed, fishMinSpeed, fishMaxSpeed)
+
+    // Simulate
+    fishPos += fishSpeed + fishSpeed
+
+    // Constrain position
+    fishPos = math.Clamp(fishPos, 0, fishLimit)
+
+    // Update progress
+    ?fishPos < reelBadLow | fishPos > reelBadHigh
+      // Bad area
+      catchingBar.color = #ff0000
+      progressValue -= progressNegative
+      ?progressValue < 0
+        // Failure condition
+        SetState(Fail1)
+
+    :?fishPos >= reelGoodLow & fishPos <= reelGoodHigh
+      // Good area
+      catchingBar.color = #ffffff
+      progressValue += progressPositive
+      ?progressValue > fishArea
+        // Victory condition
+        SetState(Success1)
+    :
+      // Neutral area
+      catchingBar.color = #bbbbbb
+
+    // Update UI components to match simulation
+    catchingBar.w = math.CeilToInt(progressValue / 100.0)
+    catchingFish.x = fishPos / 100
+
+
+func UpdateStateFail1()
+  ?stateTime >= 20
+    SetState(Fail2)
+
+
+func UpdateStateFail2()
+  ?key = primaryBegin & stateTime > 1
+    SetState(Menu)
+    logo.Show()
+
+  // Failure message
+  ?fishPos < fishLimit / 2
+    >o-4,-4,@te.xt(tid_fish_got_away)@
+  :
+    >o-4,-4,@te.xt(tid_fish_line_snapped)@
+
+
+func UpdateStateSuccess1()
+  ?stateTime >= 30
+    SetState(Success2)
+
+
+func UpdateStateSuccess2()
+  ?stateTime >= 45 & !preventStateSuccess3
+    SetState(Success3)
+  
+  // Draw the fish
+  fish.DrawO(-15, 1)
+
+
+func UpdateStateSuccess3()
+  flyup.Update()
+
+  ?key = primaryBegin & stateTime > 1
+    SetState(Menu)
+    logo.Show()
+  
+  // Draw the fish
+  fish.DrawO(-15, 1)
+
+
+func UpdateStateShop()
+  ?key = backBegin
+    SetState(Menu)
+  :
+    shop.Update()
+
+
+func Update()
+  stateTime++
+  currentStateFunction()
+
+// TODO - Debug state
+ >`0,0,State: @state@
+ >`0,1,STime: @stateTime@
+
+SetState(Hidden)

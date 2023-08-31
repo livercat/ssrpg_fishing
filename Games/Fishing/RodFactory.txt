@@ -1,0 +1,54 @@
+
+
+func MakeRod(level)
+  var rod = new Games/Fishing/RodData
+  rod.level = level
+
+  ?level = 0
+    rod.color = #white
+    rod.minFish = 0
+    rod.maxFish = 130
+
+  :?level = 1
+    rod.color = #cyan
+    rod.minFish = 90
+    rod.maxFish = 202
+
+  :?level = 2
+    rod.color = #yellow
+    rod.minFish = 110
+    rod.maxFish = 234
+
+  :?level = 3
+    rod.color = #green
+    rod.minFish = 120
+    rod.maxFish = 244
+
+  :?level = 4
+    rod.color = #blue
+    rod.minFish = 124
+    rod.maxFish = 249
+
+  :?level = 5
+    rod.color = #red
+    rod.minFish = 126
+    rod.maxFish = 252
+
+  : // Rainbow
+    rod.color = #rainbow
+    rod.lineColor = #rain88
+    rod.minFish = 127
+    rod.maxFish = 254
+
+  return rod
+
+
+
+func RngRange(min, max)
+  var n
+  n = min + rng % (max - min + 1)
+  return n
+
+
+
+

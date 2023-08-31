@@ -1,0 +1,6 @@
+
+var level = 0
+var color = #white
+var lineColor = #888888
+var minFish = 0
+var maxFish = 130
