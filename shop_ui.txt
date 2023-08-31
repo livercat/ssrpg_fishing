@@ -127,41 +127,35 @@ func InitShop()
   whiteLabel = components[1]
   // white rod doesn't have a button
 
-  ?cyanPanel = null
-    components = InitRodCell(1, "cyan", cyanCost, topRowCellStyle)
-    cyanPanel = components[0]
-    cyanLabel = components[1]
-    cyanButton = components[2]
+  components = InitRodCell(1, "cyan", cyanCost, topRowCellStyle)
+  cyanPanel = components[0]
+  cyanLabel = components[1]
+  cyanButton = components[2]
   
-  ?yellowPanel = null
-    components = InitRodCell(2, "yellow", yellowCost, topRowCellStyle)
-    yellowPanel = components[0]
-    yellowLabel = components[1]
-    yellowButton = components[2]
+  components = InitRodCell(2, "yellow", yellowCost, topRowCellStyle)
+  yellowPanel = components[0]
+  yellowLabel = components[1]
+  yellowButton = components[2]
 
-  ?greenPanel = null
-    components = InitRodCell(3, "green", greenCost, topRowCellStyle)
-    greenPanel = components[0]
-    greenLabel = components[1]
-    greenButton = components[2]
+  components = InitRodCell(3, "green", greenCost, topRowCellStyle)
+  greenPanel = components[0]
+  greenLabel = components[1]
+  greenButton = components[2]
 
-  ?bluePanel = null
-    components = InitRodCell(4, "blue", blueCost, topRowCellStyle)
-    bluePanel = components[0]
-    blueLabel = components[1]
-    blueButton = components[2]
+  components = InitRodCell(4, "blue", blueCost, topRowCellStyle)
+  bluePanel = components[0]
+  blueLabel = components[1]
+  blueButton = components[2]
 
-  ?redPanel = null
-    components = InitRodCell(5, "red", redCost, topRowCellStyle)
-    redPanel = components[0]
-    redLabel = components[1]
-    redButton = components[2]
+  components = InitRodCell(5, "red", redCost, topRowCellStyle)
+  redPanel = components[0]
+  redLabel = components[1]
+  redButton = components[2]
 
-  ?rainbowPanel = null
-    components = InitRodCell(6, "rainbow", rainbowCost, topRowLastCellStyle)
-    rainbowPanel = components[0]
-    rainbowLabel = components[1]
-    rainbowButton = components[2]
+  components = InitRodCell(6, "rainbow", rainbowCost, topRowLastCellStyle)
+  rainbowPanel = components[0]
+  rainbowLabel = components[1]
+  rainbowButton = components[2]
 
   ?currentRodLevel = 0
     activeRodButton = cyanButton
