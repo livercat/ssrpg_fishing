@@ -1,6 +1,7 @@
 var currencyGlyph = "♠"
 var currentRodLevel = 0 //FIXME: progress.txt
 var scales = 1000000000 // FIXME
+var debug = false
 
 var cyanCost = 100
 var yellowCost = 1000
@@ -16,6 +17,16 @@ var rodSpriteA = ascii
 ###/´
 ##/!
 asciiend
+
+var invisStyle = ui.AddStyle("
+^###
+^###
+^###")
+
+var buttonStyle = ui.AddStyle("
+^┌─┐
+^│#│
+^└─┘")
 
 var rowStyle = ui.AddStyle("
 ^├#┤
@@ -42,6 +53,7 @@ var purchaseFailedTimer = null
 var purchaseFailedLabel = null
 
 var shopRoot = null
+var shopCellsPanel = null
 var shopRowTop = null
 var shopRowMid = null
 var shopRowBot = null
@@ -75,16 +87,30 @@ var rainbowLabel = null
 
 var activeRodButton = null
 
+var shopButton = null
+var backButton = null
+
 func CreateShop()
   trace("CreateShop()", null)
   ?shopRoot = null
     trace("create shop root", null)
     shopRoot = ui.AddPanel()
     shopRoot.visible = true
-    shopRoot.x = 0
     shopRoot.y = screen.h
     shopRoot.w = screen.w
     shopRoot.h = screen.h
+  
+  ?shopCellsPanel = null
+    shopCellsPanel = ui.AddPanel()
+    shopCellsPanel.visible = true
+    shopCellsPanel.dock = top_left
+    shopCellsPanel.anchor = top_left
+    shopCellsPanel.x = 20
+    shopCellsPanel.y = 1
+    shopCellsPanel.w = screen.w - 21
+    shopCellsPanel.h = screen.h - 4
+    shopCellsPanel.style = invisStyle
+    shopRoot.Add(shopCellsPanel)
 
   ?shopRowTop = null
     shopRowTop = CreateShopRow(0, 0, null)
@@ -93,48 +119,51 @@ func CreateShop()
     shopRowMid = CreateShopRow(0, 7, rowStyle)
 
   ?shopRowBot = null
-    shopRowBot = CreateShopRow(0, 14, null)
+    shopRowBot = CreateShopRow(0, 14, rowStyle)
+  
+  ?backButton = null
+    backButton = CreateBackButton()
 
   var components = null
 
   ?whitePanel = null
-    components = CreateShopRod(0, "white", "owned", null)
+    components = AddRod(0, "white", "owned", null)
     whitePanel = components[0]
     whiteLabel = components[1]
     // white rod doesn't have a button
 
   ?cyanPanel = null
-    components = CreateShopRod(1, "cyan", cyanCost, topRowCellStyle)
+    components = AddRod(1, "cyan", cyanCost, topRowCellStyle)
     cyanPanel = components[0]
     cyanLabel = components[1]
     cyanButton = components[2]
   
   ?yellowPanel = null
-    components = CreateShopRod(2, "yellow", yellowCost, topRowCellStyle)
+    components = AddRod(2, "yellow", yellowCost, topRowCellStyle)
     yellowPanel = components[0]
     yellowLabel = components[1]
     yellowButton = components[2]
 
   ?greenPanel = null
-    components = CreateShopRod(3, "green", greenCost, topRowCellStyle)
+    components = AddRod(3, "green", greenCost, topRowCellStyle)
     greenPanel = components[0]
     greenLabel = components[1]
     greenButton = components[2]
 
   ?bluePanel = null
-    components = CreateShopRod(4, "blue", blueCost, topRowCellStyle)
+    components = AddRod(4, "blue", blueCost, topRowCellStyle)
     bluePanel = components[0]
     blueLabel = components[1]
     blueButton = components[2]
 
   ?redPanel = null
-    components = CreateShopRod(5, "red", redCost, topRowCellStyle)
+    components = AddRod(5, "red", redCost, topRowCellStyle)
     redPanel = components[0]
     redLabel = components[1]
     redButton = components[2]
 
   ?rainbowPanel = null
-    components = CreateShopRod(6, "rainbow", rainbowCost, topRowLastCellStyle)
+    components = AddRod(6, "rainbow", rainbowCost, topRowLastCellStyle)
     rainbowPanel = components[0]
     rainbowLabel = components[1]
     rainbowButton = components[2]
@@ -161,16 +190,16 @@ func CreateShopRow(x, y, style)
   row.y = y
   row.w = 57
   row.h = 8
-  row.dock = top_right
-  row.anchor = top_right
+  row.dock = top_left
+  row.anchor = top_left
   row.color = #808080
   ?style ! null
     row.style = style
-  shopRoot.Add(row)
+  shopCellsPanel.Add(row)
   return row
 
-func CreateShopRod(rodIdx, rodColor, cost, style)
-  trace("CreateShopRod", [rodIdx, rodColor, cost, style])
+func AddRod(rodIdx, rodColor, cost, style)
+  trace("AddRod", [rodIdx, rodColor, cost, style])
   var panel = ui.AddPanel()
   panel.ax = left
   panel.dx = left
@@ -240,35 +269,6 @@ func FormatCost(cost)
   :?cost < math.Pow(10, 12)
     return currencyGlyph + (cost / math.Pow(10, 9)) + "B"
 
-func DrawShop()
-  trace("DrawShop()", null)
-  >@currencyGlyph+scales@ 
-  ?shopIsHidden
-    ?shopRoot.y < screen.h
-      shopRoot.y = shopRoot.y + shopPanelSpeed
-    :
-      shopRoot.y = screen.h
-      shopRoot.visible = false
-      ?activeRodButton ! null
-        activeRodButton.visible = false
-  :
-    ?shopRoot.y > -3 & shopPanelOvershoot
-      shopRoot.y = shopRoot.y - shopPanelSpeed
-      shopRoot.visible = true
-      ?activeRodButton ! null
-        activeRodButton.visible = true
-    :?shopRoot.y <= -3 & shopPanelOvershoot
-      shopPanelOvershoot = false
-    :?shopRoot.y < 0
-      shopRoot.y = shopRoot.y + 1
-    :
-      shopRoot.y = 0
-
-  ?purchaseFailedTimer ! null
-    ?time >= purchaseFailedTimer
-      purchaseFailedLabel.color = #white
-      purchaseFailedTimer = null
-
 func BuyRod(cost, label, button, nextCost, nextLabel, nextButton)
   trace("BuyRod", [cost, label, button, nextCost, nextLabel, nextButton])
   ?scales >= cost
@@ -316,9 +316,95 @@ func HandleRodButton()
     BuyRod(rainbowCost, rainbowLabel, rainbowButton,
     ^null, null, null)
 
+func DrawShop()
+  trace("DrawShop()", null)
+
+  ?shopIsHidden
+
+    ?shopButton = null
+      shopButton = CreateShopButton()
+
+    // hide the "Back" button right away
+    ?backButton ! null
+      backButton.visible = false
+
+    ?shopCreated
+      // start the closing animation
+      ?shopRoot.y < screen.h
+        shopRoot.y = shopRoot.y + shopPanelSpeed
+      :
+        // animation is finished, show the "Open" button
+        shopButton.visible = true
+        enable pause
+
+        shopRoot.y = screen.h
+        shopRoot.visible = false
+  :
+    ?!shopCreated
+      CreateShop()
+
+    // hide the "Open" button right away
+    ?shopButton ! null
+      shopButton.visible = false
+    disable pause
+
+    // start the opening animation
+    ?shopRoot.y > -3 & shopPanelOvershoot
+      shopRoot.y = shopRoot.y - shopPanelSpeed
+      shopRoot.visible = true
+    :
+      // animation is finished, show the "Back" button
+      backButton.visible = true
+
+      ?shopRoot.y <= -3 & shopPanelOvershoot
+        shopPanelOvershoot = false
+      :?shopRoot.y < 0
+        shopRoot.y = shopRoot.y + 1
+      :
+        shopRoot.y = 0
+
+  ?purchaseFailedTimer ! null
+    ?time >= purchaseFailedTimer
+      purchaseFailedLabel.color = #white
+      purchaseFailedTimer = null
+
+func CreateShopButton()
+  var button = ui.AddButton()
+  button.anchor = bottom_right
+  button.dock = bottom_right
+  button.x = -5
+  button.y = -5
+  button.text = te.xt("Shop")
+  button.style = buttonStyle
+  button.SetPressed(OpenShop)
+  button.visible = true
+  return button
+ 
+func OpenShop()
+  shopIsHidden = false
+  
+func CreateBackButton()
+  var button = ui.AddButton()
+  button.anchor = top_left
+  button.dock = top_left
+  button.x = 1
+  button.y = 1
+  button.text = te.xt("< Back")
+  button.style = buttonStyle
+  button.SetPressed(ExitShop)
+  button.visible = false
+  shopRoot.Add(button)
+  return button
+  
+func ExitShop()
+  shopIsHidden = true
+  shopPanelOvershoot = true
+
 // TESTING
 
 disable banner
+
+>@currencyGlyph+scales@ 
 
 var traces = []
 
@@ -336,9 +422,7 @@ func trace(msg, arr)
     msg = string.Format(template, msg, args)
   traces.Add(msg)
 
-func DebugShow()
-  shopIsHidden = false
-
+func ShowTraces()
   var tr = string.Break(string.Join(
   ^"->", traces), 40)
   var y = 2
@@ -353,9 +437,9 @@ func DebugHide()
   shopPanelOvershoot = true
 // TESTING END
 
-?!shopCreated
-  CreateShop()
-DrawShop()
-DebugShow()
+?loc = Waterfall
+  DrawShop()
+  ?debug
+    ShowTraces()
 // DebugHide()
 // scales = 500
