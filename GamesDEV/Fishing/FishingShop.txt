@@ -12,7 +12,7 @@ var slotH = 6
 var seleX = 0
 var seleY = 0
 
-var progress = import Games/Fishing/FishingProgress
+var progress = import GamesDEV/Fishing/FishingProgress
 
 
 func DrawBorder(x, y)

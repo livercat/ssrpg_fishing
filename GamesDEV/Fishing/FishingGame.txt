@@ -56,19 +56,19 @@ var fish
 var waitTimeMin = 30 * 2
 var waitTimeMax = 30 * 10
 
-var fisher = import Games/Fishing/FishingPlayer
+var fisher = import GamesDEV/Fishing/FishingPlayer
 
-var progress = import Games/Fishing/FishingProgress
-var topHud = new Games/Fishing/FishingHUD
+var progress = import GamesDEV/Fishing/FishingProgress
+var topHud = new GamesDEV/Fishing/FishingHUD
 
-var shop = new Games/Fishing/FishingShop
-var logo = new Games/Fishing/FishingLogo
+var shop = new GamesDEV/Fishing/FishingShop
+var logo = new GamesDEV/Fishing/FishingLogo
 
-var resultDialog = new Games/Fishing/ResultsDialog
+var resultDialog = new GamesDEV/Fishing/ResultsDialog
 
-var fishFactory = import Games/Fishing/FishFactory
-var rodFactory = import Games/Fishing/RodFactory
-var flyup = new Games/FlyupText
+var fishFactory = import GamesDEV/Fishing/FishFactory
+var rodFactory = import GamesDEV/Fishing/RodFactory
+var flyup = new GamesDEV/FlyupText
 
 // States:
 // - Hidden
@@ -218,24 +218,24 @@ func SetState(newState)
   // Exit state
 
   ?state = Arriving
-    playerAnimWalk.visible = false
-    playerAnimArrived.visible = false
+    fisher.playerAnimWalk.visible = false
+    fisher.playerAnimArrived.visible = false
 
   :?state = Menu
     RemoveMenuUI()
 
   :?state = Throwing
-    playerAnimThrowing.visible = false
+    fisher.playerAnimThrowing.visible = false
 
   :?state = Catching
     RemoveCatchingUI()
 
   :?state = Fail2
-    playerAnimCatching.visible = false
+    fisher.playerAnimCatching.visible = false
 
   :?state = Success3
     resultDialog.Hide()
-    playerAnimCatching.visible = false
+    fisher.playerAnimCatching.visible = false
   
 
   // Enter state
@@ -246,29 +246,29 @@ func SetState(newState)
   :?newState = Arriving
     currentStateFunction = UpdateStateArriving
     logo.Reset()
-    playerAnimWalk.visible = true
-    playerAnimWalk.Play()
+    fisher.playerAnimWalk.visible = true
+    fisher.playerAnimWalk.Play()
 
   :?newState = Menu
     currentStateFunction = UpdateStateMenu
     enable pause
     AddMenuUI()
-    playerAnimThrowing.visible = true
-    playerAnimThrowing.frame = 0
-    ?playerAnimBigHead
-      playerAnimBigHead.flipX = true
-      playerAnimExpressions.frame = 0
+    fisher.playerAnimThrowing.visible = true
+    fisher.playerAnimThrowing.frame = 0
+    ?fisher.playerAnimBigHead
+      fisher.playerAnimBigHead.flipX = true
+      fisher.playerAnimExpressions.frame = 0
     
   :?newState = Throwing
     currentStateFunction = UpdateStateThrowing
     logo.Hide()
     disable pause
-    playerAnimThrowing.Play()
+    fisher.playerAnimThrowing.Play()
 
   :?newState = Waiting
     currentStateFunction = UpdateStateWaiting
-    playerAnimCatching.visible = true
-    playerAnimCatching.frame = 0
+    fisher.playerAnimCatching.visible = true
+    fisher.playerAnimCatching.frame = 0
 
   :?newState = FTUE
     currentStateFunction = UpdateStateFTUE
@@ -281,29 +281,29 @@ func SetState(newState)
   
   :?newState = Fail1
     currentStateFunction = UpdateStateFail1
-    playerAnimCatching.frame = 1
-    ?playerAnimExpressions
-      playerAnimExpressions.frame = 1
+    fisher.playerAnimCatching.frame = 1
+    ?fisher.playerAnimExpressions
+      fisher.playerAnimExpressions.frame = 1
 
   :?newState = Fail2
     currentStateFunction = UpdateStateFail2
     play error
-    playerAnimCatching.frame = 2
-    ?playerAnimExpressions
-      playerAnimExpressions.frame = 2
+    fisher.playerAnimCatching.frame = 2
+    ?fisher.playerAnimExpressions
+      fisher.playerAnimExpressions.frame = 2
 
   :?newState = Success1
     currentStateFunction = UpdateStateSuccess1
-    playerAnimCatching.frame = 1
-    ?playerAnimExpressions
-      playerAnimExpressions.frame = 1
+    fisher.playerAnimCatching.frame = 1
+    ?fisher.playerAnimExpressions
+      fisher.playerAnimExpressions.frame = 1
 
   :?newState = Success2
     currentStateFunction = UpdateStateSuccess2
     play pickup_success
-    playerAnimCatching.frame = 2
-    ?playerAnimExpressions
-      playerAnimExpressions.frame = 3
+    fisher.playerAnimCatching.frame = 2
+    ?fisher.playerAnimExpressions
+      fisher.playerAnimExpressions.frame = 3
 
   :?newState = Success3
     currentStateFunction = UpdateStateSuccess3
@@ -327,6 +327,7 @@ var rod
 func Init()
   ?!rod
     rod = rodFactory.MakeRod(progress.rod)
+    fisher.rod = rod
 
     disable hud
     disable player
@@ -350,9 +351,9 @@ func UpdateStateArriving()
     logo.Show()
 
   :?stateTime = 168
-    playerAnimWalk.visible = false
-    playerAnimArrived.visible = true
-    playerAnimArrived.Play()
+    fisher.playerAnimWalk.visible = false
+    fisher.playerAnimArrived.visible = true
+    fisher.playerAnimArrived.Play()
 
   :?stateTime >= 177
     SetState(Menu)
@@ -432,9 +433,9 @@ func UpdateStateCatching()
 
     // Select player anim frame based on primary input or not
     ?key = primary
-      playerAnimCatching.frame = 1
+      fisher.playerAnimCatching.frame = 1
     :
-      playerAnimCatching.frame = 0
+      fisher.playerAnimCatching.frame = 0
 
     // Control the fishing rod
     ?key = primaryBegin

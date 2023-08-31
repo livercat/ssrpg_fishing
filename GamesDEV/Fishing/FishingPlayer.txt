@@ -5,6 +5,7 @@ var playerAnimThrowing = null
 var playerAnimCatching = null
 var playerAnimBigHead = null
 var playerAnimExpressions = null
+var rod
 
 func UpdatePlayerAnimPosition()
   playerAnimRoot.x = screen.FromWorldX(pos.x)

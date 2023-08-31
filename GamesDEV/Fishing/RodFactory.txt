@@ -1,7 +1,7 @@
 
 
 func MakeRod(level)
-  var rod = new Games/Fishing/RodData
+  var rod = new GamesDEV/Fishing/RodData
   rod.level = level
 
   ?level = 0

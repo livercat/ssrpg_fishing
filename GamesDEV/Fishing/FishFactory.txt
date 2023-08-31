@@ -1,7 +1,7 @@
 
 
 func MakeFish(min, max)
-  var fish = new Games/Fishing/FishData
+  var fish = new GamesDEV/Fishing/FishData
 
   var selectedFish = RngRange(min, max)
 
