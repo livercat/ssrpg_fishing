@@ -1,12 +1,13 @@
 var currencyGlyph = "♠"
-var currRodLevel = 0 //FIXME: progress.txt
+var currentRodLevel = 0 //FIXME: progress.txt
 var scales = 1000000000 // FIXME
-var cyanPrice = 100
-var yellowPrice = 1000
-var greenPrice = 10000
-var bluePrice = 100000
-var redPrice = 1000000
-var rainbowPrice = 10000000
+
+var cyanCost = 100
+var yellowCost = 1000
+var greenCost = 10000
+var blueCost = 100000
+var redCost = 1000000
+var rainbowCost = 10000000
 
 var rodSpriteA = ascii
 #
@@ -16,566 +17,345 @@ var rodSpriteA = ascii
 ##/!
 asciiend
 
-var skeletimmySprite = ascii
-##
-##
-###_{)
-##''¯)
-####/(
-asciiend
-
 var rowStyle = ui.AddStyle("
 ^├#┤
 ^│#│
 ^└─┘")
 
-var topRowInsideBtnStyle = ui.AddStyle("
+var topRowCellStyle = ui.AddStyle("
 ^┬─┬
 ^│#│
 ^┴─┴")
 
-var topRowLastBtnStyle = ui.AddStyle("
+var topRowLastCellStyle = ui.AddStyle("
 ^┬─┐
 ^│#│
 ^┴─┘")
 
-var shopIsHidden = true
-var currPurchaseButton = null
 var shopPanelSpeed = 2
 var shopPanelOvershoot = true
-var purchaseFailed = false
-var purchaseFailedTimer = 0
+
+var shopIsHidden = true
+var shopCreated = false
+
+var purchaseFailedTimer = null
 var purchaseFailedLabel = null
 
-var shopPanelRoot = null
-var shopRowPanel0 = null
-var shopRowPanel1 = null
-var shopRowPanel2 = null
+var shopRoot = null
+var shopRowTop = null
+var shopRowMid = null
+var shopRowBot = null
 
-var whiteRodRoot = null
-var whiteRodLabel = null
-var cyanRodCost = "100"
-var cyanRodRoot = null
-var cyanRodButton = null
-var cyanRodLabel = null
-var yellowRodCost = "1000"
-var yellowRodRoot = null
-var yellowRodButton = null
-var yellowRodLabel = null
-var greenRodCost = "10K"
-var greenRodRoot = null
-var greenRodButton = null
-var greenRodLabel = null
-var blueRodCost = "100K"
-var blueRodRoot = null
-var blueRodButton = null
-var blueRodLabel = null
-var redRodCost = "1M"
-var redRodRoot = null
-var redRodButton = null
-var redRodLabel = null
-var rainbowRodCost = "10M"
-var rainbowRodRoot = null
-var rainbowRodButton = null
-var rainbowRodLabel = null
+var whitePanel = null
+var whiteLabel = null
 
-func Init()
-  ?shopPanelRoot = null
-    shopPanelRoot = ui.AddPanel()
-    shopPanelRoot.visible = true
-    shopPanelRoot.x = 0
-    shopPanelRoot.y = screen.h
-    shopPanelRoot.w = screen.w
-    shopPanelRoot.h = screen.h
+var cyanPanel = null
+var cyanButton = null
+var cyanLabel = null
 
-  ?shopRowPanel0 = null
-    shopRowPanel0 = ui.AddPanel()
-    shopPanelRoot.Add(shopRowPanel0)
-    shopRowPanel0.x = 0
-    shopRowPanel0.y = 0
-    shopRowPanel0.w = 57
-    shopRowPanel0.h = 8
-    shopRowPanel0.dock = top_right
-    shopRowPanel0.anchor = top_right
-    shopRowPanel0.color = #808080
+var yellowPanel = null
+var yellowButton = null
+var yellowLabel = null
 
-    AddRodItem(white)
-    AddRodItem(cyan)
-    AddRodItem(yellow)
-    AddRodItem(green)
-    AddRodItem(blue)
-    AddRodItem(red)
-    AddRodItem(rainbow)
+var greenPanel = null
+var greenButton = null
+var greenLabel = null
+
+var bluePanel = null
+var blueButton = null
+var blueLabel = null
+
+var redPanel = null
+var redButton = null
+var redLabel = null
+
+var rainbowPanel = null
+var rainbowButton = null
+var rainbowLabel = null
+
+var activeRodButton = null
+
+func CreateShop()
+  trace("CreateShop()", null)
+  ?shopRoot = null
+    trace("create shop root", null)
+    shopRoot = ui.AddPanel()
+    shopRoot.visible = true
+    shopRoot.x = 0
+    shopRoot.y = screen.h
+    shopRoot.w = screen.w
+    shopRoot.h = screen.h
+
+  ?shopRowTop = null
+    shopRowTop = CreateShopRow(0, 0, null)
+
+  ?shopRowMid = null
+    shopRowMid = CreateShopRow(0, 7, rowStyle)
+
+  ?shopRowBot = null
+    shopRowBot = CreateShopRow(0, 14, null)
+
+  var components = null
+
+  ?whitePanel = null
+    components = CreateShopRod(0, "white", "owned", null)
+    whitePanel = components[0]
+    whiteLabel = components[1]
+    // white rod doesn't have a button
+
+  ?cyanPanel = null
+    components = CreateShopRod(1, "cyan", cyanCost, topRowCellStyle)
+    cyanPanel = components[0]
+    cyanLabel = components[1]
+    cyanButton = components[2]
   
-  ?shopRowPanel1 = null
-    shopRowPanel1 = ui.AddPanel()
-    shopPanelRoot.Add(shopRowPanel1)
-    shopRowPanel1.x = 0
-    shopRowPanel1.y = 7
-    shopRowPanel1.w = 57
-    shopRowPanel1.h = 8
-    shopRowPanel1.dock = top_right
-    shopRowPanel1.anchor = top_right
-    shopRowPanel1.style = rowStyle
-    shopRowPanel1.color = #808080
+  ?yellowPanel = null
+    components = CreateShopRod(2, "yellow", yellowCost, topRowCellStyle)
+    yellowPanel = components[0]
+    yellowLabel = components[1]
+    yellowButton = components[2]
 
-  ?shopRowPanel2 = null
-    shopRowPanel2 = ui.AddPanel()
-    shopPanelRoot.Add(shopRowPanel2)
-    shopRowPanel2.x = 0
-    shopRowPanel2.y = 14
-    shopRowPanel2.w = 57
-    shopRowPanel2.h = 8
-    shopRowPanel2.dock = top_right
-    shopRowPanel2.anchor = top_right
-    shopRowPanel2.style = rowStyle
-    shopRowPanel2.color = #808080
+  ?greenPanel = null
+    components = CreateShopRod(3, "green", greenCost, topRowCellStyle)
+    greenPanel = components[0]
+    greenLabel = components[1]
+    greenButton = components[2]
 
-//TESTING
-Init()
-Update()
-Show()
-//Hide()
-//scales = 500
+  ?bluePanel = null
+    components = CreateShopRod(4, "blue", blueCost, topRowCellStyle)
+    bluePanel = components[0]
+    blueLabel = components[1]
+    blueButton = components[2]
 
-func Show()
-  shopIsHidden = false
+  ?redPanel = null
+    components = CreateShopRod(5, "red", redCost, topRowCellStyle)
+    redPanel = components[0]
+    redLabel = components[1]
+    redButton = components[2]
 
-func Hide()
-  shopIsHidden = true
-  shopPanelOvershoot = true
+  ?rainbowPanel = null
+    components = CreateShopRod(6, "rainbow", rainbowCost, topRowLastCellStyle)
+    rainbowPanel = components[0]
+    rainbowLabel = components[1]
+    rainbowButton = components[2]
 
-func Update()
+  ?currentRodLevel = 0
+    activeRodButton = cyanButton
+  :?currentRodLevel = 1
+    activeRodButton = yellowButton
+  :?currentRodLevel = 2
+    activeRodButton = greenButton
+  :?currentRodLevel = 3
+    activeRodButton = blueButton
+  :?currentRodLevel = 4
+    activeRodButton = redButton
+  :?currentRodLevel = 5
+    activeRodButton = rainbowButton
+  
+  shopCreated = true
+
+func CreateShopRow(x, y, style)
+  trace("CreateShopRow", [x, y, style])
+  var row = ui.AddPanel()
+  row.x = x
+  row.y = y
+  row.w = 57
+  row.h = 8
+  row.dock = top_right
+  row.anchor = top_right
+  row.color = #808080
+  ?style ! null
+    row.style = style
+  shopRoot.Add(row)
+  return row
+
+func CreateShopRod(rodIdx, rodColor, cost, style)
+  trace("CreateShopRod", [rodIdx, rodColor, cost, style])
+  var panel = ui.AddPanel()
+  panel.ax = left
+  panel.dx = left
+  panel.x = rodIdx * 8
+  panel.y = 0
+  panel.w = 9
+  panel.h = 8
+  panel.color = #808080
+  ?style ! null
+    panel.style = style
+  shopRowTop.Add(panel)
+
+  var button = null
+
+  ?rodIdx > 0
+    button = ui.AddButton()
+    button.w = 9
+    button.h = 8
+    button.text = ""
+    button.SetPressed(HandleRodButton)
+    button.visible = false
+    ?style ! null
+      button.style = style
+    panel.Add(button)
+  
+  var labelColor = null
+  var labelText = null
+
+  ?currentRodLevel = rodIdx - 1
+    labelColor = #white
+    labelText = FormatCost(cost)
+    ?button ! null
+      button.visible = true
+  :
+    labelColor = #808080
+    ?currentRodLevel >= rodIdx
+      labelText = "owned"
+    :
+      labelText = "?"
+
+  var label = ui.AddText(labelText)
+  label.dock = bottom_center
+  label.anchor = bottom_center
+  label.align = center
+  label.color = labelColor
+  label.w = 7
+  label.h = 1
+  label.x = 0
+  label.y = -1
+  panel.Add(label)
+
+  var icon = ui.AddAnim(rodSpriteA)
+  icon.color = "#" + rodColor
+  icon.w = 7
+  icon.h = 8
+  panel.Add(icon)
+
+  return [panel, label, button]
+
+func FormatCost(cost)
+  ?cost = "owned" | cost = "?" | cost < math.Pow(10, 3)
+    return currencyGlyph + cost
+  ?cost < math.Pow(10, 6)
+    return currencyGlyph + (cost / math.Pow(10, 3)) + "K"
+  :?cost < math.Pow(10, 9)
+    return currencyGlyph + (cost / math.Pow(10, 6)) + "M"
+  :?cost < math.Pow(10, 12)
+    return currencyGlyph + (cost / math.Pow(10, 9)) + "B"
+
+func DrawShop()
+  trace("DrawShop()", null)
   >@currencyGlyph+scales@ 
   ?shopIsHidden
-    ?shopPanelRoot.y < screen.h
-      shopPanelRoot.y = shopPanelRoot.y + shopPanelSpeed
+    ?shopRoot.y < screen.h
+      shopRoot.y = shopRoot.y + shopPanelSpeed
     :
-      shopPanelRoot.y = screen.h
-      shopPanelRoot.visible = false
-      ?currPurchaseButton ! null
-        currPurchaseButton.visible = false
+      shopRoot.y = screen.h
+      shopRoot.visible = false
+      ?activeRodButton ! null
+        activeRodButton.visible = false
   :
-    ?shopPanelRoot.y > -3 & shopPanelOvershoot
-      shopPanelRoot.y = shopPanelRoot.y - shopPanelSpeed
-      shopPanelRoot.visible = true
-      ?currPurchaseButton ! null
-        currPurchaseButton.visible = true
-    :?shopPanelRoot.y <= -3 & shopPanelOvershoot
+    ?shopRoot.y > -3 & shopPanelOvershoot
+      shopRoot.y = shopRoot.y - shopPanelSpeed
+      shopRoot.visible = true
+      ?activeRodButton ! null
+        activeRodButton.visible = true
+    :?shopRoot.y <= -3 & shopPanelOvershoot
       shopPanelOvershoot = false
-    :?shopPanelRoot.y < 0
-      shopPanelRoot.y = shopPanelRoot.y + 1
+    :?shopRoot.y < 0
+      shopRoot.y = shopRoot.y + 1
     :
-      shopPanelRoot.y = 0
+      shopRoot.y = 0
 
-  ?purchaseFailed
+  ?purchaseFailedTimer ! null
     ?time >= purchaseFailedTimer
       purchaseFailedLabel.color = #white
-      purchaseFailed = false
+      purchaseFailedTimer = null
 
-func purchaseRod()
-  ?currRodLevel = 0
-    ?scales >= cyanPrice
-      play buy
-      scales = scales - cyanPrice
-      currRodLevel++
-      currPurchaseButton = yellowRodButton
-      cyanRodButton.visible = false
-      cyanRodLabel.text = "owned"
-      cyanRodLabel.color = #808080
-      yellowRodButton.visible = true
-      yellowRodLabel.text = currencyGlyph+yellowRodCost
-      yellowRodLabel.color = #white
-    :
-      play error
-      cyanRodLabel.color = #red
-      purchaseFailed = true
-      purchaseFailedTimer = time+30
-      purchaseFailedLabel = cyanRodLabel
-  :?currRodLevel = 1
-    ?scales >= yellowPrice
-      play buy
-      scales = scales - yellowPrice
-      currRodLevel++
-      currPurchaseButton = greenRodButton
-      yellowRodButton.visible = false
-      yellowRodLabel.text = "owned"
-      yellowRodLabel.color = #808080
-      greenRodButton.visible = true
-      greenRodLabel.text = currencyGlyph+greenRodCost
-      greenRodLabel.color = #white
-    :
-      play error
-      yellowRodLabel.color = #red
-      purchaseFailed = true
-      purchaseFailedTimer = time+30
-      purchaseFailedLabel = yellowRodLabel
-  :?currRodLevel = 2
-    ?scales >= greenPrice
-      play buy
-      scales = scales - greenPrice
-      currRodLevel++
-      currPurchaseButton = blueRodButton
-      greenRodButton.visible = false
-      greenRodLabel.text = "owned"
-      greenRodLabel.color = #808080
-      blueRodButton.visible = true
-      blueRodLabel.text = currencyGlyph+blueRodCost
-      blueRodLabel.color = #white
-    :
-      play error
-      greenRodLabel.color = #red
-      purchaseFailed = true
-      purchaseFailedTimer = time+30
-      purchaseFailedLabel = greenRodLabel
-  :?currRodLevel = 3
-    ?scales >= bluePrice
-      play buy
-      scales = scales - bluePrice
-      currRodLevel++
-      currPurchaseButton = redRodButton
-      blueRodButton.visible = false
-      blueRodLabel.text = "owned"
-      blueRodLabel.color = #808080
-      redRodButton.visible = true
-      redRodLabel.text = currencyGlyph+redRodCost
-      redRodLabel.color = #white
-    :
-      play error
-      blueRodLabel.color = #red
-      purchaseFailed = true
-      purchaseFailedTimer = time+30
-      purchaseFailedLabel = blueRodLabel
-  :?currRodLevel = 4
-    ?scales >= redPrice
-      play buy
-      scales = scales - redPrice
-      currRodLevel++
-      currPurchaseButton = rainbowRodButton
-      redRodButton.visible = false
-      redRodLabel.text = "owned"
-      redRodLabel.color = #808080
-      rainbowRodButton.visible = true
-      rainbowRodLabel.text = currencyGlyph+rainbowRodCost
-      rainbowRodLabel.color = #white
-    :
-      play error
-      redRodLabel.color = #red
-      purchaseFailed = true
-      purchaseFailedTimer = time+30
-      purchaseFailedLabel = redRodLabel
-  :?currRodLevel = 5
-    ?scales >= rainbowPrice
-      play buy
-      scales = scales - rainbowPrice
-      currRodLevel++
-      currPurchaseButton = null
-      rainbowRodButton.visible = false
-      rainbowRodLabel.text = "owned"
-      rainbowRodLabel.color = #808080
-    :
-      play error
-      rainbowRodLabel.color = #red
-      purchaseFailed = true
-      purchaseFailedTimer = time+30
-      purchaseFailedLabel = rainbowRodLabel
+func BuyRod(cost, label, button, nextCost, nextLabel, nextButton)
+  trace("BuyRod", [cost, label, button, nextCost, nextLabel, nextButton])
+  ?scales >= cost
+    play buy
+    scales = scales - cost
+    currentRodLevel++
+    button.visible = false
+    label.text = "owned"
+    label.color = #808080
+    activeRodButton = nextButton
+    ?nextButton ! null
+      nextButton.visible = true
+    ?nextCost ! null & nextLabel ! null
+      nextLabel.text = FormatCost(nextCost)
+      nextLabel.color = #white
+  :
+    play error
+    label.color = #red
+    purchaseFailedTimer = time + 30
+    purchaseFailedLabel = label
 
-func AddRodItem(rodColor)
-  ?rodColor = white
-    ?whiteRodRoot = null
-      whiteRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(whiteRodRoot)
-      whiteRodRoot.ax = left
-      whiteRodRoot.dx = left
-      whiteRodRoot.x = 0
-      whiteRodRoot.y = 0
-      whiteRodRoot.w = 9
-      whiteRodRoot.h = 8
-      whiteRodRoot.color = #808080
+func HandleRodButton()
+  trace("HandleRodButton()", null)
+  ?currentRodLevel = 0
+    BuyRod(cyanCost, cyanLabel, cyanButton,
+    ^yellowCost, yellowLabel, yellowButton)
 
-      var whiteRodIcon = ui.AddAnim(rodSpriteA)
-      whiteRodRoot.Add(whiteRodIcon)
-      whiteRodIcon.color = #white
-      whiteRodIcon.w = 7
-      whiteRodIcon.h = 8
+  :?currentRodLevel = 1
+    BuyRod(yellowCost, yellowLabel, yellowButton,
+    ^greenCost, greenLabel, greenButton)
 
-      whiteRodLabel = ui.AddText("owned")
-      whiteRodRoot.Add(whiteRodLabel)
-      whiteRodLabel.dock = bottom_center
-      whiteRodLabel.anchor = bottom_center
-      whiteRodLabel.align = center
-      whiteRodLabel.color = #808080
-      whiteRodLabel.w = 7
-      whiteRodLabel.h = 1
-      whiteRodLabel.x = 0
-      whiteRodLabel.y = -1
-  :?rodColor = cyan
-    ?cyanRodRoot = null
-      cyanRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(cyanRodRoot)
-      cyanRodRoot.ax = left
-      cyanRodRoot.dx = left
-      cyanRodRoot.x = 8
-      cyanRodRoot.y = 0
-      cyanRodRoot.w = 9
-      cyanRodRoot.h = 8
-      cyanRodRoot.style = topRowInsideBtnStyle
-      cyanRodRoot.color = #808080
+  :?currentRodLevel = 2
+    BuyRod(greenCost, greenLabel, greenButton,
+    ^blueCost, blueLabel, blueButton)
 
-      cyanRodButton = ui.AddButton()
-      cyanRodRoot.Add(cyanRodButton)
-      cyanRodButton.w = 9
-      cyanRodButton.h = 8
-      cyanRodButton.text = ""
-      cyanRodButton.style = topRowInsideBtnStyle
-      cyanRodButton.SetPressed(purchaseRod)
-      cyanRodButton.visible = false
+  :?currentRodLevel = 3
+    BuyRod(blueCost, blueLabel, blueButton,
+    ^redCost, redLabel, redButton)
 
-      var cyanRodIcon = ui.AddAnim(rodSpriteA)
-      cyanRodRoot.Add(cyanRodIcon)
-      cyanRodIcon.color = #cyan
-      cyanRodIcon.w = 7
-      cyanRodIcon.h = 8
+  :?currentRodLevel = 4
+    BuyRod(redCost, redLabel, redButton,
+    ^rainbowCost, rainbowLabel, rainbowButton)
 
-      cyanRodLabel = ui.AddText("?")
-      cyanRodRoot.Add(cyanRodLabel)
-      cyanRodLabel.dock = bottom_center
-      cyanRodLabel.anchor = bottom_center
-      cyanRodLabel.align = center
-      cyanRodLabel.color = #808080
-      cyanRodLabel.w = 7
-      cyanRodLabel.h = 1
-      cyanRodLabel.x = 0
-      cyanRodLabel.y = -1
-      ?currRodLevel = 0
-        cyanRodLabel.color = #white
-        cyanRodLabel.text = currencyGlyph+cyanRodCost
-        cyanRodButton.visible = true
-        currPurchaseButton = cyanRodButton
-      :?currRodLevel >= 1
-        cyanRodLabel.text = "owned"
-  :?rodColor = yellow
-    ?yellowRodRoot = null
-      yellowRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(yellowRodRoot)
-      yellowRodRoot.ax = left
-      yellowRodRoot.dx = left
-      yellowRodRoot.x = 16
-      yellowRodRoot.y = 0
-      yellowRodRoot.w = 9
-      yellowRodRoot.h = 8
-      yellowRodRoot.style = topRowInsideBtnStyle
-      yellowRodRoot.color = #808080
+  :?currentRodLevel = 5
+    BuyRod(rainbowCost, rainbowLabel, rainbowButton,
+    ^null, null, null)
 
-      yellowRodButton = ui.AddButton()
-      yellowRodRoot.Add(yellowRodButton)
-      yellowRodButton.w = 9
-      yellowRodButton.h = 8
-      yellowRodButton.text = ""
-      yellowRodButton.style = topRowInsideBtnStyle
-      yellowRodButton.SetPressed(purchaseRod)
-      yellowRodButton.visible = false
+// TESTING
 
-      var yellowRodIcon = ui.AddAnim(rodSpriteA)
-      yellowRodRoot.Add(yellowRodIcon)
-      yellowRodIcon.color = #yellow
-      yellowRodIcon.w = 7
-      yellowRodIcon.h = 8
+disable banner
 
-      yellowRodLabel = ui.AddText("?")
-      yellowRodRoot.Add(yellowRodLabel)
-      yellowRodLabel.dock = bottom_center
-      yellowRodLabel.anchor = bottom_center
-      yellowRodLabel.align = center
-      yellowRodLabel.color = #808080
-      yellowRodLabel.w = 7
-      yellowRodLabel.h = 1
-      yellowRodLabel.x = 0
-      yellowRodLabel.y = -1
-      ?currRodLevel = 1
-        yellowRodLabel.color = #white
-        yellowRodLabel.text = currencyGlyph+yellowRodCost
-        yellowRodButton.visible = true
-        currPurchaseButton = yellowRodButton
-      :?currRodLevel >= 2
-        yellowRodLabel.text = "owned"
-  :?rodColor = green
-    ?greenRodRoot = null
-      greenRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(greenRodRoot)
-      greenRodRoot.ax = left
-      greenRodRoot.dx = left
-      greenRodRoot.x = 24
-      greenRodRoot.y = 0
-      greenRodRoot.w = 9
-      greenRodRoot.h = 8
-      greenRodRoot.style = topRowInsideBtnStyle
-      greenRodRoot.color = #808080
+var traces = []
 
-      greenRodButton = ui.AddButton()
-      greenRodRoot.Add(greenRodButton)
-      greenRodButton.w = 9
-      greenRodButton.h = 8
-      greenRodButton.text = ""
-      greenRodButton.style = topRowInsideBtnStyle
-      greenRodButton.SetPressed(purchaseRod)
-      greenRodButton.visible = false
+var template = "{0}({1})"
+func trace(msg, arr)
+  ?arr ! null
+    var args = ""
+    for i=0 .. arr.Count() - 1
+      var s = arr[i]
+      ?s = null
+        s = "null"
+      args = args + s + ","
+    // ?args.Size() > 2
+    //   args = string.Sub(args, 0, args.Size()-2)
+    msg = string.Format(template, msg, args)
+  traces.Add(msg)
 
-      var greenRodIcon = ui.AddAnim(rodSpriteA)
-      greenRodRoot.Add(greenRodIcon)
-      greenRodIcon.color = #green
-      greenRodIcon.w = 7
-      greenRodIcon.h = 8
+func DebugShow()
+  shopIsHidden = false
 
-      greenRodLabel = ui.AddText("?")
-      greenRodRoot.Add(greenRodLabel)
-      greenRodLabel.dock = bottom_center
-      greenRodLabel.anchor = bottom_center
-      greenRodLabel.align = center
-      greenRodLabel.color = #808080
-      greenRodLabel.w = 7
-      greenRodLabel.h = 1
-      greenRodLabel.x = 0
-      greenRodLabel.y = -1
-      ?currRodLevel = 2
-        greenRodLabel.color = #white
-        greenRodLabel.text = currencyGlyph+greenRodCost
-        greenRodButton.visible = true
-        currPurchaseButton = greenRodButton
-      :?currRodLevel >= 3
-        greenRodLabel.text = "owned"
-  :?rodColor = blue
-    ?blueRodRoot = null
-      blueRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(blueRodRoot)
-      blueRodRoot.ax = left
-      blueRodRoot.dx = left
-      blueRodRoot.x = 32
-      blueRodRoot.y = 0
-      blueRodRoot.w = 9
-      blueRodRoot.h = 8
-      blueRodRoot.style = topRowInsideBtnStyle
-      blueRodRoot.color = #808080
+  var tr = string.Break(string.Join(
+  ^"->", traces), 40)
+  var y = 2
+  for t : tr
+    >`2,@y@,#blue,@t@
+    y++
+  >`5,@y@,#blue,activeRodButton=@activeRodButton@
+  traces.Clear()
 
-      blueRodButton = ui.AddButton()
-      blueRodRoot.Add(blueRodButton)
-      blueRodButton.w = 9
-      blueRodButton.h = 8
-      blueRodButton.text = ""
-      blueRodButton.style = topRowInsideBtnStyle
-      blueRodButton.SetPressed(purchaseRod)
-      blueRodButton.visible = false
+func DebugHide()
+  shopIsHidden = true
+  shopPanelOvershoot = true
+// TESTING END
 
-      var blueRodIcon = ui.AddAnim(rodSpriteA)
-      blueRodRoot.Add(blueRodIcon)
-      blueRodIcon.color = #blue
-      blueRodIcon.w = 7
-      blueRodIcon.h = 8
-
-      blueRodLabel = ui.AddText("?")
-      blueRodRoot.Add(blueRodLabel)
-      blueRodLabel.dock = bottom_center
-      blueRodLabel.anchor = bottom_center
-      blueRodLabel.align = center
-      blueRodLabel.color = #808080
-      blueRodLabel.w = 7
-      blueRodLabel.h = 1
-      blueRodLabel.x = 0
-      blueRodLabel.y = -1
-      ?currRodLevel = 3
-        blueRodLabel.color = #white
-        blueRodLabel.text = currencyGlyph+blueRodCost
-        blueRodButton.visible = true
-        currPurchaseButton = blueRodButton
-      :?currRodLevel >= 4
-        blueRodLabel.text = "owned"
-  :?rodColor = red
-    ?redRodRoot = null
-      redRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(redRodRoot)
-      redRodRoot.ax = left
-      redRodRoot.dx = left
-      redRodRoot.x = 40
-      redRodRoot.y = 0
-      redRodRoot.w = 9
-      redRodRoot.h = 8
-      redRodRoot.style = topRowInsideBtnStyle
-      redRodRoot.color = #808080
-
-      redRodButton = ui.AddButton()
-      redRodRoot.Add(redRodButton)
-      redRodButton.w = 9
-      redRodButton.h = 8
-      redRodButton.text = ""
-      redRodButton.style = topRowInsideBtnStyle
-      redRodButton.SetPressed(purchaseRod)
-      redRodButton.visible = false
-
-      var redRodIcon = ui.AddAnim(rodSpriteA)
-      redRodRoot.Add(redRodIcon)
-      redRodIcon.color = #red
-      redRodIcon.w = 7
-      redRodIcon.h = 8
-
-      redRodLabel = ui.AddText("?")
-      redRodRoot.Add(redRodLabel)
-      redRodLabel.dock = bottom_center
-      redRodLabel.anchor = bottom_center
-      redRodLabel.align = center
-      redRodLabel.color = #808080
-      redRodLabel.w = 7
-      redRodLabel.h = 1
-      redRodLabel.x = 0
-      redRodLabel.y = -1
-      ?currRodLevel = 4
-        redRodLabel.color = #white
-        redRodLabel.text = currencyGlyph+redRodCost
-        redRodButton.visible = true
-        currPurchaseButton = redRodButton
-      :?currRodLevel >= 5
-        redRodLabel.text = "owned"
-  :?rodColor = rainbow
-    ?rainbowRodRoot = null
-      rainbowRodRoot = ui.AddPanel()
-      shopRowPanel0.Add(rainbowRodRoot)
-      rainbowRodRoot.ax = left
-      rainbowRodRoot.dx = left
-      rainbowRodRoot.x = 48
-      rainbowRodRoot.y = 0
-      rainbowRodRoot.w = 9
-      rainbowRodRoot.h = 8
-      rainbowRodRoot.style = topRowLastBtnStyle
-      rainbowRodRoot.color = #808080
-
-      rainbowRodButton = ui.AddButton()
-      rainbowRodRoot.Add(rainbowRodButton)
-      rainbowRodButton.w = 9
-      rainbowRodButton.h = 8
-      rainbowRodButton.text = ""
-      rainbowRodButton.style = topRowLastBtnStyle
-      rainbowRodButton.SetPressed(purchaseRod)
-      rainbowRodButton.visible = false
-
-      var rainbowRodIcon = ui.AddAnim(rodSpriteA)
-      rainbowRodRoot.Add(rainbowRodIcon)
-      rainbowRodIcon.color = #rainbow
-      rainbowRodIcon.w = 7
-      rainbowRodIcon.h = 8
-
-      rainbowRodLabel = ui.AddText("?")
-      rainbowRodRoot.Add(rainbowRodLabel)
-      rainbowRodLabel.dock = bottom_center
-      rainbowRodLabel.anchor = bottom_center
-      rainbowRodLabel.align = center
-      rainbowRodLabel.color = #808080
-      rainbowRodLabel.w = 7
-      rainbowRodLabel.h = 1
-      rainbowRodLabel.x = 0
-      rainbowRodLabel.y = -1
-      ?currRodLevel = 5
-        rainbowRodLabel.color = #white
-        rainbowRodLabel.text = currencyGlyph+rainbowRodCost
-        rainbowRodButton.visible = true
-        currPurchaseButton = rainbowRodButton
-      :?currRodLevel >= 6
-        rainbowRodLabel.text = "owned"
+?!shopCreated
+  CreateShop()
+DrawShop()
+DebugShow()
+// DebugHide()
+// scales = 500
