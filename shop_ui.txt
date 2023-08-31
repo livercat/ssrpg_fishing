@@ -391,7 +391,7 @@ func InitBackButton()
   button.dock = top_left
   button.x = 1
   button.y = 1
-  button.text = te.xt("< Back")
+  button.text = te.xt("◀ Back")
   button.style = buttonStyle
   button.SetPressed(CloseShop)
   button.visible = false
