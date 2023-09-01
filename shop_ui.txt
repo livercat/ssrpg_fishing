@@ -1,21 +1,76 @@
-var currencyGlyph = "♠"
-var currentRodLevel = 0 //FIXME: progress.txt
-var scales = 1000000000 // FIXME
+//FIXME: progress.txt
+var scales = 1000000000
 var debug = false
+var currentRodLevel = 0
+// hirelings of all colors
+var currentHirelings = [0, 0, 0, 0, 0, 0, 0]
+// end of FIXME
 
-var cyanCost = 100
-var yellowCost = 1000
-var greenCost = 10000
-var blueCost = 100000
-var redCost = 1000000
-var rainbowCost = 10000000
+// config
 
-var rodSpriteA = ascii
+var currencyGlyph = "♠"
+var shopPanelSpeed = 2
+
+// arrays will be replaced with `new` components
+
+var levelColors = [
+  "white",
+  "cyan",
+  "yellow",
+  "green",
+  "blue",
+  "red",
+  "rainbow",
+]
+
+var rodCosts = [
+  0,        // white rod cost 
+  100,      // cyan rod cost 
+  1000,     // yellow rod cost 
+  10000,    // green rod cost 
+  100000,   // blue rod cost 
+  1000000,  // red rod cost 
+  10000000, // rainbow rod cost 
+]
+
+
+var hirelingCosts = [
+  80,   // white hireling cost
+  160,  // cyan hireling cost 
+  320,  // yellow hireling cost 
+  640,  // green hireling cost 
+  1280, // blue hireling cost 
+  2560, // red hireling cost 
+  5120, // rainbow hireling cost 
+]
+
+var hirelingLimits = [
+  5, // white hireling limit
+  5, // cyan hireling limit 
+  5, // yellow hireling limit 
+  5, // green hireling limit 
+  5, // blue hireling limit 
+  5, // red hireling limit 
+  5, // rainbow hireling limit 
+]
+
+var hireCostFactor = 0.05 // 5%
+
+// end of config
+
+var rodSprite = ascii
 #
 #####,
 ####/;
 ###/´
 ##/!
+asciiend
+
+var hireSprite = ascii
+##
+###_{)
+##''¯)
+####/(
 asciiend
 
 var invisStyle = ui.AddStyle("
@@ -43,9 +98,7 @@ var topRowLastCellStyle = ui.AddStyle("
 ^│#│
 ^┴─┘")
 
-var shopPanelSpeed = 2
 var shopPanelOvershoot = true
-
 var shopIsHidden = true
 
 var purchaseFailedTimer = null
@@ -57,34 +110,48 @@ var rodsRow = null
 var hirelingsRow = null
 var placeholderRow = null
 
-var whitePanel = null
-var whiteLabel = null
+var whiteRodLabel = null
+var cyanRodButton = null
+var cyanRodLabel = null
+var yellowRodButton = null
+var yellowRodLabel = null
+var greenRodButton = null
+var greenRodLabel = null
+var blueRodButton = null
+var blueRodLabel = null
+var redRodButton = null
+var redRodLabel = null
+var rainbowRodButton = null
+var rainbowRodLabel = null
 
-var cyanPanel = null
-var cyanButton = null
-var cyanLabel = null
-
-var yellowPanel = null
-var yellowButton = null
-var yellowLabel = null
-
-var greenPanel = null
-var greenButton = null
-var greenLabel = null
-
-var bluePanel = null
-var blueButton = null
-var blueLabel = null
-
-var redPanel = null
-var redButton = null
-var redLabel = null
-
-var rainbowPanel = null
-var rainbowButton = null
-var rainbowLabel = null
-
-var activeRodButton = null
+var whiteHireButton = null
+var whiteHireCostLabel = null
+var whiteHireCountLabel = null
+var whiteHireIcon = null
+var cyanHireButton = null
+var cyanHireCostLabel = null
+var cyanHireCountLabel = null
+var cyanHireIcon = null
+var yellowHireButton = null
+var yellowHireCostLabel = null
+var yellowHireCountLabel = null
+var yellowHireIcon = null
+var greenHireButton = null
+var greenHireCostLabel = null
+var greenHireCountLabel = null
+var greenHireIcon = null
+var blueHireButton = null
+var blueHireCostLabel = null
+var blueHireCountLabel = null
+var blueHireIcon = null
+var redHireButton = null
+var redHireCostLabel = null
+var redHireCountLabel = null
+var redHireIcon = null
+var rainbowHireButton = null
+var rainbowHireCostLabel = null
+var rainbowHireCountLabel = null
+var rainbowHireIcon = null
 
 var shopButton = null
 var backButton = null
@@ -118,57 +185,79 @@ func InitShop()
   
   backButton = InitBackButton()
 
-  // these will be in a separate module
+  // these will be in a separate module instead of arrays
 
   var components = null
 
-  components = InitRodCell(0, "white", "owned", null)
-  whitePanel = components[0]
-  whiteLabel = components[1]
-  // white rod doesn't have a button
+  components = InitRodCell(0, null)
+  whiteRodLabel = components[0]
+  // // white rod doesn't have a button
 
-  components = InitRodCell(1, "cyan", cyanCost, topRowCellStyle)
-  cyanPanel = components[0]
-  cyanLabel = components[1]
-  cyanButton = components[2]
+  components = InitRodCell(1, topRowCellStyle)
+  cyanRodLabel = components[0]
+  cyanRodButton = components[1]
   
-  components = InitRodCell(2, "yellow", yellowCost, topRowCellStyle)
-  yellowPanel = components[0]
-  yellowLabel = components[1]
-  yellowButton = components[2]
+  components = InitRodCell(2, topRowCellStyle)
+  yellowRodLabel = components[0]
+  yellowRodButton = components[1]
 
-  components = InitRodCell(3, "green", greenCost, topRowCellStyle)
-  greenPanel = components[0]
-  greenLabel = components[1]
-  greenButton = components[2]
+  components = InitRodCell(3, topRowCellStyle)
+  greenRodLabel = components[0]
+  greenRodButton = components[1]
 
-  components = InitRodCell(4, "blue", blueCost, topRowCellStyle)
-  bluePanel = components[0]
-  blueLabel = components[1]
-  blueButton = components[2]
+  components = InitRodCell(4, topRowCellStyle)
+  blueRodLabel = components[0]
+  blueRodButton = components[1]
 
-  components = InitRodCell(5, "red", redCost, topRowCellStyle)
-  redPanel = components[0]
-  redLabel = components[1]
-  redButton = components[2]
+  components = InitRodCell(5, topRowCellStyle)
+  redRodLabel = components[0]
+  redRodButton = components[1]
 
-  components = InitRodCell(6, "rainbow", rainbowCost, topRowLastCellStyle)
-  rainbowPanel = components[0]
-  rainbowLabel = components[1]
-  rainbowButton = components[2]
+  components = InitRodCell(6, topRowLastCellStyle)
+  rainbowRodLabel = components[0]
+  rainbowRodButton = components[1]
 
-  ?currentRodLevel = 0
-    activeRodButton = cyanButton
-  :?currentRodLevel = 1
-    activeRodButton = yellowButton
-  :?currentRodLevel = 2
-    activeRodButton = greenButton
-  :?currentRodLevel = 3
-    activeRodButton = blueButton
-  :?currentRodLevel = 4
-    activeRodButton = redButton
-  :?currentRodLevel = 5
-    activeRodButton = rainbowButton
+  components = InitHirelingCell(0, BuyWhiteHireling, null)
+  whiteHireCostLabel = components[0]
+  whiteHireCountLabel = components[1]
+  whiteHireButton = components[2]
+  whiteHireIcon = components[3]
+
+  components = InitHirelingCell(1, BuyCyanHireling, topRowCellStyle)
+  cyanHireCostLabel = components[0]
+  cyanHireCountLabel = components[1]
+  cyanHireButton = components[2]
+  cyanHireIcon = components[3]
+  
+  components = InitHirelingCell(2, BuyYellowHireling, topRowCellStyle)
+  yellowHireCostLabel = components[0]
+  yellowHireCountLabel = components[1]
+  yellowHireButton = components[2]
+  yellowHireIcon = components[3]
+
+  components = InitHirelingCell(3, BuyGreenHireling, topRowCellStyle)
+  greenHireCostLabel = components[0]
+  greenHireCountLabel = components[1]
+  greenHireButton = components[2]
+  greenHireIcon = components[3]
+
+  components = InitHirelingCell(4, BuyBlueHireling, topRowCellStyle)
+  blueHireCostLabel = components[0]
+  blueHireCountLabel = components[1]
+  blueHireButton = components[2]
+  blueHireIcon = components[3]
+
+  components = InitHirelingCell(5, BuyRedHireling, topRowCellStyle)
+  redHireCostLabel = components[0]
+  redHireCountLabel = components[1]
+  redHireButton = components[2]
+  redHireIcon = components[3]
+
+  components = InitHirelingCell(6, BuyRainbowHireling, topRowLastCellStyle)  
+  rainbowHireCostLabel = components[0]
+  rainbowHireCountLabel = components[1]
+  rainbowHireButton = components[2]
+  rainbowHireIcon = components[3]
 
 func InitShopRow(x, y, style)
   trace("InitShopRow", [x, y, style])
@@ -186,49 +275,112 @@ func InitShopRow(x, y, style)
   rowsPanel.Add(row)
   return row
 
-func InitRodCell(rodIdx, rodColor, cost, style)
-  trace("InitRodCell", [rodIdx, rodColor, cost, style])
+func InitRodCell(rodIdx, style)
+  trace("InitRodCell", [rodIdx, style])
 
-  var panel = ui.AddPanel()
-  panel.ax = left
-  panel.dx = left
-  panel.x = rodIdx * 8
-  panel.y = 0
-  panel.w = 9
-  panel.h = 8
-  panel.color = #808080
-  ?style ! null
-    panel.style = style
+  var panel = MakeItemPanel(rodIdx * 8, style)
   rodsRow.Add(panel)
 
   var button = null
-
   ?rodIdx > 0
-    button = ui.AddButton()
-    button.w = 9
-    button.h = 8
-    button.text = ""
-    button.SetPressed(HandleRodPurchase)
-    button.visible = false
-    ?style ! null
-      button.style = style
+    button = MakeItemButton(HandleRodPurchase, style)
     panel.Add(button)
   
   var labelColor = null
   var labelText = null
 
-  ?currentRodLevel = rodIdx - 1
+  ?rodIdx = currentRodLevel
+    labelColor = #808080
+    labelText = "current"
+  :?rodIdx = currentRodLevel + 1
     labelColor = #white
-    labelText = FormatCost(cost)
+    labelText = FormatCost(rodCosts[rodIdx])
     ?button ! null
       button.visible = true
   :
     labelColor = #808080
-    ?currentRodLevel >= rodIdx
+    ?rodIdx < currentRodLevel
       labelText = "owned"
     :
       labelText = "?"
 
+  var label = MakeItemLabel(-1, labelText, labelColor)
+  panel.Add(label)
+  
+  var icon = MakeItemIcon(rodSprite, levelColors[rodIdx])
+  panel.Add(icon)
+
+  return [label, button]
+
+func InitHirelingCell(hireIdx, handler, style)
+  trace("InitHirelingCell", [hireIdx, style])
+
+  var panel = MakeItemPanel(hireIdx * 8, style)
+  hirelingsRow.Add(panel)
+  var button = MakeItemButton(handler, style)
+  panel.Add(button)
+  
+  var labelColor = null
+  var costText = null
+  var countText = null
+
+  var currentAmount = currentHirelings[hireIdx]
+  var maxAmount = hirelingLimits[hireIdx]
+  var baseCost = hirelingCosts[hireIdx]
+  var realCost = baseCost + baseCost * hireCostFactor * currentAmount
+
+  ?currentAmount < maxAmount
+    labelColor = #white
+    costText = FormatCost(realCost)
+    countText = currentAmount + "/" + maxAmount
+  :
+    labelColor = #808080
+    costText = ""
+    countText = "-MAX-"
+
+  var costLabel = MakeItemLabel(-1, costText, labelColor)
+  panel.Add(costLabel)
+  var countLabel = MakeItemLabel(-2, countText, labelColor)
+  panel.Add(countLabel)
+  
+  var icon = MakeItemIcon(hireSprite, levelColors[hireIdx])
+  panel.Add(icon)
+
+  ?hireIdx > currentRodLevel
+    costLabel.visible = false
+    countLabel.visible = false
+    icon.visible = false
+  :?hireIdx = currentRodLevel
+    button.visible = true
+  
+  ?currentAmount >= maxAmount
+    costLabel.visible = false
+  return [costLabel, countLabel, button, icon]
+
+func MakeItemPanel(x, style)
+  var panel = ui.AddPanel()
+  panel.ax = left
+  panel.dx = left
+  panel.x = x
+  panel.w = 9
+  panel.h = 8
+  panel.color = #808080
+  ?style ! null
+    panel.style = style
+  return panel
+
+func MakeItemButton(handler, style)
+  var button = ui.AddButton()
+  button.w = 9
+  button.h = 8
+  button.text = ""
+  button.SetPressed(handler)
+  button.visible = false
+  ?style ! null
+    button.style = style
+  return button
+
+func MakeItemLabel(y, labelText, labelColor)
   var label = ui.AddText(labelText)
   label.dock = bottom_center
   label.anchor = bottom_center
@@ -236,17 +388,15 @@ func InitRodCell(rodIdx, rodColor, cost, style)
   label.color = labelColor
   label.w = 7
   label.h = 1
-  label.x = 0
-  label.y = -1
-  panel.Add(label)
+  label.y = y
+  return label
 
-  var icon = ui.AddAnim(rodSpriteA)
-  icon.color = "#" + rodColor
+func MakeItemIcon(sprite, itemColor)
+  var icon = ui.AddAnim(sprite)
+  icon.color = "#" + itemColor
   icon.w = 7
   icon.h = 8
-  panel.Add(icon)
-
-  return [panel, label, button]
+  return icon
 
 func FormatCost(cost)
   ?cost = "owned" | cost = "?"
@@ -260,8 +410,34 @@ func FormatCost(cost)
   :?cost < math.Pow(10, 12)
     return currencyGlyph + (cost / math.Pow(10, 9)) + "B"
 
-func BuyRod(cost, label, button, nextCost, nextLabel, nextButton)
-  trace("BuyRod", [cost, label, button, nextCost, nextLabel, nextButton])
+func HandleRodPurchase()
+  trace("HandleRodPurchase()", null)
+
+  ?currentRodLevel = 0
+    ?BuyRod(cyanRodLabel, cyanRodButton, yellowRodLabel, yellowRodButton)
+      UnlockHireling(cyanHireCostLabel, cyanHireCountLabel, cyanHireButton, cyanHireIcon)
+  :?currentRodLevel = 1
+    ?BuyRod(yellowRodLabel, yellowRodButton, greenRodLabel, greenRodButton)
+      UnlockHireling(yellowHireCostLabel, yellowHireCountLabel, yellowHireButton, yellowHireIcon)
+  :?currentRodLevel = 2
+    ?BuyRod(greenRodLabel, greenRodButton, blueRodLabel, blueRodButton)
+      UnlockHireling(greenHireCostLabel, greenHireCountLabel, greenHireButton, greenHireIcon)
+  :?currentRodLevel = 3
+    ?BuyRod(blueRodLabel, blueRodButton, redRodLabel, redRodButton)
+      UnlockHireling(blueHireCostLabel, blueHireCountLabel, blueHireButton, blueHireIcon)
+  :?currentRodLevel = 4
+    ?BuyRod(redRodLabel, redRodButton, rainbowRodLabel, rainbowRodButton)
+      UnlockHireling(redHireCostLabel, redHireCountLabel, redHireButton, redHireIcon)
+  :?currentRodLevel = 5
+    ?BuyRod(rainbowRodLabel, rainbowRodButton, null, null)
+      UnlockHireling(rainbowHireCostLabel, rainbowHireCountLabel, rainbowHireButton, rainbowHireIcon)
+
+func BuyRod(label, button, nextLabel, nextButton)
+  trace("BuyRod", [label, button, nextLabel, nextButton])
+
+  var cost = 0
+  ?currentRodLevel < rodCosts.Count() - 2
+    cost = rodCosts[currentRodLevel + 1]
 
   ?scales >= cost
     play buy
@@ -270,44 +446,76 @@ func BuyRod(cost, label, button, nextCost, nextLabel, nextButton)
     button.visible = false
     label.text = "owned"
     label.color = #808080
-    activeRodButton = nextButton
     ?nextButton ! null
       nextButton.visible = true
     ?nextCost ! null & nextLabel ! null
-      nextLabel.text = FormatCost(nextCost)
+      nextLabel.text = FormatCost(rodCosts[currentRodLevel + 1])
       nextLabel.color = #white
+    return true
   :
     play error
     label.color = #red
     purchaseFailedTimer = time + 30
     purchaseFailedLabel = label
+    return false
 
-func HandleRodPurchase()
-  trace("HandleRodPurchase()", null)
+func UnlockHireling(costLabel, countLabel, button, icon)
+  trace("UnlockHireling", null)
+  costLabel.visible = true
+  countLabel.visible = true
+  button.visible = true
+  icon.visible = true
 
-  ?currentRodLevel = 0
-    BuyRod(cyanCost, cyanLabel, cyanButton,
-    ^yellowCost, yellowLabel, yellowButton)
+func BuyWhiteHireling()
+  return BuyHireling(0, whiteHireCostLabel, whiteHireCountLabel, whiteHireButton, whiteHireIcon)
 
-  :?currentRodLevel = 1
-    BuyRod(yellowCost, yellowLabel, yellowButton,
-    ^greenCost, greenLabel, greenButton)
+func BuyCyanHireling()
+  return BuyHireling(1, cyanHireCostLabel, cyanHireCountLabel, cyanHireButton, cyanHireIcon)
 
-  :?currentRodLevel = 2
-    BuyRod(greenCost, greenLabel, greenButton,
-    ^blueCost, blueLabel, blueButton)
+func BuyYellowHireling()
+  return BuyHireling(2, yellowHireCostLabel, yellowHireCountLabel, yellowHireButton, yellowHireIcon)
 
-  :?currentRodLevel = 3
-    BuyRod(blueCost, blueLabel, blueButton,
-    ^redCost, redLabel, redButton)
+func BuyGreenHireling()
+  return BuyHireling(3, greenHireCostLabel, greenHireCountLabel, greenHireButton, greenHireIcon)
 
-  :?currentRodLevel = 4
-    BuyRod(redCost, redLabel, redButton,
-    ^rainbowCost, rainbowLabel, rainbowButton)
+func BuyBlueHireling()
+  return BuyHireling(4, blueHireCostLabel, blueHireCountLabel, blueHireButton, blueHireIcon)
 
-  :?currentRodLevel = 5
-    BuyRod(rainbowCost, rainbowLabel, rainbowButton,
-    ^null, null, null)
+func BuyRedHireling()
+  return BuyHireling(5, redHireCostLabel, redHireCountLabel, redHireButton, redHireIcon)
+
+func BuyRainbowHireling()
+  return BuyHireling(6, rainbowHireCostLabel, rainbowHireCountLabel, rainbowHireButton, rainbowHireIcon)
+
+func BuyHireling(hireIdx, costLabel, countLabel, button, icon)
+  trace("BuyHireling", [hireIdx])
+
+  var currentAmount = currentHirelings[hireIdx]
+  var maxAmount = hirelingLimits[hireIdx]
+  var baseCost = hirelingCosts[hireIdx]
+  var realCost = math.RoundToInt(baseCost + baseCost * hireCostFactor * currentAmount)
+
+  ?scales >= realCost
+    play buy
+    scales = scales - realCost
+    currentAmount++
+    currentHirelings[hireIdx] = currentAmount
+    ?currentAmount = maxAmount
+      button.visible = false
+      costLabel.visible = false
+      countLabel.text = "-MAX-"
+      countLabel.color = #808080
+    :
+      var newCost = math.RoundToInt(realCost + baseCost * hireCostFactor)
+      costLabel.text = FormatCost(newCost)
+      countLabel.text = currentAmount + "/" + maxAmount
+    return true
+  :
+    play error
+    costLabel.color = #red
+    purchaseFailedTimer = time + 30
+    purchaseFailedLabel = costLabel
+    return false
 
 func Update()
   trace("Update()", null)
