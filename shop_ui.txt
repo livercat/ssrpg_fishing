@@ -75,10 +75,12 @@ asciiend
 
 var shopKeepSprite = ascii
 ##_▄_  ,  ,──────────────────────────.
-###O  /; <  Ahoy t' me shop!          \
-##(|`/´   \ Spend yer scales on loot… /
+###O  /; <  ######################### \
+##(|`/´   \ ######################### /
 ##/ /!     `─────────────────────────´
 asciiend
+
+var shopKeepMsg = "Ahoy t' me shop!\nSpend yer scales on loot…"
 
 var itemStyle = ui.AddStyle("
 ^#─#
@@ -108,6 +110,7 @@ var hirelingsRow = null
 var placeholderRow = null
 
 var shopKeepIcon = null
+var shopKeepLabel = null
 
 var whiteRodLabel = null
 var cyanRodButton = null
@@ -193,6 +196,16 @@ func InitShop()
     shopKeepIcon.y = 2
     shopKeepIcon.w = 45
     shopKeepIcon.h = 5
+
+    shopKeepLabel = ui.AddText()
+    shopRoot.Add(shopKeepLabel)
+    shopKeepLabel.dock = top_center
+    shopKeepLabel.anchor = top_center
+    shopKeepLabel.x = -5
+    shopKeepLabel.y = 3
+    shopKeepLabel.w = 25
+    shopKeepLabel.h = 2
+    shopKeepLabel.text = te.xt(shopKeepMsg)
 
   // these will be in a separate module instead of arrays
 
