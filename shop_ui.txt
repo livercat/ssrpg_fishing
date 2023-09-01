@@ -67,11 +67,23 @@ var rodSprite = ascii
 asciiend
 
 var hireSprite = ascii
-##
-###_{)
-##''¯)
-####/(
+#
+##_{)
+#''¯)
+###/(
 asciiend
+
+var shopKeepSprite = ascii
+##_▄_  ,  ,──────────────────────────.
+###O  /; <  Ahoy t' me shop!          \
+##(|`/´   \ Spend yer scales on loot… /
+##/ /!     `─────────────────────────´
+asciiend
+
+var itemStyle = ui.AddStyle("
+^#─#
+^│#│
+^#─#")
 
 var invisStyle = ui.AddStyle("
 ^###
@@ -82,21 +94,6 @@ var buttonStyle = ui.AddStyle("
 ^┌─┐
 ^│#│
 ^└─┘")
-
-var rowStyle = ui.AddStyle("
-^├#┤
-^│#│
-^└─┘")
-
-var topRowCellStyle = ui.AddStyle("
-^┬─┬
-^│#│
-^┴─┴")
-
-var topRowLastCellStyle = ui.AddStyle("
-^┬─┐
-^│#│
-^┴─┘")
 
 var shopPanelOvershoot = true
 var shopIsHidden = true
@@ -109,6 +106,8 @@ var rowsPanel = null
 var rodsRow = null
 var hirelingsRow = null
 var placeholderRow = null
+
+var shopKeepIcon = null
 
 var whiteRodLabel = null
 var cyanRodButton = null
@@ -165,95 +164,105 @@ func InitShop()
   shopRoot = ui.AddPanel()
   shopRoot.visible = true
   shopRoot.y = screen.h
-  shopRoot.w = screen.w
-  shopRoot.h = screen.h
+  shopRoot.w = screen.w+2
+  shopRoot.h = screen.h+2
   
   rowsPanel = ui.AddPanel()
   rowsPanel.visible = true
-  rowsPanel.dock = top_left
-  rowsPanel.anchor = top_left
-  rowsPanel.x = 20
-  rowsPanel.y = 1
-  rowsPanel.w = screen.w - 21
+  rowsPanel.dock = top_center
+  rowsPanel.anchor = top_center
+  rowsPanel.x = 0
+  rowsPanel.y = 6
+  rowsPanel.w = 57
   rowsPanel.h = screen.h - 4
   rowsPanel.style = invisStyle
   shopRoot.Add(rowsPanel)
 
-  rodsRow = InitShopRow(0, 0, null)
-  hirelingsRow = InitShopRow(0, 7, rowStyle)
-  placeholderRow = InitShopRow(0, 14, rowStyle)
+  rodsRow = InitShopRow(0, 0, invisStyle)
+  hirelingsRow = InitShopRow(0, 7, invisStyle)
+  placeholderRow = InitShopRow(0, 14, invisStyle)
   
   backButton = InitBackButton()
+
+  ?shopKeepIcon = null
+    shopKeepIcon = ui.AddAnim(shopKeepSprite)
+    shopRoot.Add(shopKeepIcon)
+    shopKeepIcon.dock = top_center
+    shopKeepIcon.anchor = top_center
+    shopKeepIcon.x = -7
+    shopKeepIcon.y = 2
+    shopKeepIcon.w = 45
+    shopKeepIcon.h = 5
 
   // these will be in a separate module instead of arrays
 
   var components = null
 
-  components = InitRodCell(0, null)
+  components = InitRodCell(0, itemStyle)
   whiteRodLabel = components[0]
   // // white rod doesn't have a button
 
-  components = InitRodCell(1, topRowCellStyle)
+  components = InitRodCell(1, itemStyle)
   cyanRodLabel = components[0]
   cyanRodButton = components[1]
   
-  components = InitRodCell(2, topRowCellStyle)
+  components = InitRodCell(2, itemStyle)
   yellowRodLabel = components[0]
   yellowRodButton = components[1]
 
-  components = InitRodCell(3, topRowCellStyle)
+  components = InitRodCell(3, itemStyle)
   greenRodLabel = components[0]
   greenRodButton = components[1]
 
-  components = InitRodCell(4, topRowCellStyle)
+  components = InitRodCell(4, itemStyle)
   blueRodLabel = components[0]
   blueRodButton = components[1]
 
-  components = InitRodCell(5, topRowCellStyle)
+  components = InitRodCell(5, itemStyle)
   redRodLabel = components[0]
   redRodButton = components[1]
 
-  components = InitRodCell(6, topRowLastCellStyle)
+  components = InitRodCell(6, itemStyle)
   rainbowRodLabel = components[0]
   rainbowRodButton = components[1]
 
-  components = InitHirelingCell(0, BuyWhiteHireling, null)
+  components = InitHirelingCell(0, BuyWhiteHireling, itemStyle)
   whiteHireCostLabel = components[0]
   whiteHireCountLabel = components[1]
   whiteHireButton = components[2]
   whiteHireIcon = components[3]
 
-  components = InitHirelingCell(1, BuyCyanHireling, topRowCellStyle)
+  components = InitHirelingCell(1, BuyCyanHireling, itemStyle)
   cyanHireCostLabel = components[0]
   cyanHireCountLabel = components[1]
   cyanHireButton = components[2]
   cyanHireIcon = components[3]
   
-  components = InitHirelingCell(2, BuyYellowHireling, topRowCellStyle)
+  components = InitHirelingCell(2, BuyYellowHireling, itemStyle)
   yellowHireCostLabel = components[0]
   yellowHireCountLabel = components[1]
   yellowHireButton = components[2]
   yellowHireIcon = components[3]
 
-  components = InitHirelingCell(3, BuyGreenHireling, topRowCellStyle)
+  components = InitHirelingCell(3, BuyGreenHireling, itemStyle)
   greenHireCostLabel = components[0]
   greenHireCountLabel = components[1]
   greenHireButton = components[2]
   greenHireIcon = components[3]
 
-  components = InitHirelingCell(4, BuyBlueHireling, topRowCellStyle)
+  components = InitHirelingCell(4, BuyBlueHireling, itemStyle)
   blueHireCostLabel = components[0]
   blueHireCountLabel = components[1]
   blueHireButton = components[2]
   blueHireIcon = components[3]
 
-  components = InitHirelingCell(5, BuyRedHireling, topRowCellStyle)
+  components = InitHirelingCell(5, BuyRedHireling, itemStyle)
   redHireCostLabel = components[0]
   redHireCountLabel = components[1]
   redHireButton = components[2]
   redHireIcon = components[3]
 
-  components = InitHirelingCell(6, BuyRainbowHireling, topRowLastCellStyle)  
+  components = InitHirelingCell(6, BuyRainbowHireling, itemStyle)  
   rainbowHireCostLabel = components[0]
   rainbowHireCountLabel = components[1]
   rainbowHireButton = components[2]
@@ -589,9 +598,9 @@ func OpenShop()
 func InitBackButton()
   trace("InitBackButton()", null)
   var button = ui.AddButton()
-  button.anchor = top_left
-  button.dock = top_left
-  button.x = 1
+  button.anchor = top_center
+  button.dock = top_center
+  button.x = 20
   button.y = 1
   button.text = te.xt("◀ Back")
   button.style = buttonStyle
@@ -607,7 +616,7 @@ func CloseShop()
 
 // TESTING
 disable banner
->@currencyGlyph+scales@ 
+>`@(screen.w-string.Size(currencyGlyph+scales))/2@,0,@currencyGlyph+scales@ 
 var traces = []
 var template = "{0}({1})"
 func trace(msg, arr)
