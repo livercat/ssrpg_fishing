@@ -58,7 +58,7 @@ var hireCostFactor = 0.05 // 5%
 
 // end of config
 
-var rodSprite = ascii
+const rodSprite = ascii
 #
 #####,
 ####/;
@@ -66,21 +66,74 @@ var rodSprite = ascii
 ##/!
 asciiend
 
-var hireSprite = ascii
+const hireSprite = ascii
 #
 ##_{)
 #''¯)
 ###/(
 asciiend
 
-var shopKeepSprite = ascii
-##_▄_  ,  ,──────────────────────────.
-###O  /; <  ######################### \
+const shopKeepSpriteWalk = ascii
+####_▄_
+#____O__
+`-´"/|´ !
+####/ \
+%%
+####_▄_
+#____O__
+`-´"/|´ !
+#####>\
+%%
+####_▄_
+#____O__
+`-´"/|´ !
+#####|\
+%%
+####_▄_
+#____O__
+`-´"/|´ !
+#####|>
+asciiend
+
+const shopKeepSpriteArrived = ascii
+#!\▄_
+##`O
+##(|\
+##/ \
+%%
+##_▄|
+###O|
+###\|
+##/ \
+%%
+##_▄_#/;
+###O_/´
+###\/!
+##/ \
+%%
+##_▄_  ,
+###O  /;
+##(|`/´
+##/ /!
+%%
+##_▄_  ,  __________________________
+###O  /; <__________________________)
+##(|`/´   
+##/ /!
+%%
+##_▄_  ,   .─────────────────────────.
+###O  /; <´ ######################### )
+##(|`/´   `──────────────────────────´
+##/ /!     
+%%
+##_▄_  ,   .─────────────────────────.
+###O  /; <´ ######################### \
 ##(|`/´   \ ######################### /
 ##/ /!     `─────────────────────────´
 asciiend
 
-var shopKeepMsg = "Ahoy t' me shop!\nSpend yer scales on loot…"
+var shopKeepMsgArrival = "Ahoy t' me shop!\nSpend yer scales on loot…"
+var shopKeepMsgReturn = "Back fer more are ye?\nMe loot must be the best!"
 
 var itemStyle = ui.AddStyle("
 ^#─#
@@ -111,6 +164,7 @@ var placeholderRow = null
 
 var shopKeepIcon = null
 var shopKeepLabel = null
+var shopKeepState = null
 
 var whiteRodLabel = null
 var cyanRodButton = null
@@ -171,7 +225,7 @@ func InitShop()
   shopRoot.h = screen.h+2
   
   rowsPanel = ui.AddPanel()
-  rowsPanel.visible = true
+  rowsPanel.visible = inherit
   rowsPanel.dock = top_center
   rowsPanel.anchor = top_center
   rowsPanel.x = 0
@@ -188,24 +242,28 @@ func InitShop()
   backButton = InitBackButton()
 
   ?shopKeepIcon = null
-    shopKeepIcon = ui.AddAnim(shopKeepSprite)
+    shopKeepIcon = ui.AddAnim(shopKeepSpriteWalk)
     shopRoot.Add(shopKeepIcon)
+    shopKeepIcon.flipX = true
     shopKeepIcon.dock = top_center
     shopKeepIcon.anchor = top_center
-    shopKeepIcon.x = -7
+    shopKeepIcon.x = 28
     shopKeepIcon.y = 2
-    shopKeepIcon.w = 45
-    shopKeepIcon.h = 5
+    shopKeepIcon.pivotX = (screen.w/2)-19
+    shopKeepIcon.w = 1
+    shopKeepIcon.h = 1
+    shopKeepIcon.visible = false
 
     shopKeepLabel = ui.AddText()
     shopRoot.Add(shopKeepLabel)
     shopKeepLabel.dock = top_center
     shopKeepLabel.anchor = top_center
-    shopKeepLabel.x = -5
+    shopKeepLabel.x = 4
     shopKeepLabel.y = 3
     shopKeepLabel.w = 25
     shopKeepLabel.h = 2
-    shopKeepLabel.text = te.xt(shopKeepMsg)
+    shopKeepLabel.text = te.xt(shopKeepMsgArrival)
+    shopKeepLabel.visible = false
 
   // these will be in a separate module instead of arrays
 
@@ -318,7 +376,7 @@ func InitRodCell(rodIdx, style)
     labelColor = #white
     labelText = FormatCost(rodCosts[rodIdx])
     ?button ! null
-      button.visible = true
+      button.visible = inherit
   :
     labelColor = #808080
     ?rodIdx < currentRodLevel
@@ -373,7 +431,7 @@ func InitHirelingCell(hireIdx, handler, style)
     countLabel.visible = false
     icon.visible = false
   :?hireIdx = currentRodLevel
-    button.visible = true
+    button.visible = inherit
   
   ?currentAmount >= maxAmount
     costLabel.visible = false
@@ -469,7 +527,7 @@ func BuyRod(label, button, nextLabel, nextButton)
     label.text = "owned"
     label.color = #808080
     ?nextButton ! null
-      nextButton.visible = true
+      nextButton.visible = inherit
     ?nextCost ! null & nextLabel ! null
       nextLabel.text = FormatCost(rodCosts[currentRodLevel + 1])
       nextLabel.color = #white
@@ -483,10 +541,10 @@ func BuyRod(label, button, nextLabel, nextButton)
 
 func UnlockHireling(costLabel, countLabel, button, icon)
   trace("UnlockHireling", null)
-  costLabel.visible = true
-  countLabel.visible = true
-  button.visible = true
-  icon.visible = true
+  costLabel.visible = inherit
+  countLabel.visible = inherit
+  button.visible = inherit
+  icon.visible = inherit
 
 func BuyWhiteHireling()
   return BuyHireling(0, whiteHireCostLabel, whiteHireCountLabel, whiteHireButton, whiteHireIcon)
@@ -560,6 +618,9 @@ func Update()
         shopButton.visible = true
         enable pause
 
+        ?shopKeepState = done
+          shopKeepLabel.text = te.xt(shopKeepMsgReturn)
+
         shopRoot.y = screen.h
         shopRoot.visible = false
   :
@@ -577,7 +638,7 @@ func Update()
       shopRoot.visible = true
     :
       // animation is finished, show the "Back" button
-      backButton.visible = true
+      backButton.visible = inherit
 
       ?shopRoot.y <= -3 & shopPanelOvershoot
         shopPanelOvershoot = false
@@ -585,6 +646,27 @@ func Update()
         shopRoot.y = shopRoot.y + 1
       :
         shopRoot.y = 0
+        ?shopKeepIcon.pivotX > 2
+          ?shopKeepState = null
+            shopKeepIcon.visible = inherit
+            shopKeepIcon.loop = true
+            shopKeepIcon.duration = 15
+            shopKeepIcon.Play()
+            shopKeepState = walk
+          ?time%2
+            shopKeepIcon.pivotX--
+        :?shopKeepState = walk
+          shopKeepIcon.pivotX = 0
+          shopKeepIcon.Load(shopKeepSpriteArrived)
+          shopKeepIcon.frame = 0
+          shopKeepIcon.loop = false
+          shopKeepIcon.duration = 30
+          shopKeepIcon.Play()
+          shopKeepState = arrived
+        :?shopKeepState = arrived
+          ?shopKeepIcon.frame = 6
+            shopKeepLabel.visible = inherit
+            shopKeepState = done
 
   ?purchaseFailedTimer ! null
     ?time >= purchaseFailedTimer
@@ -613,9 +695,11 @@ func InitBackButton()
   var button = ui.AddButton()
   button.anchor = top_center
   button.dock = top_center
-  button.x = 20
+  button.x = -19
   button.y = 1
-  button.text = te.xt("◀ Back")
+  button.w = 14
+  button.h = 5
+  button.text = te.xt(tid_button_back)
   button.style = buttonStyle
   button.SetPressed(CloseShop)
   button.visible = false
