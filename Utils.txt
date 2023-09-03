@@ -16,9 +16,9 @@ func FormatCost(cost)
   :?cost < math.Pow(10, 12)
     return currencyGlyph + (cost / math.Pow(10, 9)) + "B"
   :
-    panic("Cost is too large to format: " + cost)
+    Panic("Cost is too large to format: " + cost)
 
-func FindButtonParent(array, button)
+func FindButtonParent(button, array)
   for shopItem : array
     ?shopItem.button = button
       return shopItem

@@ -1,8 +1,7 @@
 // An item that can be purchased once
 
-var utils = new Games/Fishing2/Utils
-var progress = new Games/Fishing2/Progress
-var _ui = new Games/Fishing2/ShopComponents/UiElements
+var utils = import Games/Fishing2/Utils
+var _ui = import Games/Fishing2/ShopComponents/UiElements
 
 
 var panel = null
@@ -12,10 +11,13 @@ var costLabel = null
 
 var baseItem = null
 
-func Init(baseItem, handler, idx, parent)
+func ToString()
+  return "ShopItemSingle: " + baseItem
+
+func Init(baseItem, handler, parent)
   this.baseItem = baseItem
   
-  panel = _ui.MakeItemPanel(idx * 8)
+  panel = _ui.MakeItemPanel(baseItem.level * 8)
   parent.Add(panel)
   
   button = _ui.MakeItemButton(handler)
@@ -26,6 +28,8 @@ func Init(baseItem, handler, idx, parent)
   
   icon = _ui.MakeItemIcon(baseItem.sprite, baseItem.color)
   panel.Add(icon)
+
+  return this
 
 func SetOwned()
   costLabel.text = te.xt("-owned-")

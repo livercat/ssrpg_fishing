@@ -1,7 +1,7 @@
 // An item that can be purchased multiple times
 
-var utils = new Games/Fishing2/Utils
-var _ui = new Games/Fishing2/ShopComponents/UiElements
+var utils = import Games/Fishing2/Utils
+var _ui = import Games/Fishing2/ShopComponents/UiElements
 
 var panel = null
 var button = null
@@ -11,23 +11,30 @@ var costLabel = null
 
 var baseItem = null
 
-func Init(baseItem, handler, idx, parent)
+func ToString()
+  return "ShopItemMulti: " + baseItem
+
+func Init(baseItem, handler, parent)
   this.baseItem = baseItem
 
-  panel = uiElems.MakeItemPanel(idx * 8)
+  panel = _ui.MakeItemPanel(baseItem.level * 8)
   parent.Add(panel)
   
-  button = uiElems.MakeItemButton(handler)
+  button = _ui.MakeItemButton(handler)
   panel.Add(button)
 
-  costLabel = uiElems.MakeItemLabel(-1)
+  costLabel = _ui.MakeItemLabel(-1)
   panel.Add(costLabel)
 
-  amountLabel = uiElems.MakeItemLabel(-2)
+  amountLabel = _ui.MakeItemLabel(-2)
   panel.Add(amountLabel)
   
-  icon = uiElems.MakeItemIcon(baseItem.sprite, baseItem.color)
+  icon = _ui.MakeItemIcon(baseItem.sprite, baseItem.color)
   panel.Add(icon)
+
+  Update()
+
+  return this
 
 func Update()
   ?baseItem.ownedAmount >= baseItem.maxAmount
@@ -42,7 +49,13 @@ func Update()
     costLabel.visible = inherit
   
 func Hide()
-  panel.visible = false
+  button.visible = false
+  costLabel.visible = false
+  amountLabel.visible = false
+  icon.visible = false
 
 func Reveal()
-  panel.visible = inherit
+  button.visible = inherit
+  costLabel.visible = inherit
+  amountLabel.visible = inherit
+  icon.visible = inherit

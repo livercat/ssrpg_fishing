@@ -113,7 +113,6 @@ func AddMenuUI()
     shopButton.y = 17
     shopButton.text = te.xt(Shop)
     shopButton.SetPressed(OnShopPressed)
-    shopButton.visible = true
   :
     shopButton.visible = true
 

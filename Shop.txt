@@ -1,6 +1,7 @@
 var progress = import Games/Fishing2/Progress
 var shopKeeper = import Games/Fishing2/ShopComponents/ShopKeeper
 var _ui = import Games/Fishing2/ShopComponents/UiElements
+var utils = import Games/Fishing2/Utils
 
 var maxRodLevel = 6 // zero-indexed
 var maxHirelingLevel = 6 // zero-indexed
@@ -36,6 +37,12 @@ func Init()
   shopRoot.y = screen.h
   shopRoot.w = screen.w+2
   shopRoot.h = screen.h+2
+
+  // shopkeeper NPC
+  shopKeeper.Init(shopRoot)
+  
+  backButton = _ui.MakeBackButton(CloseShop)
+  shopRoot.Add(backButton)
   
   // panel with item rows
   rowsPanel = ui.AddPanel()
@@ -50,43 +57,23 @@ func Init()
   shopRoot.Add(rowsPanel)
 
   // row with rods
-  rodsRow = new Games/Fishing2/ShopComponents/ShopRow
-  rodsRow.Init(rowsPanel, 0)
+  rodsRow = _ui.MakeShopRow(0)
+  rowsPanel.Add(rodsRow)
 
   // row with hirelings
-  hirelingsRow = new Games/Fishing2/ShopComponents/ShopRow
-  hirelingsRow.Init(rowsPanel, 7)
-
-  // shopkeeper NPC
-  shopKeeper.Init(shopRoot)
-  
-  backButton = _ui.MakeBackButton(shopRoot, CloseShop)
-
-  // var rodFactory = new Games/Fishing2/Rod
-  // var shopItemSingle = new Games/Fishing2/ShopComponents/ShopItemSingle
-  // var rod = rodFactory.Make(0)
-  // var shopRod = shopItemSingle.Init(rod, PurchaseRod, 0, shopRoot)
-  // rods.Add(shopRod)
-
-  // ?0 < progress.rod
-  //   shopRod.SetOwned()
-  // :?0 = progress.rod
-  //   shopRod.SetCurrent()
-  // :?0 = progress.rod + 1
-  //   shopRod.RevealCost()
-  // :
-  //   shopRod.HideCost()
-  // return
+  hirelingsRow = _ui.MakeShopRow(7)
+  rowsPanel.Add(hirelingsRow)
 
   /* Create all rods and their shop wrappers. By default owned rods are marked
   as "owned" instead of their cost. We mark the best owned rod as "current",
   and hide prices of all the following rods. */
   for idx = 0 .. maxRodLevel
     var rodFactory = new Games/Fishing2/Rod
-    var shopItemSingle = new Games/Fishing2/ShopComponents/ShopItemSingle
-
     var rod = rodFactory.Make(idx)
-    var shopRod = shopItemSingle.Init(rod, PurchaseRod, idx, shopRoot)
+
+    var shopRodFactory = new Games/Fishing2/ShopComponents/ShopItemSingle
+    var shopRod = shopRodFactory.Init(rod, PurchaseRod, rodsRow)
+
     rods.Add(shopRod)
 
     ?idx < progress.rod
@@ -102,10 +89,11 @@ func Init()
   hirelings whose color corresponds to un-owned fishing rods. */
   for idx = 0 .. maxHirelingLevel
     var hirelingFactory = new Games/Fishing2/Hireling
-    var shopItemMulti = import Games/Fishing2/ShopComponents/ShopItemMulti
-
     var hireling = hirelingFactory.Make(idx)
-    var shopHire = shopItemMulti.Init(hireling, PurchaseHireling, idx, shopRoot)
+
+    var shopHireFactory = new Games/Fishing2/ShopComponents/ShopItemMulti
+    var shopHire = shopHireFactory.Init(hireling, PurchaseHireling, hirelingsRow)
+
     hirelings.Add(shopHire)
 
     ?idx > progress.rod
@@ -118,7 +106,7 @@ func CloseShop()
   shopPanelOvershoot = true
 
 func PurchaseRod(button)
-  var shopRod = utils.FindButtonParent(rods, button)
+  var shopRod = utils.FindButtonParent(button, rods)
   ?shopRod = null
     return utils.Panic("Rod purchase failed, can't identify its button")
 
@@ -140,16 +128,16 @@ func PurchaseRod(button)
     hirelings[idx].Reveal()
   :
     play error
-    MarkFailedPurchase(shopRod.label)
+    MarkFailedPurchase(shopRod.costLabel)
 
 func PurchaseHireling(button)
-  var shopHire = utils.FindButtonParent(hirelings, button)
+  var shopHire = utils.FindButtonParent(button, hirelings)
   ?shopHire = null
     return utils.Panic("Hireling purchase failed, can't identify its button")
   ?shopHire.baseItem.ownedAmount >= shopHire.baseItem.maxAmount
-    // if attempted to buy a maxed out hireling, do nothing
+    // if somehow attempted to buy a maxed out hireling, do nothing
     return
-
+  
   var cost = shopHire.baseItem.RealCost()
   ?progress.scales >= cost
     play buy
@@ -162,7 +150,7 @@ func PurchaseHireling(button)
     shopHire.Update()
   :
     play error
-    MarkFailedPurchase(shopHire.label)
+    MarkFailedPurchase(shopHire.costLabel)
 
 func MarkFailedPurchase(label)
   ?purchaseFailedLabel = label
