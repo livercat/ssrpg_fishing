@@ -9,7 +9,7 @@ func FormatCost(cost)
     return cost
   :?cost < math.Pow(10, 3)
     return currencyGlyph + cost
-  ?cost < math.Pow(10, 6)
+  :?cost < math.Pow(10, 6)
     return currencyGlyph + (cost / math.Pow(10, 3)) + "K"
   :?cost < math.Pow(10, 9)
     return currencyGlyph + (cost / math.Pow(10, 6)) + "M"

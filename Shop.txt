@@ -88,7 +88,8 @@ func Init()
       shopRod.HideCost()
 
   /* Create all hirelings and their shop wrappers. We additionally hide all
-  hirelings whose color corresponds to un-owned fishing rods. */
+  hirelings other than the ones we already have purchased at least one of, and the 
+  next immediate one. */
   for idx = 0 .. maxHirelingLevel
     var hirelingFactory = new Games/Fishing2/Hireling
     var hireling = hirelingFactory.Make(idx)
