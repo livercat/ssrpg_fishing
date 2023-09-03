@@ -234,23 +234,23 @@ func SetState(newState)
 
   // Exit state
 
-  ?state = Arriving
+  ?newState ! state & state = Arriving
     fisher.playerAnimWalk.visible = false
     fisher.playerAnimArrived.visible = false
 
-  :?state = Menu
+  :?newState ! state & state = Menu
     RemoveMenuUI()
 
-  :?state = Throwing
+  :?newState ! state & state = Throwing
     fisher.playerAnimThrowing.visible = false
 
-  :?state = Catching
+  :?newState ! state & state = Catching
     RemoveCatchingUI()
 
-  :?state = Fail2
+  :?newState ! state & state = Fail2
     fisher.playerAnimCatching.visible = false
 
-  :?state = Success3
+  :?newState ! state & state = Success3
     resultDialog.Hide()
     fisher.playerAnimCatching.visible = false
   
@@ -342,10 +342,10 @@ func SetState(newState)
   stateTime = 0
 
 
-var rod
+var rod = null
 
 func Init()
-  ?!rod
+  ?rod = null
     var rodFactory = new Games/Fishing2/Rod
     rod = rodFactory.Make(progress.rod)
     fisher.rod = rod
@@ -425,7 +425,6 @@ func UpdateStateWaiting()
     fishSpeed = 0
 
     fish = fishFactory.MakeFish(rod.minFish, rod.maxFish)
-    catchingFish.color = fish.color
     fishAccel = fish.acceleration
 
 
@@ -546,6 +545,11 @@ func UpdateStateSuccess3()
 
 func UpdateStateShop()
   shop.Update(SetState)
+
+  ?key = backBegin
+    SetState(Menu)
+    logo.Show()
+    logo.Update()
 
 
 func Update()

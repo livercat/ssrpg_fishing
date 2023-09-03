@@ -29,3 +29,8 @@ func AddHireling(level)
 func UpgradeRod()
   rod++
   storage.Set("key_rod", rod)
+
+func IsFTUE()
+  ?scales = 0
+    return true
+  return false
