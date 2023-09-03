@@ -1,0 +1,72 @@
+var utils = import Games/Fishing2/Utils
+var progress = import Games/Fishing2/Progress
+
+var level = 0
+var color = #white
+var lineColor = #888888
+var minFish = 0
+var maxFish = 130
+var cost = 0
+
+var sprite = ascii
+#
+#####,
+####/;
+###/´
+##/!
+asciiend
+
+func ToString()
+  return "Rod(lvl=" + this.level + ",color=" + this.color + ",cost=" + 
+  ^utils.FormatCost(cost) + ")"
+
+func Make(level)
+  this.level = level
+
+  ?level = 0
+    this.color = #white
+    this.minFish = 0
+    this.maxFish = 130
+    this.cost = 100
+
+  :?level = 1
+    this.color = #cyan
+    this.minFish = 90
+    this.maxFish = 202
+    this.cost = 1000
+
+  :?level = 2
+    this.color = #yellow
+    this.minFish = 110
+    this.maxFish = 234
+    this.cost = 10000
+
+  :?level = 3
+    this.color = #green
+    this.minFish = 120
+    this.maxFish = 244
+    this.cost = 100000
+
+  :?level = 4
+    this.color = #blue
+    this.minFish = 124
+    this.maxFish = 249
+    this.cost = 1000000
+
+  :?level = 5
+    this.color = #red
+    this.minFish = 126
+    this.maxFish = 252
+    this.cost = 10000000
+
+  :?level = 6
+    this.color = #rainbow
+    this.lineColor = #rain88
+    this.minFish = 127
+    this.maxFish = 254
+    this.cost = 100000000
+  
+  :
+    utils.Panic("Unsupported rod level: " + level)
+
+  return this

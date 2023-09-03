@@ -1,0 +1,89 @@
+var icon = null
+var label = null
+var state = null
+
+var spriteWalking = ascii
+####_▄_
+#____O__
+`-´"/|´ !
+####/ \
+%%
+####_▄_
+#____O__
+`-´"/|´ !
+#####>\
+%%
+####_▄_
+#____O__
+`-´"/|´ !
+#####|\
+%%
+####_▄_
+#____O__
+`-´"/|´ !
+#####|>
+asciiend
+
+var spriteArrived = ascii
+#!\▄_
+##`O
+##(|\
+##/ \
+%%
+##_▄|
+###O|
+###\|
+##/ \
+%%
+##_▄_#/;
+###O_/´
+###\/!
+##/ \
+%%
+##_▄_  ,
+###O  /;
+##(|`/´
+##/ /!
+%%
+##_▄_  ,  __________________________
+###O  /; <__________________________)
+##(|`/´   
+##/ /!
+%%
+##_▄_  ,   .─────────────────────────.
+###O  /; <´ ######################### )
+##(|`/´   `──────────────────────────´
+##/ /!     
+%%
+##_▄_  ,   .─────────────────────────.
+###O  /; <´ ######################### \
+##(|`/´   \ ######################### /
+##/ /!     `─────────────────────────´
+asciiend
+
+var msgArrived = "Ahoy t' me shop!\nSpend yer scales on loot…"
+var msgReturned = "Back fer more are ye?\nMe loot must be the best!"
+
+func Init(parent)
+  icon = ui.AddAnim(spriteWalking)
+  icon.flipX = true
+  icon.dock = top_center
+  icon.anchor = top_center
+  icon.x = 28
+  icon.y = 2
+  icon.pivotX = (screen.w/2)-19
+  icon.w = 1
+  icon.h = 1
+  icon.visible = false
+  parent.Add(icon)
+
+  label = ui.AddText()
+  label.dock = top_center
+  label.anchor = top_center
+  label.x = 4
+  label.y = 3
+  label.w = 25
+  label.h = 2
+  label.text = te.xt(msgArrived)
+  label.visible = false
+  parent.Add(label)

@@ -1,0 +1,29 @@
+
+var scales = storage.Get("key_scales", 0)
+var recordWeight = storage.Get("key_record", 0)
+var rod = storage.Get("key_rod", 0)
+
+func AddScales(amount)
+  scales = scales + amount
+  storage.Set("key_scales", scales)
+
+func SubtractScales(amount)
+  scales = scales - amount
+  storage.Set("key_scales", scales)
+
+func CheckRecord(newWeight)
+  ?recordWeight < newWeight
+    recordWeight = newWeight
+    storage.Set("key_record", recordWeight)
+    return true
+  return false
+
+func GetHireling(level)
+  storage.Get("key_hireling_" + level, 0)
+
+func AddHireling(level)
+  storage.Set("key_hireling_" + level, GetHireling(level) + 1)
+
+func UpgradeRod()
+  rod++
+  storage.Set("key_rod", rod)

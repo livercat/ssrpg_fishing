@@ -1,0 +1,74 @@
+var utils = import Games/Fishing2/Utils
+var progress = import Games/Fishing2/Progress
+
+var level = 0
+var color = #white
+var ownedAmount = 0
+var maxAmount = 5
+var baseCost = 80
+var costFactor = 0.05
+
+var sprite = ascii
+#
+##_{)
+#''¯)
+###/(
+asciiend
+
+func ToString()
+  return "Hireling(lvl=" + this.level + ",color=" + this.color + ",cost=" + 
+  ^utils.FormatCost(this.RealCost()) + ")"
+
+func Make(level)
+  this.level = level
+  this.ownedAmount = progress.GetHireling(level)
+
+  ?level = 0
+    this.color = #white
+    this.maxAmount = maxAmount
+    this.baseCost = 80
+    this.costFactor = costFactor
+
+  :?level = 1
+    this.color = #cyan
+    this.maxAmount = maxAmount
+    this.baseCost = 160
+    this.costFactor = costFactor
+
+  :?level = 2
+    this.color = #yellow
+    this.maxAmount = maxAmount
+    this.baseCost = 320
+    this.costFactor = costFactor
+
+  :?level = 3
+    this.color = #green
+    this.maxAmount = maxAmount
+    this.baseCost = 640
+    this.costFactor = costFactor
+
+  :?level = 4
+    this.color = #blue
+    this.maxAmount = maxAmount
+    this.baseCost = 1280
+    this.costFactor = costFactor
+
+  :?level = 5
+    this.color = #red
+    this.maxAmount = maxAmount
+    this.baseCost = 2560
+    this.costFactor = costFactor
+
+  :?level = 6
+    this.color = #rainbow
+    this.maxAmount = maxAmount
+    this.baseCost = 5120
+    this.costFactor = costFactor
+  
+  :
+    utils.Panic("Unsupported hireling level: " + level)
+
+  return hireling
+
+func RealCost()
+    return baseCost * (1 + ownedAmount * costFactor)

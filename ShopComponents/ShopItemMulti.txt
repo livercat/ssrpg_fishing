@@ -1,0 +1,48 @@
+// An item that can be purchased multiple times
+
+var utils = new Games/Fishing2/Utils
+var _ui = new Games/Fishing2/ShopComponents/UiElements
+
+var panel = null
+var button = null
+var icon = null
+var amountLabel = null
+var costLabel = null
+
+var baseItem = null
+
+func Init(baseItem, handler, idx, parent)
+  this.baseItem = baseItem
+
+  panel = uiElems.MakeItemPanel(idx * 8)
+  parent.Add(panel)
+  
+  button = uiElems.MakeItemButton(handler)
+  panel.Add(button)
+
+  costLabel = uiElems.MakeItemLabel(-1)
+  panel.Add(costLabel)
+
+  amountLabel = uiElems.MakeItemLabel(-2)
+  panel.Add(amountLabel)
+  
+  icon = uiElems.MakeItemIcon(baseItem.sprite, baseItem.color)
+  panel.Add(icon)
+
+func Update()
+  ?baseItem.ownedAmount >= baseItem.maxAmount
+    amountLabel.text = te.xt("-MAX-")
+    amountLabel.color = _ui.inactiveColor
+    costLabel.visible = false
+  :
+    amountLabel.text = baseItem.ownedAmount + "/" + baseItem.maxAmount
+    amountLabel.color = _ui.activeColor
+    costLabel.text = utils.FormatCost(baseItem.RealCost())
+    costLabel.color = _ui.activeColor
+    costLabel.visible = inherit
+  
+func Hide()
+  panel.visible = false
+
+func Reveal()
+  panel.visible = inherit

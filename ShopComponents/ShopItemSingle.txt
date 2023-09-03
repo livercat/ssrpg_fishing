@@ -1,0 +1,49 @@
+// An item that can be purchased once
+
+var utils = new Games/Fishing2/Utils
+var progress = new Games/Fishing2/Progress
+var _ui = new Games/Fishing2/ShopComponents/UiElements
+
+
+var panel = null
+var button = null
+var icon = null
+var costLabel = null
+
+var baseItem = null
+
+func Init(baseItem, handler, idx, parent)
+  this.baseItem = baseItem
+  
+  panel = _ui.MakeItemPanel(idx * 8)
+  parent.Add(panel)
+  
+  button = _ui.MakeItemButton(handler)
+  panel.Add(button)
+
+  costLabel = _ui.MakeItemLabel(-1)
+  panel.Add(costLabel)
+  
+  icon = _ui.MakeItemIcon(baseItem.sprite, baseItem.color)
+  panel.Add(icon)
+
+func SetOwned()
+  costLabel.text = te.xt("-owned-")
+  costLabel.color = _ui.inactiveColor
+  button.visible = false
+
+func SetCurrent()
+  costLabel.text = te.xt("current")
+  costLabel.color = _ui.inactiveColor
+  button.visible = false
+
+func HideCost()
+  costLabel.text = "?"
+  costLabel.color = _ui.inactiveColor
+  button.visible = false
+
+func RevealCost()
+  costLabel.text = utils.FormatCost(baseItem.cost)
+  costLabel.color = _ui.activeColor
+  button.visible = inherit
+

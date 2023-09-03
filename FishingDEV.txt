@@ -1,8 +1,0 @@
-
-// Deadwood Fishing
-// by: standardcombo
-
-var game = new GamesDEV/Fishing/FishingGame
-
-?string.Equals(loc.id, waterfall)
-  game.Update()

@@ -1,0 +1,75 @@
+var inactiveColor = #808080
+var activeColor = #white
+var errorColor = #red
+
+var itemStyle = ui.AddStyle("
+^#─#
+^│#│
+^#─#")
+
+var invisStyle = ui.AddStyle("
+^###
+^###
+^###")
+
+var buttonStyle = ui.AddStyle("
+^┌─┐
+^│#│
+^└─┘")
+
+func MakeItemPanel(x, style)
+  var panel = ui.AddPanel()
+  panel.ax = left
+  panel.dx = left
+  panel.x = x
+  panel.w = 9
+  panel.h = 8
+  panel.color = this.inactiveColor
+  panel.visible = inherit
+  ?style ! null
+    panel.style = style
+  return panel
+
+func MakeItemButton(handler, style)
+  var button = ui.AddButton()
+  button.w = 9
+  button.h = 8
+  button.visible = inherit
+  button.SetPressed(handler)
+  ?style ! null
+    button.style = style
+  return button
+
+func MakeItemLabel(yOffset)
+  var label = ui.AddText()
+  label.dock = bottom_center
+  label.anchor = bottom_center
+  label.align = center
+  label.w = 7
+  label.h = 1
+  label.y = yOffset
+  label.visible = inherit
+  return label
+
+func MakeItemIcon(sprite, itemColor)
+  var icon = ui.AddAnim(sprite)
+  icon.color = itemColor
+  icon.w = 7
+  icon.h = 8
+  icon.visible = inherit
+  return icon
+  
+func MakeBackButton(parent, handler)
+  var button = ui.AddButton()
+  button.anchor = top_center
+  button.dock = top_center
+  button.x = -19
+  button.y = 1
+  button.w = 14
+  button.h = 5
+  button.text = te.xt(tid_button_back)
+  button.style = buttonStyle
+  button.SetPressed(handler)
+  button.visible = inherit
+  parent.Add(button)
+  return button

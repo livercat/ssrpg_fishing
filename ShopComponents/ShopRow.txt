@@ -1,0 +1,14 @@
+var _ui = import Games/Fishing2/ShopComponents/UiElements
+
+func Init(parent, yOffset)
+  var row = ui.AddPanel()
+  row.x = 0
+  row.y = yOffset
+  row.w = 57
+  row.h = 8
+  row.dock = top_left
+  row.anchor = top_left
+  row.color = _ui.inactiveColor
+  row.style = _ui.invisStyle
+  parent.Add(row)
+  return row

@@ -1,0 +1,25 @@
+var currencyGlyph = "♠"
+
+func Panic(message)
+  >`20,5,#red,@message@
+  loc.Pause()
+
+func FormatCost(cost)
+  ?cost = "owned" | cost = "?"
+    return cost
+  :?cost < math.Pow(10, 3)
+    return currencyGlyph + cost
+  ?cost < math.Pow(10, 6)
+    return currencyGlyph + (cost / math.Pow(10, 3)) + "K"
+  :?cost < math.Pow(10, 9)
+    return currencyGlyph + (cost / math.Pow(10, 6)) + "M"
+  :?cost < math.Pow(10, 12)
+    return currencyGlyph + (cost / math.Pow(10, 9)) + "B"
+  :
+    panic("Cost is too large to format: " + cost)
+
+func FindButtonParent(array, button)
+  for shopItem : array
+    ?shopItem.button = button
+      return shopItem
+  return null
