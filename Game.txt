@@ -1,4 +1,4 @@
-var version = "0.9"
+var version = "0.99"
 
 var x = 0
 var y = 0
@@ -230,7 +230,7 @@ func GetState()
 
 
 func SetState(newState)
-  //debug.Log("state = " + state + ", newState = " + newState)
+//debug.Log("state = " + state + ", newState = " + newState)
 
   // Exit state
 
@@ -275,6 +275,13 @@ func SetState(newState)
     ?fisher.playerAnimBigHead
       fisher.playerAnimBigHead.flipX = true
       fisher.playerAnimExpressions.frame = 0
+
+    // Update the rod if it changed after exiting the shop
+    ?rod.level ! progress.rod
+      var rodFactory = new Games/Fishing2/Rod
+      rod = rodFactory.Make(progress.rod)
+      fisher.rod = rod
+      fisher.Update()
     
   :?newState = Throwing
     currentStateFunction = UpdateStateThrowing

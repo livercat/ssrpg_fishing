@@ -9,7 +9,7 @@ func Init()
   topPanel.style = 0
   topPanel.anchor = top_center
   topPanel.dock = top_center
-  topPanel.w = screen.w
+  topPanel.w = 20
   topPanel.h = 1
   
   moneyText = ui.AddText()
@@ -18,7 +18,7 @@ func Init()
   moneyText.align = center
   moneyText.x = 0
   moneyText.y = 0
-  moneyText.w = 31
+  moneyText.w = 20
 
   topPanel.Add(moneyText)
 
@@ -27,3 +27,6 @@ func Init()
 
 func Update()
   moneyText.text = currencyGlyph + progress.scales
+
+func DrawOnTop()
+  ui.root.Add(topPanel)

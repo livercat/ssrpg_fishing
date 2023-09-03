@@ -7,6 +7,9 @@ var playerAnimBigHead = null
 var playerAnimExpressions = null
 var rod
 
+var layerFishingRod
+var layerFishingLine
+
 func UpdatePlayerAnimPosition()
   playerAnimRoot.x = screen.FromWorldX(pos.x)
   playerAnimRoot.y = screen.FromWorldZ(pos.z - pos.y) - 2
@@ -36,15 +39,15 @@ func AddPlayerAnimWalk()
   playerAnimWalk.duration = 15
   playerAnimWalk.loop = true
   // Rod
-  var layer3 = playerAnimWalk.AddLayer(artPlayerWalk2)
-  layer3.color = rod.color
-  layer3.pivotX = 5
-  layer3.pivotY = 0
+  layerFishingRod = playerAnimWalk.AddLayer(artPlayerWalk2)
+  layerFishingRod.color = rod.color
+  layerFishingRod.pivotX = 5
+  layerFishingRod.pivotY = 0
   // Line
-  var layer4 = playerAnimWalk.AddLayer(artPlayerWalk3)
-  layer4.color = rod.lineColor
-  layer4.pivotX = 5
-  layer4.pivotY = 0
+  layerFishingLine = playerAnimWalk.AddLayer(artPlayerWalk3)
+  layerFishingLine.color = rod.lineColor
+  layerFishingLine.pivotX = 5
+  layerFishingLine.pivotY = 0
 
 
 func AddPlayerAnimArrived()
@@ -57,15 +60,15 @@ func AddPlayerAnimArrived()
   playerAnimArrived.pivotY = 2
   playerAnimArrived.duration = 9
   // Rod
-  var layer3 = playerAnimArrived.AddLayer(artPlayerArrived2)
-  layer3.color = rod.color
-  layer3.pivotX = 5
-  layer3.pivotY = 2
+  layerFishingRod = playerAnimArrived.AddLayer(artPlayerArrived2)
+  layerFishingRod.color = rod.color
+  layerFishingRod.pivotX = 5
+  layerFishingRod.pivotY = 2
   // Line
-  var layer4 = playerAnimArrived.AddLayer(artPlayerArrived3)
-  layer4.color = rod.lineColor
-  layer4.pivotX = 5
-  layer4.pivotY = 2
+  layerFishingLine = playerAnimArrived.AddLayer(artPlayerArrived3)
+  layerFishingLine.color = rod.lineColor
+  layerFishingLine.pivotX = 5
+  layerFishingLine.pivotY = 2
 
 
 func AddPlayerAnimThrowing()
@@ -78,15 +81,15 @@ func AddPlayerAnimThrowing()
   playerAnimThrowing.pivotY = 3
   playerAnimThrowing.duration = 18
   // Rod
-  var layer3 = playerAnimThrowing.AddLayer(artPlayerThrowing2)
-  layer3.color = rod.color
-  layer3.pivotX = 18
-  layer3.pivotY = 3
+  layerFishingRod = playerAnimThrowing.AddLayer(artPlayerThrowing2)
+  layerFishingRod.color = rod.color
+  layerFishingRod.pivotX = 18
+  layerFishingRod.pivotY = 3
   // Line
-  var layer4 = playerAnimThrowing.AddLayer(artPlayerThrowing3)
-  layer4.color = rod.lineColor
-  layer4.pivotX = 18
-  layer4.pivotY = 3
+  layerFishingLine = playerAnimThrowing.AddLayer(artPlayerThrowing3)
+  layerFishingLine.color = rod.lineColor
+  layerFishingLine.pivotX = 18
+  layerFishingLine.pivotY = 3
 
 
 func AddPlayerAnimCatching()
@@ -98,15 +101,15 @@ func AddPlayerAnimCatching()
   playerAnimCatching.pivotX = 18
   playerAnimCatching.pivotY = 3
   // Rod
-  var layer3 = playerAnimCatching.AddLayer(artPlayerCatching2)
-  layer3.color = rod.color
-  layer3.pivotX = 4
-  layer3.pivotY = 3
+  layerFishingRod = playerAnimCatching.AddLayer(artPlayerCatching2)
+  layerFishingRod.color = rod.color
+  layerFishingRod.pivotX = 4
+  layerFishingRod.pivotY = 3
   // Line
-  var layer4 = playerAnimCatching.AddLayer(artPlayerCatching3)
-  layer4.color = rod.lineColor
-  layer4.pivotX = 18
-  layer4.pivotY = 3
+  layerFishingLine = playerAnimCatching.AddLayer(artPlayerCatching3)
+  layerFishingLine.color = rod.lineColor
+  layerFishingLine.pivotX = 18
+  layerFishingLine.pivotY = 3
   // Water
   var layer2 = playerAnimCatching.AddLayer(artPlayerCatching4)
   layer2.color = #bbbbbb
@@ -130,6 +133,11 @@ func AddPlayerAnimBigHead()
     playerAnimExpressions.anchor = top_left
     playerAnimExpressions.pivotX = 2
     playerAnimExpressions.pivotY = 1
+
+
+func Update()
+  layerFishingRod.color = rod.color
+  layerFishingLine.color = rod.lineColor
 
 
 var artPlayerWalk1 = ascii

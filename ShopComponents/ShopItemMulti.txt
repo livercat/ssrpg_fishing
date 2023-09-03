@@ -37,16 +37,15 @@ func Init(baseItem, handler, parent)
   return this
 
 func Update()
+  amountLabel.text = baseItem.ownedAmount + "/" + baseItem.maxAmount
   ?baseItem.ownedAmount >= baseItem.maxAmount
-    amountLabel.text = te.xt("-MAX-")
     amountLabel.color = _ui.inactiveColor
-    costLabel.visible = false
+    costLabel.text = te.xt("-MAX-")
+    costLabel.color = _ui.inactiveColor
   :
-    amountLabel.text = baseItem.ownedAmount + "/" + baseItem.maxAmount
     amountLabel.color = _ui.activeColor
     costLabel.text = utils.FormatCost(baseItem.RealCost())
     costLabel.color = _ui.activeColor
-    costLabel.visible = inherit
   
 func Hide()
   button.visible = false

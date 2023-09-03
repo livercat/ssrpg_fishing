@@ -2,6 +2,7 @@ var progress = import Games/Fishing2/Progress
 var shopKeeper = import Games/Fishing2/ShopComponents/ShopKeeper
 var _ui = import Games/Fishing2/ShopComponents/UiElements
 var utils = import Games/Fishing2/Utils
+var topHud = import Games/Fishing2/FishingComponents/HUD
 
 var maxRodLevel = 6 // zero-indexed
 var maxHirelingLevel = 6 // zero-indexed
@@ -22,21 +23,22 @@ var backButton = null
 var purchaseFailedTimer = null
 var purchaseFailedLabel = null
 
-/* These arrays MUST be kept in sync by level: 0th element is the white
-rod/hireling, 1st is cyan rod/hireling, and so on. */
 var rods = []
 var hirelings = []
 
 func Init()
   ?shopRoot ! null
     return
-  // progress.AddScales(1000000)  // DEBUG
+  // progress.AddScales(100000000)  // DEBUG
   // the base shop panel
   shopRoot = ui.AddPanel()
   shopRoot.visible = true
   shopRoot.y = screen.h
   shopRoot.w = screen.w+2
   shopRoot.h = screen.h+2
+  
+  topHud.DrawOnTop()
+  topHud.Update()
 
   // shopkeeper NPC
   shopKeeper.Init(shopRoot)
@@ -96,7 +98,8 @@ func Init()
 
     hirelings.Add(shopHire)
 
-    ?idx > progress.rod
+
+    ?idx > 0 & hireling.ownedAmount = 0 & hirelings[idx-1].baseItem.ownedAmount = 0
       shopHire.Hide()
     :
       shopHire.Reveal()
@@ -124,8 +127,8 @@ func PurchaseRod(button)
     // 3. Reveal the price of the next rod
     ?idx + 1 < rods.Count()
       rods[idx + 1].RevealCost()
-    // 4. Reveal the next hireling
-    hirelings[idx].Reveal()
+    // 4. Update HUD
+    topHud.Update()
   :
     play error
     MarkFailedPurchase(shopRod.costLabel)
@@ -146,8 +149,13 @@ func PurchaseHireling(button)
     // 1. Increment the owned amount
     progress.AddHireling(idx)
     shopHire.baseItem.ownedAmount++
-    // 2. Update the labels
+    // 2. Reveal the next hireling
+    ?idx + 1 < hirelings.Count()
+      hirelings[idx + 1].Reveal()
+    // 3. Update hireling labels
     shopHire.Update()
+    // 4. Update HUD
+    topHud.Update()
   :
     play error
     MarkFailedPurchase(shopHire.costLabel)
