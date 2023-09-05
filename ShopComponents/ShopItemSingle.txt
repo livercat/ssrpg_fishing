@@ -1,7 +1,7 @@
 // An item that can be purchased once
 
 var utils = import Games/Fishing2/Utils
-var _ui = import Games/Fishing2/ShopComponents/UiElements
+var _ui = import Games/Fishing2/ShopComponents/UIFactory
 
 
 var panel = null

@@ -1,6 +1,6 @@
 var progress = import Games/Fishing2/Progress
 var shopKeeper = import Games/Fishing2/ShopComponents/ShopKeeper
-var _ui = import Games/Fishing2/ShopComponents/UiElements
+var _ui = import Games/Fishing2/ShopComponents/UIFactory
 var utils = import Games/Fishing2/Utils
 var topHud = import Games/Fishing2/FishingComponents/HUD
 
