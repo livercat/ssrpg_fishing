@@ -64,7 +64,7 @@ var logo = import Games/Fishing2/FishingComponents/Logo
 var resultDialog = import Games/Fishing2/FishingComponents/ResultsDialog
 
 var fishFactory = import Games/Fishing2/FishingComponents/FishFactory
-var flyup = import Games/Fishing2/FlyupText
+var flyup = new Games/FlyupText
 
 // States:
 // - Hidden
@@ -562,3 +562,5 @@ func UpdateStateShop()
 func Update()
   stateTime++
   currentStateFunction()
+
+SetState(Hidden)
