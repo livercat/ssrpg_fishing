@@ -17,11 +17,6 @@ var noBorderStyle = ui.AddStyle("
 ^   
 ^   ")
 
-var buttonStyle = ui.AddStyle("
-^┌─┐
-^│#│
-^└─┘")
-
 func MakeShopRow(y)
   var row = ui.AddPanel()
   row.x = 0
@@ -79,6 +74,6 @@ func MakeBackButton(handler)
   button.w = 14
   button.h = 5
   button.text = te.xt(tid_button_back)
-  button.style = this.buttonStyle
+  button.style = 1
   button.SetPressed(handler)
   return button

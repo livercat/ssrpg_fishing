@@ -100,6 +100,7 @@ func AddMenuUI()
     playButton.dock = top_right
     playButton.x = -13
     playButton.y = 12
+    playButton.style = 1
     playButton.text = te.xt(Play)
     playButton.SetPressed(OnPlayPressed)
   :
@@ -111,6 +112,7 @@ func AddMenuUI()
     shopButton.dock = top_right
     shopButton.x = -13
     shopButton.y = 17
+    shopButton.style = 1
     shopButton.text = te.xt(Shop)
     shopButton.SetPressed(OnShopPressed)
   :
