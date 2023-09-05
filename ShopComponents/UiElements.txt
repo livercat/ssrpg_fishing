@@ -12,6 +12,11 @@ var invisStyle = ui.AddStyle("
 ^###
 ^###")
 
+var noBorderStyle = ui.AddStyle("
+^   
+^   
+^   ")
+
 var buttonStyle = ui.AddStyle("
 ^┌─┐
 ^│#│

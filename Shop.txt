@@ -33,6 +33,7 @@ func Init()
   // the base shop panel
   shopRoot = ui.AddPanel()
   shopRoot.visible = true
+  shopRoot.style = _ui.noBorderStyle
   shopRoot.y = screen.h
   shopRoot.w = screen.w+2
   shopRoot.h = screen.h+2
@@ -220,25 +221,28 @@ func Update(SetGameState)
         shopRoot.y = shopRoot.y + 1
       :
         shopRoot.y = 0
-        ?shopKeeper.icon.pivotX > 2
-          ?shopKeeper.state = null
-            shopKeeper.icon.visible = inherit
-            shopKeeper.icon.loop = true
-            shopKeeper.icon.duration = 15
+        ?shopKeeper.state ! done
+          ?shopKeeper.icon.pivotX > 2
+            ?shopKeeper.state = null
+              shopKeeper.icon.visible = inherit
+              shopKeeper.icon.loop = true
+              shopKeeper.icon.duration = 15
+              shopKeeper.icon.Play()
+              shopKeeper.state = walk
+            ?time % 2
+              shopKeeper.icon.pivotX--
+          :?shopKeeper.state = walk
+            shopKeeper.icon.pivotX = 0
+            shopKeeper.icon.Load(shopKeeper.spriteArrived)
+            shopKeeper.icon.frame = 0
+            shopKeeper.icon.loop = false
+            shopKeeper.icon.duration = 18
             shopKeeper.icon.Play()
-            shopKeeper.state = walk
-          ?time % 2
-            shopKeeper.icon.pivotX--
-        :?shopKeeper.state = walk
-          shopKeeper.icon.pivotX = 0
-          shopKeeper.icon.Load(shopKeeper.spriteArrived)
-          shopKeeper.icon.frame = 0
-          shopKeeper.icon.loop = false
-          shopKeeper.icon.duration = 30
-          shopKeeper.icon.Play()
-          shopKeeper.state = arrived
-        :?shopKeeper.state = arrived
-          ?shopKeeper.icon.frame = 6
+            shopKeeper.state = arrived
+          :?shopKeeper.state = arrived
+            shopKeeper.dialog.visible = inherit
+            shopKeeper.dialog.duration = 6
+            shopKeeper.dialog.Play()
             shopKeeper.label.visible = inherit
             shopKeeper.state = done
 

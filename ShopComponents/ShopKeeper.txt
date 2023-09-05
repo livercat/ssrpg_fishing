@@ -1,4 +1,5 @@
 var icon = null
+var dialog = null
 var label = null
 var state = null
 
@@ -44,21 +45,23 @@ var spriteArrived = ascii
 ###O  /;
 ##(|`/´
 ##/ /!
+asciiend
+
+var spriteDialog = ascii
+########  __________________________
+######## <__________________________)
+########                             
+########
 %%
-##_▄_  ,  __________________________
-###O  /; <__________________________)
-##(|`/´   
-##/ /!
+########   .─────────────────────────.
+######## <´                           )
+########  `──────────────────────────´
+########   
 %%
-##_▄_  ,   .─────────────────────────.
-###O  /; <´ ######################### )
-##(|`/´   `──────────────────────────´
-##/ /!     
-%%
-##_▄_  ,   .─────────────────────────.
-###O  /; <´ ######################### \
-##(|`/´   \ ######################### /
-##/ /!     `─────────────────────────´
+########   .─────────────────────────.
+######## <´ ######################### \
+########  \ ######################### /
+########   `─────────────────────────´
 asciiend
 
 var msgArrived = "Ahoy t' me shop!\nSpend yer scales on loot…"
@@ -87,3 +90,14 @@ func Init(parent)
   label.text = te.xt(msgArrived)
   label.visible = false
   parent.Add(label)
+
+  dialog = ui.AddAnim(spriteDialog)
+  dialog.flipX = true
+  dialog.dock = top_center
+  dialog.anchor = top_center
+  dialog.x = 28
+  dialog.y = 2
+  dialog.w = 1
+  dialog.h = 1
+  dialog.visible = false
+  parent.Add(dialog)
