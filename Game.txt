@@ -295,7 +295,6 @@ func SetState(newState)
     currentStateFunction = UpdateStateShop
     shop.shopIsHidden = false
     shopButton.visible = false
-    logo.Hide()
 
   :?newState = Waiting
     currentStateFunction = UpdateStateWaiting
@@ -398,7 +397,7 @@ func UpdateStateMenu()
 func UpdateStateThrowing()
   logo.Update()
 
-  ?key = backBegin
+  ?key = backBegin // FIXME: Debug only (doesnt work)
     SetState(Menu)
 
   ?stateTime = 5
@@ -414,7 +413,7 @@ func UpdateStateThrowing()
 func UpdateStateWaiting()
   logo.Update()
 
-  ?key = backBegin
+  ?key = backBegin // FIXME: Debug only (doesnt work)
     SetState(Menu)
     logo.Show()
 
@@ -555,14 +554,16 @@ func UpdateStateSuccess3()
 func UpdateStateShop()
   shop.Update(SetState)
 
-  ?key = backBegin
+  ?key = backBegin // FIXME: Debug only (doesnt work)
     SetState(Menu)
-    logo.Show()
-    logo.Update()
 
 
 func Update()
   stateTime++
   currentStateFunction()
+
+// TODO - Debug state
+  >`0,0,State: @state@
+  >`0,1,STime: @stateTime@
 
 SetState(Hidden)
