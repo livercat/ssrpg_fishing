@@ -7,6 +7,8 @@ var ownedAmount = 0
 var maxAmount = 5
 var baseCost = 80
 var costFactor = 0.05
+var minWaitTime = 30*40
+var maxWaitTime = 30*60
 
 var sprite = ascii
 #
@@ -21,7 +23,7 @@ func ToString()
 
 func Make(level)
   this.level = level
-  ownedAmount = progress.GetHireling(level)
+  ownedAmount = progress.hirelings[level]
 
   ?level = 0
     color = #white

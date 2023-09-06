@@ -58,6 +58,8 @@ var fisher = import Games/Fishing2/FishingComponents/Player
 var progress = import Games/Fishing2/Progress
 var topHud = import Games/Fishing2/FishingComponents/HUD
 
+var passive = import Games/Fishing2/Passive
+
 var shop = import Games/Fishing2/Shop
 var logo = import Games/Fishing2/FishingComponents/Logo
 
@@ -255,6 +257,15 @@ func SetState(newState)
   :?newState ! state & state = Success3
     resultDialog.Hide()
     fisher.playerAnimCatching.visible = false
+
+  :?newState ! state & state = Shop
+    // Update the rod if it changed after exiting the shop
+    // TODO: Animate new rod?
+    ?rod.level ! progress.rod
+      var rodFactory = new Games/Fishing2/Rod
+      rod = rodFactory.Make(progress.rod)
+      fisher.rod = rod
+      fisher.Update()
   
 
   // Enter state
@@ -277,13 +288,6 @@ func SetState(newState)
     ?fisher.playerAnimBigHead
       fisher.playerAnimBigHead.flipX = true
       fisher.playerAnimExpressions.frame = 0
-
-    // Update the rod if it changed after exiting the shop
-    ?rod.level ! progress.rod
-      var rodFactory = new Games/Fishing2/Rod
-      rod = rodFactory.Make(progress.rod)
-      fisher.rod = rod
-      fisher.Update()
     
   :?newState = Throwing
     currentStateFunction = UpdateStateThrowing
@@ -365,6 +369,10 @@ func Init()
     logo.Init(version)
     resultDialog.Init()
     fisher.InitPlayerAnimations()
+    passive.Init()
+    //testing
+    progress.scales = 0
+    progress.AddScales(5000000)
 
 
 func UpdateStateHidden()
@@ -561,6 +569,7 @@ func UpdateStateShop()
 func Update()
   stateTime++
   currentStateFunction()
+  passive.Update()
 
 // TODO - Debug state
   >`0,0,State: @state@

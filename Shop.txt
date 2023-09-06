@@ -3,6 +3,7 @@ var shopKeeper = import Games/Fishing2/ShopComponents/ShopKeeper
 var _ui = import Games/Fishing2/ShopComponents/UIFactory
 var utils = import Games/Fishing2/Utils
 var topHud = import Games/Fishing2/FishingComponents/HUD
+var passive = import Games/Fishing2/Passive
 
 var maxRodLevel = 6 // zero-indexed
 var maxHirelingLevel = 6 // zero-indexed
@@ -158,6 +159,8 @@ func PurchaseHireling(button)
     shopHire.Update()
     // 4. Update HUD
     topHud.Update()
+    // 5. Update Passive
+    passive.AddNewHire(idx)
   :
     play error
     MarkFailedPurchase(shopHire.costLabel)

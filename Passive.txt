@@ -1,0 +1,30 @@
+var progress = import Games/Fishing2/Progress
+// var offline = import Games/Fishing2/PassiveComponents/Offline
+
+var actives = []
+var maxHirelingLevel = 6
+
+func Init()
+  // TODO: check for offline farm
+  for idx = 0..maxHirelingLevel
+    var cnt = progress.hirelings[idx]
+    ?cnt = 0
+      idx = -2
+    :
+      var online = new Games/Fishing2/PassiveComponents/Online
+      online.MakeActiveHire(idx)
+      actives.Add(online)
+
+func AddNewHire(level)
+  ?progress.hirelings[level] = 1 // FIXME: Added above the shop layer
+    var online = new Games/Fishing2/PassiveComponents/Online
+    online.MakeNewHire(level)
+    actives.Add(online)
+  :
+    actives[level].label.text = te.xt("x"+progress.hirelings[level])
+    ?actives[level].state = waiting
+      actives[level].UpdateTimer()
+
+func Update()
+  for h : actives
+    h.Update()

@@ -2,6 +2,14 @@
 var scales = storage.Get("key_scales", 0)
 var recordWeight = storage.Get("key_record", 0)
 var rod = storage.Get("key_rod", 0)
+var lastOnline = storage.Get("key_last_online", 0)
+var hirelings = [ storage.Get("key_hireling_0", 0),
+                  storage.Get("key_hireling_1", 0),
+                  storage.Get("key_hireling_2", 0),
+                  storage.Get("key_hireling_3", 0),
+                  storage.Get("key_hireling_4", 0),
+                  storage.Get("key_hireling_5", 0),
+                  storage.Get("key_hireling_6", 0)]
 
 func AddScales(amount)
   scales = scales + amount
@@ -18,17 +26,18 @@ func CheckRecord(newWeight)
     return true
   return false
 
-func GetHireling(level)
-  var k = "key_hireling_" + level
-  return storage.Get(k, 0)
-
 func AddHireling(level)
+  hirelings[level] = hirelings[level] + 1
   var k = "key_hireling_" + level
-  return storage.Set(k, GetHireling(level) + 1)
+  return storage.Set(k, hirelings[level])
 
 func UpgradeRod()
   rod++
   storage.Set("key_rod", rod)
+
+func UpdateLastOnline()
+  lastOnline = time.ms // FIXME: unix time doesnt seem accurate
+  storage.Set("key_last_online", lastOnline)
 
 func IsFTUE()
   ?scales = 0

@@ -1,0 +1,253 @@
+var icon = null
+var layer = null
+var label = null
+var state = null
+var timer = null
+
+var x = null
+var y = null
+
+var hireling = null
+var rod = null
+
+var progress = import Games/Fishing2/Progress
+var topHud = import Games/Fishing2/FishingComponents/HUD
+var flyup = new Games/FlyupText
+
+var spriteWalk = ascii
+#
+##_{)
+#''¯)
+###/(
+%%
+#
+##_{)
+#''¯)
+###/<
+%%
+#
+##_{)
+#''¯)
+###/|
+%%
+#
+##_{)
+#''¯)
+###<(
+asciiend
+
+var spriteJump = ascii
+#
+##_{)
+#''¯)
+###<<
+%%
+#.#{)#,
+##`#)´#
+###((
+#
+%%
+#
+#.#{)#,
+##`#)´#
+###/ \#
+%%
+#
+#
+#.#{)#,
+##`#)´#
+%%
+#
+#``!!´´
+~#_{)#~
+~''¯)~
+%%
+#
+#
+##_{)
+#''¯)
+asciiend
+
+var spriteArrive = ascii
+#
+#
+###{)
+##//)
+%%
+#
+#
+,##{)
+#\//)
+%%
+#
+,
+#\_{)
+##\/)
+%%
+,
+#\
+##\_{)
+##°\/)
+asciiend
+
+var spriteActive = ascii
+,
+#\
+##\_{)
+##°\/)
+%%
+###,
+###|
+###|{)
+##°|¯)
+%%
+,
+#\
+##\_{)
+##°\/)
+%%
+###,
+###|
+###|{)
+##°|¯)
+%%
+,
+#\
+##\_{)
+##°\/)
+%%
+###,
+###|
+###|{)
+##°|¯)
+%%
+#####/
+###./
+###/{)
+####`)
+asciiend
+
+var spriteActive2 = ascii
+###
+#/#
+!##
+;_#
+%%
+#####
+###.´
+###;#
+#,´_#
+%%
+###
+#/#
+!##
+;_#
+%%
+#####
+###.´
+###;#
+#,´_#
+%%
+###
+#/#
+!##
+;_#
+%%
+#####
+###.´
+###;#
+#,´_#
+%%
+####.´¯
+###/###
+<><\###
+#`._;##
+asciiend
+
+func MakeActiveHire(level)
+  ?icon ! null
+    return
+  
+  var hirelingFactory = new Games/Fishing2/Hireling
+  hireling = hirelingFactory.Make(level)
+  var rodFactory = new Games/Fishing2/Rod
+  rod = rodFactory.Make(level)
+
+  x = 2+(8*(level%2))
+  y = -15+(2*level)
+
+  icon = ui.AddAnim(spriteActive)
+  icon.color = hireling.color
+  icon.dock = bottom_left
+  icon.anchor = bottom_left
+  icon.w = 1
+  icon.h = 1
+  icon.x = x
+  icon.y = y
+
+  layer = icon.AddLayer(spriteActive2)
+  layer.color = rod.lineColor
+  layer.pivotX = 2
+
+  label = ui.AddText()
+  label.dock = bottom_left
+  label.anchor = bottom_left
+  label.w = 2
+  label.h = 1
+  label.x = x+6
+  label.y = y+2
+  label.color = #white // FIXME: hireling.color #rainbow text doesnt work
+  label.text = te.xt("x"+progress.hirelings[level])
+
+  icon.visible = true
+  label.visible = true
+  icon.duration = 35
+
+func MakeNewHire(level)
+  // passive checks if active exists, this only if not
+  // make a new active hireling
+  // run new hire animation
+  // --> spriteArrive, spriteJump, spriteWalk
+  //    1. walk from left side, down to bank
+  //    2. jump in water, and walk into place
+  //    3. "arrive" + pull out rod
+  //    4. float off down river if being replaced (jump frame 3)
+  MakeActiveHire(level)
+  // FIXME: needs animation
+
+func UpdateTimer()
+  var min = hireling.minWaitTime / progress.hirelings[hireling.level]
+  var max = hireling.maxWaitTime / progress.hirelings[hireling.level]
+  var n = min + rng % (max - min + 1)
+  timer = time + n
+
+func CatchFish()
+  play cross_deadwood_row
+  var fish = new Games/Fishing2/FishingComponents/FishFactory
+  fish = fish.MakeFish(rod.minFish, rod.maxFish)
+  flyup.Show(x, screen.h+y, string.Format(te.xt(tid_fish_scales), fish.scales))
+  progress.AddScales(fish.scales)
+  topHud.Update()
+
+func Update()
+  ?state = null
+    UpdateTimer()
+    state = waiting
+  :?state = waiting
+    ?time >= timer
+      icon.Play()
+      state = catch1
+      timer = time + 30
+  :?state = catch1
+    ?time >= timer
+      CatchFish()
+      state = catch2
+      timer = time + 30
+  :?state = catch2
+    flyup.Update() //FIXME: visible in shop
+    ?time >= timer
+      icon.frame = 0
+      UpdateTimer()
+      state = waiting
+
+  

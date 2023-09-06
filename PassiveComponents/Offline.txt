@@ -1,0 +1,13 @@
+
+
+// func Init()
+  // check if return from offline session
+
+// func Update()
+  // update current time for next offline session
+  // function isnt needed here since progress.UpdateLastOnline()
+
+// func CalculateGain()
+  // "catch fish" based on offline time & active hires
+  // will need to determine artificial average to avoid issue of creating 8 million fish upon start
+  // look into "BigNumber" type mentioned by @standard, scales will ramp up quickly with offline
