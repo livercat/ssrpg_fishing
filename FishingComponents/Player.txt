@@ -34,6 +34,7 @@ func AddPlayerAnimWalk()
   // Base layer
   playerAnimWalk = ui.AddAnim(artPlayerWalk1)
   playerAnimRoot.Add(playerAnimWalk)
+  playerAnimWalk.color = #white
   playerAnimWalk.visible = false
   playerAnimWalk.anchor = top_left
   playerAnimWalk.pivotX = 5
@@ -56,6 +57,7 @@ func AddPlayerAnimArrived()
   // Base layer
   playerAnimArrived = ui.AddAnim(artPlayerArrived1)
   playerAnimRoot.Add(playerAnimArrived)
+  playerAnimArrived.color = #white
   playerAnimArrived.visible = false
   playerAnimArrived.anchor = top_left
   playerAnimArrived.pivotX = 5
@@ -77,6 +79,7 @@ func AddPlayerAnimThrowing()
   // Base layer
   playerAnimThrowing = ui.AddAnim(artPlayerThrowing1)
   playerAnimRoot.Add(playerAnimThrowing)
+  playerAnimThrowing.color = #white
   playerAnimThrowing.visible = false
   playerAnimThrowing.anchor = top_left
   playerAnimThrowing.pivotX = 18
@@ -98,6 +101,7 @@ func AddPlayerAnimCatching()
   // Base layer
   playerAnimCatching = ui.AddAnim(artPlayerCatching1)
   playerAnimRoot.Add(playerAnimCatching)
+  playerAnimCatching.color = #white
   playerAnimCatching.visible = false
   playerAnimCatching.anchor = top_left
   playerAnimCatching.pivotX = 18
@@ -123,6 +127,7 @@ func AddPlayerAnimBigHead()
   ?bighead
     playerAnimBigHead = ui.AddAnim(artBigHead)
     playerAnimRoot.Add(playerAnimBigHead)
+    playerAnimBigHead.color = #white
     playerAnimBigHead.anchor = top_left
     playerAnimBigHead.pivotX = 2
     playerAnimBigHead.pivotY = 2
@@ -132,6 +137,7 @@ func AddPlayerAnimBigHead()
 
     playerAnimExpressions = ui.AddAnim(artBigHeadExpressions)
     playerAnimRoot.Add(playerAnimExpressions)
+    playerAnimExpressions.color = #white
     playerAnimExpressions.anchor = top_left
     playerAnimExpressions.pivotX = 2
     playerAnimExpressions.pivotY = 1

@@ -1,13 +1,124 @@
+/*
+Methodology used for calculating offline farming:
+First, get average scales for rod level
+  - Pn(X) ==> probability of fish <n> for rod level <X> for a catch
+      --> Pn(X) = Pn(X) = max(0, min(rodMaxX, selMaxn) - max(rodMinX, selMinn) + 1) / rodMaxX-rodMinX
+  - S(n)  ==> avg scales of fish <n>
+      --> S(n) = (scalesMinn+scalesMaxn) / 2
+  - E(X)  ==> expected value in scales for rod level <X> per catch
+      --> E(X) = P0(X)*S(0) + ... + Pn(X)*S(n)
+
+Now, get catch per sec for hireling level <X>
+  - catch/sec for level <X>
+      --> cs(X) ==> 1/((minWaitX + maxWaitX) / 2)
+  - total scales for level <X>
+      --> total(X) ==> cs(X) * E(X) * secondsOffline
+
+Finally, sum all total(X) for X = 0..highestActiveHireling
+--> roughly 8 scales/sec at max ==> 2,147,483,647/(8*60*60*24*365) = ~8.5yrs offline to overflow
+*/
+
+var progress = import Games/Fishing2/Progress
+var loot = import Games/Fishing2/FishingComponents/FishLootTable
+var utils = import Games/Fishing2/Utils
+
+var totalScalesOffline = null
+var totalSecOffline = null
+var fishSelMins = null
+var fishSelMaxs = null
+var fishScaleMins = null
+var fishScaleMaxs = null
 
 
-// func Init()
-  // check if return from offline session
+func Init()
+  totalSecOffline = GetSecSinceLastOnline()
+  totalScalesOffline = 0
+  fishSelMins = [loot.selMin0,
+                 loot.selMin1,
+                 loot.selMin2,
+                 loot.selMin3,
+                 loot.selMin4,
+                 loot.selMin5,
+                 loot.selMin6,
+                 loot.selMin7]
+  fishSelMaxs = [loot.selMax0-1,
+                 loot.selMax1-1,
+                 loot.selMax2-1,
+                 loot.selMax3-1,
+                 loot.selMax4-1,
+                 loot.selMax5-1,
+                 loot.selMax6-1,
+                 loot.selMax7] // no -1 since range of 1 (254-254)
+  fishScaleMins = [loot.scalesMin0,
+                   loot.scalesMin1,
+                   loot.scalesMin2,
+                   loot.scalesMin3,
+                   loot.scalesMin4,
+                   loot.scalesMin5,
+                   loot.scalesMin6,
+                   loot.scalesMin7]
+  fishScaleMaxs = [loot.scalesMax0,
+                   loot.scalesMax1,
+                   loot.scalesMax2,
+                   loot.scalesMax3,
+                   loot.scalesMax4,
+                   loot.scalesMax5,
+                   loot.scalesMax6,
+                   loot.scalesMax7]
 
-// func Update()
-  // update current time for next offline session
-  // function isnt needed here since progress.UpdateLastOnline()
+func CalculateGain(hireling, rod)
+  var scalesPerCatch = GetScalesPerCatch(rod)
+  var catchPerSec = GetCatchPerSec(hireling)
+  var scalesGained = math.RoundToInt(catchPerSec * scalesPerCatch * totalSecOffline)
+  totalScalesOffline = totalScalesOffline + scalesGained
+  ?totalScalesOffline < 0 | scalesGained < 0
+    utils.Panic("Integer overflow, offline scales: " + totalScalesOffline)
+  return scalesGained
 
-// func CalculateGain()
-  // "catch fish" based on offline time & active hires
-  // will need to determine artificial average to avoid issue of creating 8 million fish upon start
-  // look into "BigNumber" type mentioned by @standard, scales will ramp up quickly with offline
+func GetSecSinceLastOnline()
+  var lastDT = string.Split(progress.lastOnline, ":")
+  // Use year of lastOnline as epoch
+  var epoch = int.Parse(lastDT[0])
+  // Add up seconds of lastOnline since epoch
+  var secLastOnline = SecSinceEpoch(epoch,
+                                   ^epoch,
+                                   ^int.Parse(lastDT[1]),
+                                   ^int.Parse(lastDT[2]),
+                                   ^int.Parse(lastDT[3]),
+                                   ^int.Parse(lastDT[4]),
+                                   ^int.Parse(lastDT[5]))
+  // Add up seconds of current since epoch
+  var secCurrent = SecSinceEpoch(epoch,
+                                ^time.year,
+                                ^time.month,
+                                ^time.day,
+                                ^time.hour,
+                                ^time.minute,
+                                ^time.second)
+  // Compare epoch->lastOnline vs epoch->current
+  return secCurrent - secLastOnline
+
+func SecSinceEpoch(epoch,year,month,day,hour,minute,second)
+  var sec = (((year-epoch)*365 + (month-1)*30.42 + day)*24 + hour)*60*60 + minute*60 + second 
+  return math.RoundToInt(sec)
+
+func GetScalesPerCatch(rod)
+  var Pn = 0
+  var Sn = 0
+  var E = 0
+  for idx = 0..fishSelMins.Count()-1
+    // Pn(X) = max(0, min(rodMaxX, selMaxn) - max(rodMinX, selMinn) + 1) / rodMaxX-rodMinX
+    // calculate overlap of ranges: =0 no overlap, >0 overlap
+    var overlap = 0.0 + math.Max(0, math.Min(rod.maxFish, fishSelMaxs[idx]) - math.Max(rod.minFish, fishSelMins[idx]) + 1)
+    Pn = overlap / (rod.maxFish - rod.minFish)
+    // S(n) = (scalesMinn+scalesMaxn) / 2
+    Sn = (fishScaleMins[idx] + fishScaleMaxs[idx]) / 2.0
+    // E(X) = P0(X)*S(0) + ... + Pn(X)*S(n)
+    E = E + (Pn * Sn)
+  return E
+
+func GetCatchPerSec(hireling)
+  // cs(X) ==> 1/((minWaitX + maxWaitX) / 2)
+  var minWait = hireling.minWaitTime / (hireling.ownedAmount*30.0)
+  var maxWait = hireling.maxWaitTime / (hireling.ownedAmount*30.0)
+  return 1 / ((minWait + maxWait) / 2)

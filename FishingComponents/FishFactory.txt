@@ -1,11 +1,11 @@
-
+var loot = import Games/Fishing2/FishingComponents/FishLootTable
 
 func MakeFish(min, max)
   var fish = new Games/Fishing2/FishingComponents/FishData
 
   var selectedFish = RngRange(min, max)
 
-  ?selectedFish >= 0 & selectedFish < 128
+  ?selectedFish >= loot.selMin0 & selectedFish < loot.selMax0
     fish.name = te.xt(tid_fish_speedyfin)
     fish.art = ascii
 #########
@@ -14,12 +14,12 @@ asciiend
     fish.rodPivotX = 7
     fish.rodPivotY = 0
     fish.height = 3
-    fish.scalesMin = 1
-    fish.scalesMax = 3
+    fish.scalesMin = loot.scalesMin0
+    fish.scalesMax = loot.scalesMax0
     fish.acceleration = 15
 
 
-  :?selectedFish >= 128 & selectedFish < 192
+  :?selectedFish >= loot.selMin1 & selectedFish < loot.selMax1
     fish.name = te.xt(tid_fish_bowfish)
     fish.art = ascii
 #.  )  ##
@@ -29,12 +29,12 @@ asciiend
     fish.rodPivotX = 7
     fish.rodPivotY = 0
     fish.height = 3
-    fish.scalesMin = 5
-    fish.scalesMax = 10
+    fish.scalesMin = loot.scalesMin1
+    fish.scalesMax = loot.scalesMax1
     fish.acceleration = 16
 
 
-  :?selectedFish >= 192 & selectedFish < 224
+  :?selectedFish >= loot.selMin2 & selectedFish < loot.selMax2
     fish.name = te.xt(tid_fish_spookfin)
     fish.art = ascii
 #  (°_ ##
@@ -44,12 +44,12 @@ asciiend
     fish.rodPivotX = 7
     fish.rodPivotY = 0
     fish.height = 3
-    fish.scalesMin = 15
-    fish.scalesMax = 20
+    fish.scalesMin = loot.scalesMin2
+    fish.scalesMax = loot.scalesMax2
     fish.acceleration = 17
 
 
-  :?selectedFish >= 224 & selectedFish < 240
+  :?selectedFish >= loot.selMin3 & selectedFish < loot.selMax3
     fish.name = te.xt(tid_fish_poker)
     fish.art = ascii
 ##,\_####
@@ -59,12 +59,12 @@ asciiend
     fish.rodPivotX = 6
     fish.rodPivotY = 0
     fish.height = 3
-    fish.scalesMin = 25
-    fish.scalesMax = 30
+    fish.scalesMin = loot.scalesMin3
+    fish.scalesMax = loot.scalesMax3
     fish.acceleration = 18
 
 
-  :?selectedFish >= 240 & selectedFish < 248
+  :?selectedFish >= loot.selMin4 & selectedFish < loot.selMax4
     fish.name = te.xt(tid_fish_outchboi)
     fish.art = ascii
 # .`'´,##
@@ -74,11 +74,11 @@ asciiend
     fish.rodPivotX = 7
     fish.rodPivotY = 0
     fish.height = 3
-    fish.scalesMin = 35
-    fish.scalesMax = 40
+    fish.scalesMin = loot.scalesMin4
+    fish.scalesMax = loot.scalesMax4
     fish.acceleration = 19
 
-  :?selectedFish >= 248 & selectedFish < 252
+  :?selectedFish >= loot.selMin5 & selectedFish < loot.selMax5
     fish.name = te.xt(tid_fish_whopper)
     fish.art = ascii
 ##(‾‾`._#
@@ -90,11 +90,11 @@ asciiend
     fish.rodPivotX = 9
     fish.rodPivotY = 1
     fish.height = 5
-    fish.scalesMin = 45
-    fish.scalesMax = 50
+    fish.scalesMin = loot.scalesMin5
+    fish.scalesMax = loot.scalesMax5
     fish.acceleration = 20
 
-  :?selectedFish >= 252 & selectedFish < 254
+  :?selectedFish >= loot.selMin6 & selectedFish < loot.selMax6
     fish.name = te.xt(tid_fish_moonfin)
     fish.art = ascii
 ###.--.##
@@ -106,8 +106,8 @@ asciiend
     fish.rodPivotX = 7
     fish.rodPivotY = 1
     fish.height = 5
-    fish.scalesMin = 55
-    fish.scalesMax = 65
+    fish.scalesMin = loot.scalesMin6
+    fish.scalesMax = loot.scalesMax6
     fish.acceleration = 21
 
   :
@@ -122,8 +122,8 @@ asciiend
     fish.rodPivotX = 8
     fish.rodPivotY = 1
     fish.height = 5
-    fish.scalesMin = 70
-    fish.scalesMax = 99
+    fish.scalesMin = loot.scalesMin7
+    fish.scalesMax = loot.scalesMax7
     fish.acceleration = 22
 
 

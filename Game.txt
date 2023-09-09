@@ -370,9 +370,23 @@ func Init()
     resultDialog.Init()
     fisher.InitPlayerAnimations()
     passive.Init()
-    //testing
+    // debug
     progress.scales = 0
     progress.AddScales(5000000)
+    // progress.hirelings[0] = -1
+    // progress.AddHireling(0)
+    // progress.hirelings[1] = -1
+    // progress.AddHireling(1)
+    // progress.hirelings[2] = -1
+    // progress.AddHireling(2)
+    // progress.hirelings[3] = -1
+    // progress.AddHireling(3)
+    // progress.hirelings[4] = -1
+    // progress.AddHireling(4)
+    progress.hirelings[5] = -1
+    progress.AddHireling(5)
+    progress.hirelings[6] = -1
+    progress.AddHireling(6)
 
 
 func UpdateStateHidden()
@@ -569,10 +583,10 @@ func UpdateStateShop()
 func Update()
   stateTime++
   currentStateFunction()
-  passive.Update()
+  passive.Update(state)
 
 // TODO - Debug state
-  >`0,0,State: @state@
-  >`0,1,STime: @stateTime@
+  // >`0,0,State: @state@
+  // >`0,1,STime: @stateTime@
 
 SetState(Hidden)

@@ -1,30 +1,102 @@
 var progress = import Games/Fishing2/Progress
-// var offline = import Games/Fishing2/PassiveComponents/Offline
+var offline = import Games/Fishing2/PassiveComponents/Offline
+var topHud = import Games/Fishing2/FishingComponents/HUD
+var sprites = import Games/Fishing2/PassiveComponents/Sprites
 
 var actives = []
+var activeRoot = null
 var maxHirelingLevel = 6
+var offlineDialog = null
 
 func Init()
-  // TODO: check for offline farm
+  // Create root panel for hirelings
+  activeRoot = ui.AddPanel()
+  activeRoot.style = sprites.invisStyle
+  activeRoot.dock = bottom_left
+  activeRoot.anchor = bottom_left
+  activeRoot.w = 1
+  activeRoot.h = 1
+  activeRoot.x = 0
+  activeRoot.y = 0
+  // Skip rest of init if zero white hirelings purchased
+  ?progress.hirelings[0] = 0
+    return
+  // Init offline values for calcs
+  offline.Init()
+  // Iterate purchased hirelings
   for idx = 0..maxHirelingLevel
-    var cnt = progress.hirelings[idx]
-    ?cnt = 0
+    // End iteration once hireling level found with amount zero
+    var count = progress.hirelings[idx]
+    ?count = 0
       idx = -2
     :
+      // Create new active hireling instance and add to list
       var online = new Games/Fishing2/PassiveComponents/Online
       online.MakeActiveHire(idx)
       actives.Add(online)
+      activeRoot.Add(online.root)
+      // Calculate scales earned by hireling while offline
+      offline.CalculateGain(online.hireling, online.rod)
+  // Display offline gain dialog
+  DisplayOfflineGain()
+  progress.AddScales(offline.totalScalesOffline)
+  topHud.Update()
 
 func AddNewHire(level)
-  ?progress.hirelings[level] = 1 // FIXME: Added above the shop layer
+  // Check if new hire is first hireling of given level puchased
+  ?progress.hirelings[level] = 1
+    // Create "new hire" active hireling and add to list
     var online = new Games/Fishing2/PassiveComponents/Online
     online.MakeNewHire(level)
     actives.Add(online)
+    activeRoot.Add(online.root)
   :
+    // Update active if hireling of same level already purchased
     actives[level].label.text = te.xt("x"+progress.hirelings[level])
     ?actives[level].state = waiting
       actives[level].UpdateTimer()
 
-func Update()
+func DisplayOfflineGain()
+  ?offlineDialog = null
+    offlineDialog = ui.AddPanel()
+    offlineDialog.style = sprites.invisStyle
+    offlineDialog.dock = bottom_left
+    offlineDialog.anchor = bottom_left
+    offlineDialog.w = 1
+    offlineDialog.h = 1
+    offlineDialog.x = 9
+    offlineDialog.y = 4
+
+    var msg = "Boss! We got "+offline.totalScalesOffline+"\nscales when you were away"
+    var label = ui.AddText(te.xt(msg))
+    offlineDialog.Add(label)
+    label.anchor = bottom_left
+    label.w = 25
+    label.h = 2
+    label.x = 4
+    label.y = -1
+    label.align = center
+
+    var bubble = ui.AddAnim(sprites.spriteDialog)
+    offlineDialog.Add(bubble)
+    bubble.anchor = bottom_left
+    bubble.color =  #white
+    bubble.duration = 6
+    bubble.Play()
+
+    // Add dialog panel to white hireling temporarily
+    actives[0].root.Add(offlineDialog)
+  :
+    offlineDialog.Recycle()
+    offlineDialog = null
+
+func Update(gameState)
+  // Call update for active hirelings
   for h : actives
-    h.Update()
+    h.Update(gameState)
+  // Update lastOnline every second
+  ?time % 30 = 0
+    progress.UpdateLastOnline()
+  // Remove offline dialog after player arrival
+  ?gameState ! Arriving & offlineDialog ! null
+    DisplayOfflineGain()

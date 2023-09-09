@@ -36,7 +36,13 @@ func UpgradeRod()
   storage.Set("key_rod", rod)
 
 func UpdateLastOnline()
-  lastOnline = time.ms // FIXME: unix time doesnt seem accurate
+  lastOnline = string.Format("{0}:{1}:{2}:{3}:{4}:{5}",
+    ^time.year,
+    ^time.month,
+    ^time.day,
+    ^time.hour,
+    ^time.minute,
+    ^time.second)
   storage.Set("key_last_online", lastOnline)
 
 func IsFTUE()

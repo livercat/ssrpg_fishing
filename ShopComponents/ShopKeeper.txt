@@ -69,6 +69,7 @@ var msgReturned = "Back fer more are ye?\nMe loot must be the best!"
 
 func Init(parent)
   icon = ui.AddAnim(spriteWalking)
+  icon.color = #white
   icon.flipX = true
   icon.dock = top_center
   icon.anchor = top_center
@@ -92,6 +93,7 @@ func Init(parent)
   parent.Add(label)
 
   dialog = ui.AddAnim(spriteDialog)
+  dialog.color = #white
   dialog.flipX = true
   dialog.dock = top_center
   dialog.anchor = top_center

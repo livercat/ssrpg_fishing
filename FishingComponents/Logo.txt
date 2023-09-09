@@ -58,6 +58,7 @@ asciiend
 #########################‾‾‾
 asciiend
     var img = ui.AddAnim(imgStrA)
+    img.color = #white
     img.visible = true
     panel.Add(img)
     img.x = 22
