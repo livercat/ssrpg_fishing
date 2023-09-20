@@ -196,8 +196,9 @@ func Update(SetGameState)
 
         enable pause
 
-        ?shopKeeper.state = done
+        ?shopKeeper.state = msg1
           shopKeeper.label.text = te.xt(shopKeeper.msgReturned)
+          shopKeeper.state = msg2
 
         shopRoot.y = screen.h
         shopRoot.visible = false
@@ -246,7 +247,11 @@ func Update(SetGameState)
             shopKeeper.dialog.visible = inherit
             shopKeeper.dialog.duration = 6
             shopKeeper.dialog.Play()
+            play slave_npc
             shopKeeper.label.visible = inherit
+            shopKeeper.state = msg1
+          :?shopKeeper.state = msg2
+            play slave_npc
             shopKeeper.state = done
 
   ?purchaseFailedTimer ! null & time >= purchaseFailedTimer

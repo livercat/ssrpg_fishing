@@ -5,6 +5,7 @@ var playerAnimThrowing = null
 var playerAnimCatching = null
 var playerAnimBigHead = null
 var playerAnimExpressions = null
+var playerAnimNewRod = null
 var rod
 
 var layerFishingRodThrowing
@@ -28,6 +29,7 @@ func InitPlayerAnimations()
   AddPlayerAnimThrowing()
   AddPlayerAnimCatching()
   AddPlayerAnimBigHead()
+  AddPlayerAnimNewRod()
 
 
 func AddPlayerAnimWalk()
@@ -141,6 +143,16 @@ func AddPlayerAnimBigHead()
     playerAnimExpressions.anchor = top_left
     playerAnimExpressions.pivotX = 2
     playerAnimExpressions.pivotY = 1
+
+func AddPlayerAnimNewRod()
+  playerAnimNewRod = ui.AddAnim(artNewRod)
+  playerAnimRoot.Add(playerAnimNewRod)
+  playerAnimNewRod.color = #white
+  playerAnimNewRod.anchor = top_left
+  playerAnimNewRod.pivotX = 3
+  playerAnimNewRod.pivotY = 1
+  playerAnimNewRod.duration = 15
+  playerAnimNewRod.visible = false
 
 
 func Update()
@@ -297,10 +309,10 @@ var artPlayerThrowing1 = ascii
 %%
 #
 ##############,
-############.´ \
-###########/    \_O
-#########.´     °\/
-###,####/        / \
+############.´#\
+###########/####\_O
+#########.´#####°\/
+###,####/########/ \
 ##(__.-´
 %%
 asciiend
@@ -360,9 +372,9 @@ var artPlayerThrowing2 = ascii
 %%
 #
 ##############,
-############.´ \
-###########/    \
-#########.´     °\
+############.´#\
+###########/####\
+#########.´#####°\
 ###,####/
 ##(__.-´
 %%
@@ -431,10 +443,10 @@ asciiend
 var artPlayerCatching1 = ascii
 #
 ##############,
-############.´ \
-###########/    \_O
-#########.´     °\/
-########/        / \
+############.´#\
+###########/####\_O
+#########.´#####°\/
+########/########/ \
 ######.´
 #####/
 ###.´
@@ -443,10 +455,10 @@ var artPlayerCatching1 = ascii
 %%
 ################,
 ##############.´|
-#############/  |
-############/  °|\O
-##########.´     `|
-#########/       / \
+#############/##|
+############/##°|\O
+##########.´#####`|
+#########/#######/ \
 ########/
 ######.´
 #####/
@@ -454,11 +466,11 @@ var artPlayerCatching1 = ascii
 ##,´__ _
 %%
 #################__
-##############.´  /
-#############/  ./  !
-####,-.#####/   /(O
-###´###`._.´     `|
-########         / \
+##############.´##/
+#############/##./##!
+####,-.#####/###/(O
+###´###`._.´#####`|
+#################/ \
 asciiend
 
 var artPlayerCatching2 = ascii
@@ -538,4 +550,60 @@ var artBigHeadExpressions = ascii
 (TT )
 %%
 (^^ )
+asciiend
+
+var artNewRod = ascii
+##########
+##( ¯¯)###
+#( (  ))##
+#((_( )###
+##########
+%%
+#(¯( ¯¯))#
+( (¯¯ )_)#
+#( ( _) )#
+(¯ (  _))#
+#((__) )##
+%%
+##(¯( ¯)##
+( ( _ )_)#
+#(¯(  ) )#
+#( )( _))#
+##(¯)_)###
+%%
+##(¯(¯¯)##
+#( _)#( )#
+(_ )###(¯)
+#(¯ )#(_)#
+##(_)_)###
+%%
+##(¯)#(¯)#
+#(_)###(_)
+(_)####(¯)
+#(¯)###(_)
+##(_)#(_)#
+%%
+##()###( )
+#((_###¯)#
+()######()
+(¯)####(_)
+((_)###¯)#
+%%
+#(¯)######
+##########
+#######(_)
+(_)#######
+######(¯)#
+%%
+########()
+##########
+()########
+#######()#
+##########
+%%
+#
+#
+#
+#
+#
 asciiend

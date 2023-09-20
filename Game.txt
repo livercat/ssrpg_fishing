@@ -264,6 +264,10 @@ func SetState(newState)
     ?rod.level ! progress.rod
       var rodFactory = new Games/Fishing2/Rod
       rod = rodFactory.Make(progress.rod)
+      fisher.playerAnimNewRod.frame = 0
+      fisher.playerAnimNewRod.visible = true
+      fisher.playerAnimNewRod.Play()
+      play treasure_item_rainbow
       fisher.rod = rod
       fisher.Update()
   
@@ -372,17 +376,19 @@ func Init()
     passive.Init()
     // debug
     progress.scales = 0
-    progress.AddScales(5000000)
-    // progress.hirelings[0] = -1
-    // progress.AddHireling(0)
-    // progress.hirelings[1] = -1
-    // progress.AddHireling(1)
-    // progress.hirelings[2] = -1
-    // progress.AddHireling(2)
-    // progress.hirelings[3] = -1
-    // progress.AddHireling(3)
-    // progress.hirelings[4] = -1
-    // progress.AddHireling(4)
+    progress.AddScales(50000000)
+    progress.rod = -1
+    progress.UpgradeRod()
+    progress.hirelings[0] = -1
+    progress.AddHireling(0)
+    progress.hirelings[1] = -1
+    progress.AddHireling(1)
+    progress.hirelings[2] = -1
+    progress.AddHireling(2)
+    progress.hirelings[3] = -1
+    progress.AddHireling(3)
+    progress.hirelings[4] = -1
+    progress.AddHireling(4)
     progress.hirelings[5] = -1
     progress.AddHireling(5)
     progress.hirelings[6] = -1
@@ -588,5 +594,9 @@ func Update()
 // TODO - Debug state
   // >`0,0,State: @state@
   // >`0,1,STime: @stateTime@
+  var t1 = time.ms
+  >@time.ms-t1@
+  t1 = time.ms
+
 
 SetState(Hidden)
