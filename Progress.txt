@@ -1,5 +1,6 @@
-
 var scales = storage.Get("key_scales", 0)
+?Type(scales) = object
+  scales = int.Parse(scales + "")
 var recordWeight = storage.Get("key_record", 0)
 var rod = storage.Get("key_rod", 0)
 var lastOnline = storage.Get("key_last_online", 0)
@@ -12,11 +13,11 @@ var hirelings = [ storage.Get("key_hireling_0", 0),
                   storage.Get("key_hireling_6", 0)]
 
 func AddScales(amount)
-  scales = scales + amount
+  scales = math.FloorToInt(scales + amount)
   storage.Set("key_scales", scales)
 
 func SubtractScales(amount)
-  scales = scales - amount
+  scales = math.FloorToInt(scales - amount)
   storage.Set("key_scales", scales)
 
 func CheckRecord(newWeight)
