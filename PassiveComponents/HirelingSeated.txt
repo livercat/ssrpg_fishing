@@ -1,0 +1,279 @@
+var common = import Games/Fishing2/PassiveComponents/Common
+
+var state = null
+var root = null
+
+var animColor = null
+
+var rootActive = null
+var iconBodyActive = null
+var iconChairActive = null
+var iconTrapActive = null
+
+var rootNewhire = null
+var iconWalkNewHire = null
+var iconSitNewHire = null
+
+func InitActive() // Init active anim in rootActive, hidden until started
+  ?root = null | rootActive ! null
+    return
+
+  rootActive = ui.AddPanel()
+  root.Add(rootActive)
+  rootActive.style = common.invisStyle
+  rootActive.dock = top_left
+  rootActive.anchor = top_left
+  rootActive.w = 1
+  rootActive.h = 1
+  rootActive.visible = false
+
+  iconChairActive = ui.AddAnim(artChair)
+  rootActive.Add(iconChairActive)
+  iconChairActive.anchor = top_left
+  iconChairActive.color = #white
+  iconChairActive.pivotX = -2
+  iconChairActive.pivotY = -1
+
+  iconBodyActive = ui.AddAnim(artActiveBody)
+  rootActive.Add(iconBodyActive)
+  iconBodyActive.anchor = top_left
+  iconBodyActive.color = animColor
+  iconBodyActive.duration = 20
+
+  iconTrapActive = ui.AddAnim(artActiveTrap)
+  rootActive.Add(iconTrapActive)
+  iconTrapActive.anchor = top_left
+  iconTrapActive.color = animColor
+  iconTrapActive.pivotX = 0
+  iconTrapActive.pivotY = -8
+
+func PlayActive() // Play active's catch animation
+  iconBodyActive.Play()
+  iconTrapActive.Play()
+
+func ResetActive() // Reset active's animation after catch
+  iconBodyActive.frame = 0
+  iconTrapActive.frame = 0
+
+func InitNewHire() // Init new hire anim in rootNewHire
+  ?root = null | rootNewhire ! null
+    return
+
+  rootNewhire = ui.AddPanel()
+  root.Add(rootNewhire)
+  rootNewhire.style = common.invisStyle
+  rootNewhire.dock = top_left
+  rootNewhire.anchor = top_left
+  rootNewhire.w = 1
+  rootNewhire.h = 1
+  rootNewhire.x = -(root.x) - screen.w/2
+
+  iconWalkNewHire = ui.AddAnim(artCarrying)
+  rootNewhire.Add(iconWalkNewHire)
+  iconWalkNewHire.anchor = top_left
+  iconWalkNewHire.color = animColor
+  iconWalkNewHire.pivotX = 1
+
+  var l1 = iconWalkNewHire.AddLayer(artChair)
+  l1.color = #white
+  l1.pivotX = -2
+
+  iconSitNewHire = ui.AddAnim(artSitDown)
+  rootNewhire.Add(iconSitNewHire)
+  iconSitNewHire.anchor = top_left
+  iconSitNewHire.color = animColor
+  iconSitNewHire.pivotX = 1
+  iconSitNewHire.visible = false
+
+  var l2 = iconSitNewHire.AddLayer(artChairPlace)
+  l2.color = #white
+  l2.pivotX = -2
+
+  var l3 = iconSitNewHire.AddLayer(artTrapFloat)
+  l3.color = animColor
+  l3.pivotY = -8
+  
+func RecycleNewHire() // Recycle new hire animation after completion
+  ?rootActive = null
+    return
+  rootActive.visible = true
+
+  ?rootNewhire = null
+    return
+  rootNewhire.Recycle()
+  rootNewhire = null
+  iconWalkNewHire = null
+  iconSitNewHire = null
+
+func NewHireUpdate() // NewHire animation's update loop
+  ?state = null
+    InitNewHire()
+    iconWalkNewHire.duration = 15
+    iconWalkNewHire.loop = true
+    iconWalkNewHire.Play()
+    state = walking
+  :?state = walking
+    ?rootNewhire.absoluteX < root.absoluteX
+      ?time % 2 = 0
+        rootNewhire.x++
+    :
+      play cross_deadwood_bump
+      iconWalkNewHire.visible = false
+      iconSitNewHire.visible = true
+      iconSitNewHire.duration = 30
+      iconSitNewHire.Play()
+      play air_hiss
+      state = arrived
+  :?state = arrived
+    ?!iconSitNewHire.playing
+      state = done
+
+// Active Sprites
+
+var artActiveBody = ascii
+##{)
+#//)
+#((
+%%
+#{)
+#/)'
+#((
+%%
+#{)
+#´)'
+#/(
+%%
+#{)
+#´)`
+#/(
+%%
+#{)
+#`)´
+#/(
+%%
+.{),
+#`)
+#/(
+asciiend
+
+var artActiveTrap = ascii
+#.---.
+#|#|#|
+#
+%%
+#
+#.---.
+#┴#┴#┴
+%%
+#.---.
+#|#|#|
+#
+%%
+#
+#.---.
+#┴#┴#┴
+%%
+#.---.
+#|#|#|
+#
+%% {repeat:2}
+##!!!
+#.---.
+#┴#┴#┴
+asciiend
+
+// New Hire Sprites
+
+var artChair = ascii
+##|
+|‾|
+asciiend
+
+var artChairPlace = ascii
+##|
+|‾|
+#
+%% {repeat:3}
+#
+##|
+|‾|
+%% {repeat:4}
+#
+##|
+#‾|
+asciiend
+
+var artTrapFloat = ascii
+% {repeat:4}
+#
+#
+#
+%%
+##.°
+#o##O
+#.---.
+%%
+#o#O
+##.o#°
+#.---.
+%%
+##o°#
+#.---.
+#┴#┴#┴
+%%
+#.---.
+#|#|#|
+#
+asciiend
+
+var artCarrying = ascii
+#(}_
+#(‾
+#)\
+%%
+#(}_
+#(‾
+#>\
+%%
+#(}_
+#(‾
+#|\
+%%
+#(}_
+#(‾
+#)>
+asciiend
+
+var artSitDown = ascii
+#(}_
+#(‾
+#)\
+%%
+#(}
+#(\\
+#)\
+%%
+#{)
+#/)`
+#/(
+%%
+#{)
+#/)`
+#|(
+%%
+##{)
+##/)`
+##(|
+%%
+##{)
+##´)'
+##((
+%%
+##{)
+##//)
+##((
+%%
+###{)
+##//)
+##((
+asciiend

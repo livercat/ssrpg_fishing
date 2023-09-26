@@ -1,76 +1,71 @@
 var progress = import Games/Fishing2/Progress
 var topHud = import Games/Fishing2/FishingComponents/HUD
 var flyup = new Games/FlyupText
-var sprites = import Games/Fishing2/PassiveComponents/Sprites
+var common = import Games/Fishing2/PassiveComponents/Common
 
 var root = null
-var icon = null
-var layer = null
+var hirelingAnim = null
 var label = null
+
 var state = null
 var timer = null
-
-var x = null
-var y = null
 
 var hireling = null
 var rod = null
 
-
-func MakeActiveHire(level)
+func MakeActiveHire(level, activeRoot)
   ?root ! null
     return
-  
+
+  // Create rod and hireling
   var hirelingFactory = new Games/Fishing2/Hireling
   hireling = hirelingFactory.Make(level)
   var rodFactory = new Games/Fishing2/Rod
   rod = rodFactory.Make(level)
 
-  x = 2+(8*(level%2))
-  y = -15+(2*level)
-
+  // Create root 
   root = ui.AddPanel()
-  root.style = sprites.invisStyle
-  root.dock = bottom_left
-  root.anchor = bottom_left
+  activeRoot.Add(root)
+  root.style = common.invisStyle
+  root.dock = top_center
+  root.anchor = top_center
   root.w = 1
   root.h = 1
-  root.x = x
-  root.y = y
 
-  icon = ui.AddAnim(sprites.spriteActive)
-  root.Add(icon)
-  icon.color = hireling.color
-  icon.duration = 35
-  icon.anchor = top_left
-  icon.pivotX = 0
-  icon.pivotY = 0
-
-  layer = icon.AddLayer(sprites.spriteActive2)
-  layer.color = rod.lineColor
-  layer.pivotX = 2
-  layer.pivotY = 0
-
+  // Create label
   label = ui.AddText()
-  root.Add(label)
+  activeRoot.Add(label)
   label.anchor = top_left
-  label.x = 6
-  label.y = 2
-  label.color = #white // FIXME: hireling.color #rainbow text doesnt work
+  label.color = #888888
   label.text = te.xt("x"+progress.hirelings[level])
 
-func MakeNewHire(level)
-  // passive checks if active exists, this only if not
-  // make a new active hireling
-  // run new hire animation
-  // --> spriteArrive, spriteJump, spriteWalk
-  //    1. walk from left side, down to bank
-  //    2. jump in water, and walk into place
-  //    3. "arrive" + pull out rod
-  //    4. float off down river if being replaced (jump frame 3)
-  MakeActiveHire(level)
+  // From hireling level: set xy (anim & label), create new copy of anim
+  ?level >= 4
+    root.x = -22 - 5*(level-4)
+    root.y = 5
+    label.x = root.x + 3
+    label.y = root.y + 3
+    hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingSeated
+  :?level >= 1
+    root.x = -10 - 10*(level-1)
+    root.y = 20 + 2*((level-1)%2)
+    label.x = root.x + 5
+    label.y = root.y
+    hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingCanoe
+  :
+    root.x = 2
+    root.y = 16
+    label.x = root.x + 2
+    label.y = root.y + 3
+    hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingFall
+  // Pass hireling root and color to animation
+  hirelingAnim.root = root
+  hirelingAnim.animColor = hireling.color
+  // Init hireling animation
+  hirelingAnim.InitActive()
 
 func UpdateTimer()
+  // Update catch timer with rng from hireling level
   var min = hireling.minWaitTime / progress.hirelings[hireling.level]
   var max = hireling.maxWaitTime / progress.hirelings[hireling.level]
   var n = min + rng % (max - min + 1)
@@ -78,32 +73,60 @@ func UpdateTimer()
 
 func CatchFish()
   play cross_deadwood_row
+  // Create new fish for catch from rod level
   var fish = new Games/Fishing2/FishingComponents/FishFactory
   fish = fish.MakeFish(rod.minFish, rod.maxFish)
-  flyup.Show(x, screen.h+y, string.Format(te.xt(tid_fish_scales), fish.scales))
+  // Create flyup for scales gained from catch
+  flyup.Show(root.absoluteX-3, root.absoluteY, string.Format(te.xt(tid_fish_scales), fish.scales))
+  // Update progress & HUD with scales
   progress.AddScales(fish.scales)
   topHud.Update()
 
 func Update(gameState)
+  // Initial state "null"
   ?state = null
+    // Setup timer for catching
     UpdateTimer()
+    // Recycle any potential NewHire animations
+    hirelingAnim.RecycleNewHire()
+    // Enter waiting state to begin active loop
     state = waiting
   :?state = waiting
+    // Wait for catch timer to be reached
     ?time >= timer
-      icon.Play()
+      // Start hireling's catch animation
+      hirelingAnim.PlayActive()
+      // Add 1sec to timer for catch part 1
       state = catch1
       timer = time + 30
   :?state = catch1
+    // Wait for catch p1 to complete
     ?time >= timer
+      // Process fish, flyup, scales for catch
       CatchFish()
+      // Add another sec for catch part 2
       state = catch2
       timer = time + 30
   :?state = catch2
+    // Check if shop is open
     ?gameState ! Shop
+      // Update flyup during catch p2
       flyup.Update()
+    // Wait for catch p2 to complete
     ?time >= timer
-      icon.frame = 0
+      // Reset hireling's catch animation
+      hirelingAnim.ResetActive()
+      // Reset timer for next catch & re-enter active loop
       UpdateTimer()
       state = waiting
+  // Special state "newhire" given by passive.txt when hireling 
+  // was just purchased from shop, then wait for shop to be closed 
+  :?state = newhire & gameState ! Shop
+    // Call animation's NewHire update loop
+    hirelingAnim.NewHireUpdate()
+    // Check for NewHire animation to complete
+    ?hirelingAnim.state = done
+      // Enter active loop
+      state = null
 
   

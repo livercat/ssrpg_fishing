@@ -1,0 +1,251 @@
+var common = import Games/Fishing2/PassiveComponents/Common
+
+var state = null
+var root = null
+
+var animColor = null
+
+var rootActive = null
+var iconActive = null
+
+var rootNewhire = null
+var iconNewHire = null
+
+func InitActive() // Init active anim in rootActive, hidden until started
+  ?root = null | rootActive ! null
+    return
+
+  rootActive = ui.AddPanel()
+  root.Add(rootActive)
+  rootActive.style = common.invisStyle
+  rootActive.dock = top_left
+  rootActive.anchor = top_left
+  rootActive.w = 1
+  rootActive.h = 1
+  rootActive.visible = false
+
+  iconActive = ui.AddAnim(artActiveBody)
+  rootActive.Add(iconActive)
+  iconActive.anchor = top_left
+  iconActive.color = animColor
+  iconActive.duration = 35
+
+  var l1 = iconActive.AddLayer(artActiveHand)
+  l1.color = animColor
+  l1.pivotX = -3
+  l1.pivotY = 1
+
+  var l2 = iconActive.AddLayer(artActiveFish)
+  l2.color = #888888
+  l2.pivotX = 2
+  l2.pivotY = 1
+
+func PlayActive() // Play active's catch animation
+  iconActive.Play()
+
+func ResetActive() // Reset active's animation after catch
+  iconActive.frame = 0
+
+func InitNewHire() // Init new hire anim in rootNewHire
+  ?root = null | rootNewhire ! null
+    return
+
+  rootNewhire = ui.AddPanel()
+  root.Add(rootNewhire)
+  rootNewhire.style = common.invisStyle
+  rootNewhire.dock = top_left
+  rootNewhire.anchor = top_left
+  rootNewhire.w = 1
+  rootNewhire.h = 1
+  rootNewhire.x = -(root.x) - screen.w/2
+  rootNewhire.y = -2
+
+  iconNewHire = ui.AddAnim(artSwimming)
+  rootNewhire.Add(iconNewHire)
+  iconNewHire.anchor = top_left
+  iconNewHire.color = animColor
+
+  var l1 = iconNewHire.AddLayer(artSwimTrail)
+  l1.color = #888888
+  l1.pivotX = 5
+  l1.pivotY = -1
+  
+func RecycleNewHire() // Recycle new hire animation after completion
+  ?rootActive = null
+    return
+  rootActive.visible = true
+
+  ?rootNewhire = null
+    return
+  rootNewhire.Recycle()
+  rootNewhire = null
+  iconNewHire = null
+
+func NewHireUpdate() // NewHire animation's update loop
+  ?state = null
+    InitNewHire()
+    iconNewHire.duration = 30
+    iconNewHire.loop = true
+    iconNewHire.Play()
+    state = walking
+  :?state = walking
+    ?rootNewhire.absoluteX < root.absoluteX
+      ?time % 2
+        rootNewhire.x++
+      ?time % 15 = 0
+        play cross_deadwood_row
+    :
+      iconNewHire.Load(artOverEdge)
+      iconNewHire.frame = 0
+      iconNewHire.duration = 55
+      iconNewHire.loop = false
+      iconNewHire.Play()
+      play waterfall_splash
+      state = arrived
+  :?state = arrived
+    ?!iconNewHire.playing
+      state = done
+
+// Active Sprites
+
+var artActiveBody = ascii
+% {repeat:10}
+.{)
+#`\
+##(\
+asciiend
+
+var artActiveHand = ascii
+% {repeat:4}
+#
+#,
+´
+%%
+###
+;
+#
+%% {repeat:2}
+#,
+/
+#
+%%
+#
+/
+#
+%% {repeat:2}
+#
+#
+´
+asciiend
+
+var artActiveFish = ascii
+% {repeat:2}
+#
+#
+%%
+>
+#
+%%
+<>
+#
+%%
+><>
+#
+%%
+`><>´
+#
+%%
+#``><>
+#
+%%
+#####><>
+#
+%% {repeat:2}
+#
+#####><>
+asciiend
+
+// New Hire Sprites
+
+var artSwimming = ascii
+% {repeat:2}
+((}(
+#(
+%% {repeat:2}
+)(})
+#(
+asciiend
+
+var artSwimTrail = ascii
+###_`
+%%
+#`_#
+asciiend
+
+var artOverEdge = ascii
+){))
+##)
+# ((
+#
+#
+%%
+#{))
+#/)
+· ((
+#
+#
+%%
+#{)/
+#/)
+·#((
+#
+#
+%%
+#{)_
+#/(__
+·##\
+#
+#
+%%
+#{)_
+#/\__
+·##‾
+#
+#
+%%
+#{)/_/
+#/###‾‾
+·
+#
+#
+%%
+#{)/___
+#/###‾‾
+·
+#
+#
+%%
+#
+#{)/___
+.´‾‾\
+#
+#
+%%
+#
+#{)_
+.´\__
+###\
+#
+%%
+#
+#
+.{)
+#`\‾
+##((
+%%
+#
+#
+.{)#,
+#`\´
+##(\
+asciiend

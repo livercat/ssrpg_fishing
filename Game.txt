@@ -195,6 +195,7 @@ asciiend)
   catchingFish.anchor = top_left
   catchingFish.dock = top_left
   catchingFish.pivotX = -1
+  catchingFish.color = #white
 
 
 func AddFTUE_UI()
@@ -234,7 +235,6 @@ func GetState()
 
 
 func SetState(newState)
-//debug.Log("state = " + state + ", newState = " + newState)
 
   // Exit state
 
@@ -372,27 +372,8 @@ func Init()
     topHud.Init()
     logo.Init(version)
     resultDialog.Init()
-    fisher.InitPlayerAnimations()
     passive.Init()
-    // debug
-    progress.scales = 0
-    progress.AddScales(50000000)
-    progress.rod = -1
-    progress.UpgradeRod()
-    progress.hirelings[0] = -1
-    progress.AddHireling(0)
-    progress.hirelings[1] = -1
-    progress.AddHireling(1)
-    progress.hirelings[2] = -1
-    progress.AddHireling(2)
-    progress.hirelings[3] = -1
-    progress.AddHireling(3)
-    progress.hirelings[4] = -1
-    progress.AddHireling(4)
-    progress.hirelings[5] = -1
-    progress.AddHireling(5)
-    progress.hirelings[6] = -1
-    progress.AddHireling(6)
+    fisher.InitPlayerAnimations()
 
 
 func UpdateStateHidden()
@@ -425,9 +406,6 @@ func UpdateStateMenu()
 func UpdateStateThrowing()
   logo.Update()
 
-  ?key = backBegin // FIXME: Debug only (doesnt work)
-    SetState(Menu)
-
   ?stateTime = 5
     play grappling_idle
 
@@ -441,11 +419,7 @@ func UpdateStateThrowing()
 func UpdateStateWaiting()
   logo.Update()
 
-  ?key = backBegin // FIXME: Debug only (doesnt work)
-    SetState(Menu)
-    logo.Show()
-
-  :?stateTime >= waitTimeMin
+  ?stateTime >= waitTimeMin
     ?catchingFtueText = null & progress.IsFTUE()
       SetState(FTUE)
     :
@@ -480,12 +454,6 @@ func UpdateStateFTUE()
 
 
 func UpdateStateCatching()
-
-// TODO - For debug only
-    ?key = backBegin
-     SetState(Menu)
-    :?key = ability1Begin
-     SetState(Success1)
 
     // Select player anim frame based on primary input or not
     ?key = primary
@@ -582,21 +550,11 @@ func UpdateStateSuccess3()
 func UpdateStateShop()
   shop.Update(SetState)
 
-  ?key = backBegin // FIXME: Debug only (doesnt work)
-    SetState(Menu)
-
 
 func Update()
   stateTime++
   currentStateFunction()
   passive.Update(state)
-
-// TODO - Debug state
-  // >`0,0,State: @state@
-  // >`0,1,STime: @stateTime@
-  var t1 = time.ms
-  >@time.ms-t1@
-  t1 = time.ms
 
 
 SetState(Hidden)

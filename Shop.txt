@@ -30,7 +30,6 @@ var hirelings = []
 func Init()
   ?shopRoot ! null
     return
-  // progress.AddScales(100000000)  // DEBUG
   // the base shop panel
   shopRoot = ui.AddPanel()
   shopRoot.visible = true

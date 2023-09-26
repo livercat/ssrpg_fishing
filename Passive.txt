@@ -1,19 +1,20 @@
 var progress = import Games/Fishing2/Progress
 var offline = import Games/Fishing2/PassiveComponents/Offline
 var topHud = import Games/Fishing2/FishingComponents/HUD
-var sprites = import Games/Fishing2/PassiveComponents/Sprites
+var common = import Games/Fishing2/PassiveComponents/Common
 
 var actives = []
 var activeRoot = null
 var maxHirelingLevel = 6
 var offlineDialog = null
+var newestHire = null
 
 func Init()
-  // Create root panel for hirelings
+  // Create root panel for hirelings & labels
   activeRoot = ui.AddPanel()
-  activeRoot.style = sprites.invisStyle
-  activeRoot.dock = bottom_left
-  activeRoot.anchor = bottom_left
+  activeRoot.style = common.invisStyle
+  activeRoot.dock = top_center
+  activeRoot.anchor = top_center
   activeRoot.w = 1
   activeRoot.h = 1
   activeRoot.x = 0
@@ -32,9 +33,8 @@ func Init()
     :
       // Create new active hireling instance and add to list
       var online = new Games/Fishing2/PassiveComponents/Online
-      online.MakeActiveHire(idx)
+      online.MakeActiveHire(idx, activeRoot)
       actives.Add(online)
-      activeRoot.Add(online.root)
       // Calculate scales earned by hireling while offline
       offline.CalculateGain(online.hireling, online.rod)
   // Display offline gain dialog
@@ -47,9 +47,13 @@ func AddNewHire(level)
   ?progress.hirelings[level] = 1
     // Create "new hire" active hireling and add to list
     var online = new Games/Fishing2/PassiveComponents/Online
-    online.MakeNewHire(level)
+    online.MakeActiveHire(level, activeRoot)
     actives.Add(online)
-    activeRoot.Add(online.root)
+    // Set newest hire to intro state and reset any previous from shop session
+    ?newestHire ! null & newestHire.state = newhire
+      newestHire.state = null
+    newestHire = online
+    newestHire.state = newhire
   :
     // Update active if hireling of same level already purchased
     actives[level].label.text = te.xt("x"+progress.hirelings[level])
@@ -58,35 +62,45 @@ func AddNewHire(level)
 
 func DisplayOfflineGain()
   ?offlineDialog = null
+    // Create bubble dialog animation
     offlineDialog = ui.AddPanel()
-    offlineDialog.style = sprites.invisStyle
-    offlineDialog.dock = bottom_left
-    offlineDialog.anchor = bottom_left
+    activeRoot.Add(offlineDialog)
+    offlineDialog.style = common.invisStyle
+    offlineDialog.dock = top_left
+    offlineDialog.anchor = top_left
     offlineDialog.w = 1
     offlineDialog.h = 1
-    offlineDialog.x = 9
-    offlineDialog.y = 4
+    // Position dialog by base level hireling
+    offlineDialog.x = actives[0].root.x
+    offlineDialog.y = actives[0].root.y + 2
 
-    var msg = "Boss! We got "+offline.totalScalesOffline+"\nscales when you were away"
+    // BG fill so entirety of bubble is opaque
+    var backer = ui.AddAnim(common.spriteDialogBG)
+    offlineDialog.Add(backer)
+    backer.anchor = bottom_right
+    backer.x = -3
+    backer.y = -1
+
+    // Text box for update msg
+    var msg = string.Format(common.offlineDialog, offline.totalScalesOffline)
     var label = ui.AddText(te.xt(msg))
     offlineDialog.Add(label)
-    label.anchor = bottom_left
+    label.anchor = bottom_right
     label.w = 25
     label.h = 2
-    label.x = 4
+    label.x = -4
     label.y = -1
     label.align = center
 
-    var bubble = ui.AddAnim(sprites.spriteDialog)
+    // Actual bubble anim
+    var bubble = ui.AddAnim(common.spriteDialog)
     offlineDialog.Add(bubble)
-    bubble.anchor = bottom_left
+    bubble.anchor = bottom_right
     bubble.color =  #white
     bubble.duration = 6
     bubble.Play()
-
-    // Add dialog panel to white hireling temporarily
-    actives[0].root.Add(offlineDialog)
   :
+    // Recycle once this func is called again
     offlineDialog.Recycle()
     offlineDialog = null
 
