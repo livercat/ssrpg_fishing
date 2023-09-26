@@ -40,6 +40,7 @@ func Init()
   // Display offline gain dialog
   DisplayOfflineGain()
   progress.AddScales(offline.totalScalesOffline)
+  progress.UpdateLastOnline()
   topHud.Update()
 
 func AddNewHire(level)
