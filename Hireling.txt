@@ -59,4 +59,4 @@ func Make(level)
   return this
 
 func RealCost()
-    return baseCost * (1 + ownedAmount * costFactor)
+    return math.RoundToInt(baseCost * (1 + ownedAmount * costFactor))
