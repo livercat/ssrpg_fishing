@@ -49,3 +49,8 @@ func IsFTUE()
   ?scales = 0
     return true
   return false
+
+func ResetAllProgress()
+  for k : storage.Keys()
+    storage.Delete(k)
+  loc.leave()
