@@ -10,8 +10,9 @@ var label = null
 var state = null
 var timer = null
 
+var collectedScales = 0.0
+
 var hireling = null
-var rod = null
 
 func MakeActiveHire(level, activeRoot)
   ?root ! null
@@ -20,8 +21,6 @@ func MakeActiveHire(level, activeRoot)
   // Create rod and hireling
   var hirelingFactory = new Games/Fishing2/Hireling
   hireling = hirelingFactory.Make(level)
-  var rodFactory = new Games/Fishing2/Rod
-  rod = rodFactory.Make(level)
 
   // Create root 
   root = ui.AddPanel()
@@ -66,67 +65,55 @@ func MakeActiveHire(level, activeRoot)
 
 func UpdateTimer()
   // Update catch timer with rng from hireling level
-  var min = hireling.minWaitTime / progress.hirelings[hireling.level]
-  var max = hireling.maxWaitTime / progress.hirelings[hireling.level]
+  var min = hireling.GetMinWaitTime()
+  var max = hireling.GetMaxWaitTime()
   var n = min + rng % (max - min + 1)
   timer = time + n
 
-func CatchFish()
+func CollectScales()
   play cross_deadwood_row
   // Create new fish for catch from rod level
-  var fish = new Games/Fishing2/FishingComponents/FishFactory
-  fish = fish.MakeFish(rod.minFish, rod.maxFish)
+  // var fish = new Games/Fishing2/FishingComponents/FishFactory
+  // fish = fish.MakeFish(rod.minFish, rod.maxFish)
+  var scales = math.FloorToInt(collectedScales)
+  collectedScales = collectedScales - scales // remainder
   // Create flyup for scales gained from catch
-  flyup.Show(root.absoluteX-3, root.absoluteY, string.Format(te.xt(tid_fish_scales), fish.scales))
+  flyup.Show(root.absoluteX-3, root.absoluteY, string.Format(te.xt(tid_fish_scales), scales))
   // Update progress & HUD with scales
-  progress.AddScales(fish.scales)
+  progress.AddScales(scales)
   topHud.Update()
 
 func Update(gameState)
+  // Update Scales
+  ?time % 30 = 0
+    collectedScales = collectedScales + hireling.GetScalesPerSecond()
   // Initial state "null"
   ?state = null
-    // Setup timer for catching
     UpdateTimer()
-    // Recycle any potential NewHire animations
     hirelingAnim.RecycleNewHire()
-    // Enter waiting state to begin active loop
     state = waiting
   :?state = waiting
-    // Wait for catch timer to be reached
     ?time >= timer
-      // Start hireling's catch animation
       hirelingAnim.PlayActive()
-      // Add 1sec to timer for catch part 1
       state = catch1
       timer = time + 30
   :?state = catch1
-    // Wait for catch p1 to complete
     ?time >= timer
-      // Process fish, flyup, scales for catch
-      CatchFish()
-      // Add another sec for catch part 2
+      CollectScales()
       state = catch2
       timer = time + 30
   :?state = catch2
-    // Check if shop is open
     ?gameState ! Shop
-      // Update flyup during catch p2
       flyup.Update()
-    // Wait for catch p2 to complete
     ?time >= timer
-      // Reset hireling's catch animation
       hirelingAnim.ResetActive()
-      // Reset timer for next catch & re-enter active loop
       UpdateTimer()
       state = waiting
   // Special state "newhire" given by passive.txt when hireling 
   // was just purchased from shop, then wait for shop to be closed 
   :?state = newhire & gameState ! Shop
-    // Call animation's NewHire update loop
     hirelingAnim.NewHireUpdate()
-    // Check for NewHire animation to complete
     ?hirelingAnim.state = done
-      // Enter active loop
       state = null
 
   

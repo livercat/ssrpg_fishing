@@ -36,7 +36,7 @@ func Init()
       online.MakeActiveHire(idx, activeRoot)
       actives.Add(online)
       // Calculate scales earned by hireling while offline
-      offline.CalculateGain(online.hireling, online.rod)
+      offline.CalculateGain(online.hireling)
   // Display offline gain dialog
   DisplayOfflineGain()
   progress.AddScales(offline.totalScalesOffline)
