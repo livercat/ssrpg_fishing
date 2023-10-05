@@ -69,12 +69,12 @@ func UpdateTimer()
   var max = hireling.GetMaxWaitTime()
   var n = min + rng % (max - min + 1)
   timer = time + n
+  // Extra 2 seconds factored in for the catching animation
+  collectedScales = collectedScales + hireling.GetScalesPerSecond() * (2.0 + (n / 30.0))
 
 func CollectScales()
   play cross_deadwood_row
   // Create new fish for catch from rod level
-  // var fish = new Games/Fishing2/FishingComponents/FishFactory
-  // fish = fish.MakeFish(rod.minFish, rod.maxFish)
   var scales = math.FloorToInt(collectedScales)
   collectedScales = collectedScales - scales // remainder
   // Create flyup for scales gained from catch
@@ -84,9 +84,6 @@ func CollectScales()
   topHud.Update()
 
 func Update(gameState)
-  // Update Scales
-  ?time % 30 = 0
-    collectedScales = collectedScales + hireling.GetScalesPerSecond()
   // Initial state "null"
   ?state = null
     UpdateTimer()
