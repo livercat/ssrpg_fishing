@@ -385,15 +385,15 @@ func UpdateStateArriving()
   logo.Update()
   fisher.UpdatePlayerAnimPosition()
 
-  ?stateTime = 105
+  ?pos.x = -25
     logo.Show()
 
-  :?stateTime = 168
+  :?fisher.playerAnimWalk.visible & pos.x = -4
     fisher.playerAnimWalk.visible = false
     fisher.playerAnimArrived.visible = true
     fisher.playerAnimArrived.Play()
 
-  :?stateTime >= 177
+  :?fisher.playerAnimArrived.visible & !fisher.playerAnimArrived.playing
     SetState(Menu)
 
 
