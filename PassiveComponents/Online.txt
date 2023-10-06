@@ -87,37 +87,6 @@ func CollectScales()
 func Update(gameState)
   // Initial state "null"
   ?state = null
-    UpdateTimer()
-    hirelingAnim.RecycleNewHire()
-    
-    state = waiting
-  :?state = waiting
-    ?time >= timer
-      hirelingAnim.PlayActive()
-      state = catch1
-      timer = time + 30
-  :?state = catch1
-    ?time >= timer
-      CollectScales()
-      state = catch2
-      timer = time + 30
-  :?state = catch2
-    ?gameState ! Shop
-      flyup.Update()
-    ?time >= timer
-      hirelingAnim.ResetActive()
-      UpdateTimer()
-      state = waiting
-  // Special state "newhire" given by passive.txt when hireling 
-  // was just purchased from shop, then wait for shop to be closed 
-  :?state = newhire & gameState ! Shop
-    hirelingAnim.NewHireUpdate()
-    ?hirelingAnim.state = done
-      state = null
-
-func Update(gameState)
-  // Initial state "null"
-  ?state = null
     // Setup timer for catching
     UpdateTimer()
     // Recycle any potential NewHire animations
