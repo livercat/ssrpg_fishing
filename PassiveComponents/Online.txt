@@ -89,7 +89,7 @@ func Update(gameState)
   ?state = null
     UpdateTimer()
     hirelingAnim.RecycleNewHire()
-    lastCollectTime = time
+    
     state = waiting
   :?state = waiting
     ?time >= timer
@@ -115,4 +115,52 @@ func Update(gameState)
     ?hirelingAnim.state = done
       state = null
 
+func Update(gameState)
+  // Initial state "null"
+  ?state = null
+    // Setup timer for catching
+    UpdateTimer()
+    // Recycle any potential NewHire animations
+    hirelingAnim.RecycleNewHire()
+    // Set initial lastCollectTime
+    lastCollectTime = time
+    // Enter waiting state to begin active loop
+    state = waiting
+  :?state = waiting
+    // Wait for catch timer to be reached
+    ?time >= timer
+      // Start hireling's catch animation
+      hirelingAnim.PlayActive()
+      // Add 1sec to timer for catch part 1
+      state = catch1
+      timer = time + 30
+  :?state = catch1
+    // Wait for catch p1 to complete
+    ?time >= timer
+      // Process fish, flyup, scales for catch
+      CatchFish()
+      // Add another sec for catch part 2
+      state = catch2
+      timer = time + 30
+  :?state = catch2
+    // Check if shop is open
+    ?gameState ! Shop
+      // Update flyup during catch p2
+      flyup.Update()
+    // Wait for catch p2 to complete
+    ?time >= timer
+      // Reset hireling's catch animation
+      hirelingAnim.ResetActive()
+      // Reset timer for next catch & re-enter active loop
+      UpdateTimer()
+      state = waiting
+  // Special state "newhire" given by passive.txt when hireling 
+  // was just purchased from shop, then wait for shop to be closed 
+  :?state = newhire & gameState ! Shop
+    // Call animation's NewHire update loop
+    hirelingAnim.NewHireUpdate()
+    // Check for NewHire animation to complete
+    ?hirelingAnim.state = done
+      // Enter active loop
+      state = null
   
