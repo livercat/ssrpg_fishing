@@ -19,7 +19,7 @@ func MakeActiveHire(level, activeRoot)
   ?root ! null
     return
 
-  // Create rod and hireling
+  // Create hireling
   var hirelingFactory = new Games/Fishing2/Hireling
   hireling = hirelingFactory.Make(level)
 
@@ -58,6 +58,7 @@ func MakeActiveHire(level, activeRoot)
     label.x = root.x + 2
     label.y = root.y + 3
     hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingFall
+
   // Pass hireling root and color to animation
   hirelingAnim.root = root
   hirelingAnim.animColor = hireling.color
@@ -73,12 +74,12 @@ func UpdateTimer()
 
 func CollectScales()
   play cross_deadwood_row
-  // Create new fish for catch from rod level
+  // Calculate scales collected since last collection
   collectedScales = collectedScales + hireling.GetScalesPerSecond() * ((time - lastCollectTime) / 30.0)
   lastCollectTime = time
   var scales = math.FloorToInt(collectedScales)
   collectedScales = collectedScales - scales // remainder
-  // Create flyup for scales gained from catch
+  // Create flyup for scales gained
   flyup.Show(root.absoluteX-3, root.absoluteY, string.Format(te.xt(tid_fish_scales), scales))
   // Update progress & HUD with scales
   progress.AddScales(scales)
