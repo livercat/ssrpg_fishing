@@ -107,8 +107,8 @@ func Update(gameState)
   :?state = catch1
     // Wait for catch p1 to complete
     ?time >= timer
-      // Process fish, flyup, scales for catch
-      CatchFish()
+      // Process flyup and scales
+      CollectScales()
       // Add another sec for catch part 2
       state = catch2
       timer = time + 30
