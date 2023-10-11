@@ -101,7 +101,7 @@ func Init()
     hirelings.Add(shopHire)
 
 
-    ?idx > 0 & hireling.ownedAmount = 0 & hirelings[idx-1].baseItem.ownedAmount = 0
+    ?idx > 0 & hireling.GetOwnedAmount() = 0 & hirelings[idx-1].baseItem.GetOwnedAmount() = 0
       shopHire.Hide()
     :
       shopHire.Reveal()
@@ -139,7 +139,7 @@ func PurchaseHireling(button)
   var shopHire = utils.FindButtonParent(button, hirelings)
   ?shopHire = null
     return utils.Panic("Hireling purchase failed, can't identify its button")
-  ?shopHire.baseItem.ownedAmount >= shopHire.baseItem.maxAmount
+  ?shopHire.baseItem.GetOwnedAmount() >= shopHire.baseItem.maxAmount
     // if somehow attempted to buy a maxed out hireling, do nothing
     return
   
@@ -150,7 +150,6 @@ func PurchaseHireling(button)
     var idx = hirelings.IndexOf(shopHire)
     // 1. Increment the owned amount
     progress.AddHireling(idx)
-    shopHire.baseItem.ownedAmount++
     // 2. Reveal the next hireling
     ?idx + 1 < hirelings.Count()
       hirelings[idx + 1].Reveal()

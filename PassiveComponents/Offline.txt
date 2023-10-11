@@ -1,5 +1,4 @@
 var progress = import Games/Fishing2/Progress
-var loot = import Games/Fishing2/FishingComponents/FishLootTable
 var utils = import Games/Fishing2/Utils
 
 var totalScalesOffline = null

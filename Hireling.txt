@@ -3,7 +3,6 @@ var progress = import Games/Fishing2/Progress
 var hirelingData = import Games/Fishing2/Data/HirelingData
 
 var level = 0
-var ownedAmount = 0
 
 var color = hirelingData.color[0]
 var baseCost = hirelingData.baseCost[0]
@@ -29,7 +28,6 @@ func ToString()
 
 func Make(level)
   this.level = level
-  ownedAmount = progress.hirelings[level]
 
   ?level >= hirelingData.minLevel & level <= hirelingData.maxLevel
     color = hirelingData.color[level]
@@ -39,13 +37,16 @@ func Make(level)
 
     baseScalesPerS = hirelingData.baseScalesPerS[level]
     stepScalesPerS = hirelingData.stepScalesPerS[level]
-    
+
     baseMinWaitTime = hirelingData.baseWaitTimeRange[level][0]
     baseMaxWaitTime = hirelingData.baseWaitTimeRange[level][1]
   :
     utils.Panic("Unsupported hireling level: " + level)
 
   return this
+
+func GetOwnedAmount()
+  return progress.hirelings[level]
 
 func GetMinWaitTime()
   return math.Max(baseMinWaitTime - progress.hirelings[level] * hirelingData.waitTimeReductionFactor, hirelingData.waitTimeRangeMin[0])
@@ -56,5 +57,5 @@ func GetMaxWaitTime()
 func GetScalesPerSecond()
   return baseScalesPerS + stepScalesPerS*progress.hirelings[level]
 
-func RealCost()
-    return math.RoundToInt(baseCost * (1 + progress.hirelings[level] * costFactor))
+func RealCost() // For componded value: x = base*(1+factor)^owned
+  return math.RoundToInt(baseCost * math.Pow(1 + costFactor, progress.hirelings[level]))

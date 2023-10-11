@@ -37,8 +37,8 @@ func Init(baseItem, handler, parent)
   return this
 
 func Update()
-  amountLabel.text = baseItem.ownedAmount + "/" + baseItem.maxAmount
-  ?baseItem.ownedAmount >= baseItem.maxAmount
+  amountLabel.text = baseItem.GetOwnedAmount() + "/" + baseItem.maxAmount
+  ?baseItem.GetOwnedAmount() >= baseItem.maxAmount
     amountLabel.color = _ui.inactiveColor
     costLabel.text = te.xt("-MAX-")
     costLabel.color = _ui.inactiveColor
