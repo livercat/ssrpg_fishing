@@ -58,8 +58,8 @@ func AddNewHire(level)
   :
     // Update active if hireling of same level already purchased
     actives[level].label.text = te.xt("x"+progress.hirelings[level])
-    ?actives[level].state = waiting
-      actives[level].UpdateTimer()
+    // ?actives[level].state = waiting // NOTE: No longer updating timer after purchase
+    //   actives[level].UpdateTimer()  //       wait time reduction is negligible
 
 func DisplayOfflineGain()
   ?offlineDialog = null

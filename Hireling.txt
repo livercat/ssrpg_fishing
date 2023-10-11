@@ -9,7 +9,10 @@ var color = hirelingData.color[0]
 var baseCost = hirelingData.baseCost[0]
 var costFactor = hirelingData.costFactor[0]
 var maxAmount = hirelingData.maxAmount[0]
-var scalesPerSecond = hirelingData.scalesPerSecond[0]
+
+var baseScalesPerS = hirelingData.baseScalesPerS[0]
+var stepScalesPerS = hirelingData.stepScalesPerS[0]
+
 var baseMinWaitTime = hirelingData.baseWaitTimeRange[0][0]
 var baseMaxWaitTime = hirelingData.baseWaitTimeRange[0][1]
 
@@ -33,7 +36,10 @@ func Make(level)
     baseCost = hirelingData.baseCost[level]
     costFactor = hirelingData.costFactor[level]
     maxAmount = hirelingData.maxAmount[level]
-    scalesPerSecond = hirelingData.scalesPerSecond[level]
+
+    baseScalesPerS = hirelingData.baseScalesPerS[level]
+    stepScalesPerS = hirelingData.stepScalesPerS[level]
+    
     baseMinWaitTime = hirelingData.baseWaitTimeRange[level][0]
     baseMaxWaitTime = hirelingData.baseWaitTimeRange[level][1]
   :
@@ -42,13 +48,13 @@ func Make(level)
   return this
 
 func GetMinWaitTime()
-  return math.Max(baseMinWaitTime - ownedAmount * hirelingData.waitTimeReductionFactor, hirelingData.waitTimeRangeMin[0])
+  return math.Max(baseMinWaitTime - progress.hirelings[level] * hirelingData.waitTimeReductionFactor, hirelingData.waitTimeRangeMin[0])
 
 func GetMaxWaitTime()
-  return math.Max(baseMaxWaitTime - ownedAmount * hirelingData.waitTimeReductionFactor, hirelingData.waitTimeRangeMin[1])
+  return math.Max(baseMaxWaitTime - progress.hirelings[level] * hirelingData.waitTimeReductionFactor, hirelingData.waitTimeRangeMin[1])
 
 func GetScalesPerSecond()
-  return scalesPerSecond * ownedAmount
+  return baseScalesPerS + stepScalesPerS*progress.hirelings[level]
 
 func RealCost()
-    return math.RoundToInt(baseCost * (1 + ownedAmount * costFactor))
+    return math.RoundToInt(baseCost * (1 + progress.hirelings[level] * costFactor))

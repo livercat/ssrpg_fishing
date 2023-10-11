@@ -41,7 +41,7 @@ var maxAmount = [
   100
 ]
 
-var scalesPerSecond = [
+var baseScalesPerS = [
   0.042,
   0.133,
   0.218,
@@ -49,6 +49,16 @@ var scalesPerSecond = [
   0.294,
   0.323,
   0.343
+]
+
+var stepScalesPerS = [
+  0.02,
+  0.02,
+  0.02,
+  0.02,
+  0.02,
+  0.02,
+  0.02
 ]
 
 var baseWaitTimeRange = [
