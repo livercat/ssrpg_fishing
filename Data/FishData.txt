@@ -47,17 +47,6 @@ var rodPivot = [
   [8, 1]
 ]
 
-var height = [
-  3,
-  3,
-  3,
-  3,
-  3,
-  5,
-  5,
-  5
-]
-
 var acceleration = [
   15,
   16,
