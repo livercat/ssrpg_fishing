@@ -1,3 +1,4 @@
+var utils = import Games/Fishing2/Utils
 var progress = import Games/Fishing2/Progress
 var topHud = import Games/Fishing2/FishingComponents/HUD
 var flyup = new Games/FlyupText
@@ -69,7 +70,7 @@ func UpdateTimer()
   // Update catch timer with rng from hireling level
   var min = hireling.GetMinWaitTime()
   var max = hireling.GetMaxWaitTime()
-  var n = min + rng % (max - min + 1)
+  var n = utils.RngRange(min, max)
   timer = time + n
 
 func CollectScales()

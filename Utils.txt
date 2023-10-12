@@ -24,3 +24,8 @@ func FindButtonParent(button, array)
     ?shopItem.button = button
       return shopItem
   return null
+
+func RngRange(min, max)
+  var n
+  n = min + rng % (max - min + 1)
+  return n
