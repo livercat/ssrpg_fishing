@@ -1,7 +1,7 @@
 var FishSprites = import Games/Fishing2/Assets/FishSprites
 
-var minLevel = 0
-var maxLevel = 7
+var minIndex = 0
+var maxIndex = 7
 
 var name = [
   te.xt(tid_fish_speedyfin),

@@ -1,40 +1,23 @@
-  
 var selMin0 = 0
 var selMax0 = 128
-var scalesMin0 = 1
-var scalesMax0 = 3
 
 var selMin1 = 128
 var selMax1 = 192
-var scalesMin1 = 5
-var scalesMax1 = 10
 
 var selMin2 = 192
 var selMax2 = 224
-var scalesMin2 = 15
-var scalesMax2 = 20
 
 var selMin3 = 224
 var selMax3 = 240
-var scalesMin3 = 25
-var scalesMax3 = 30
 
 var selMin4 = 240
 var selMax4 = 248
-var scalesMin4 = 35
-var scalesMax4 = 40
 
 var selMin5 = 248
 var selMax5 = 252
-var scalesMin5 = 45
-var scalesMax5 = 50
 
 var selMin6 = 252
 var selMax6 = 254
-var scalesMin6 = 55
-var scalesMax6 = 65
 
 var selMin7 = 254
 var selMax7 = 254
-var scalesMin7 = 70
-var scalesMax7 = 99
