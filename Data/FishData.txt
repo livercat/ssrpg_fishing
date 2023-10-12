@@ -25,6 +25,17 @@ var art = [
   FishSprites.angrish
 ]
 
+var color = [
+  "#ffffff",
+  "#ffffff",
+  "#ffffff",
+  "#ffffff",
+  "#ffffff",
+  "#ffffff",
+  "#ffffff",
+  "#ffffff"
+]
+
 var scalesRange = [
   [ 1,  3],
   [ 5, 10],

@@ -29,6 +29,7 @@ func MakeFish(min, max)
   ?fishIndex >= fishData.minIndex & fishIndex <= fishData.maxIndex
     fish.name = fishData.name[fishIndex]
     fish.art = fishData.art[fishIndex]
+    fish.color = fishData.color[fishIndex]
     fish.rodPivotX = fishData.rodPivot[fishIndex][0]
     fish.rodPivotY = fishData.rodPivot[fishIndex][1]
     fish.acceleration = fishData.acceleration[fishIndex]
@@ -41,6 +42,5 @@ func MakeFish(min, max)
     //>@fish.scalesMin@, @fish.scalesMax@, @fish.scales@; @weightD@, @fish.weight@
   :
     utils.Panic("Unsupported fish index: " + fishIndex)
-  
 
   return fish
