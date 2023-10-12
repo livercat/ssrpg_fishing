@@ -26,6 +26,4 @@ func FindButtonParent(button, array)
   return null
 
 func RngRange(min, max)
-  var n
-  n = min + rng % (max - min + 1)
-  return n
+  return math.FloorToInt(min + rngf * (max - min + 1))
