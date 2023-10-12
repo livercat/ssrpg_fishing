@@ -3,7 +3,7 @@ var fishData = import Games/Fishing2/Data/FishData
 var loot = import Games/Fishing2/FishingComponents/FishLootTable
 
 func MakeFish(min, max)
-  var fish = new Games/Fishing2/FishingComponents/FishData
+  var fish = new Games/Fishing2/FishingComponents/Fish
 
   var selectedFish = utils.RngRange(min, max)
 
