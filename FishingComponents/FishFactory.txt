@@ -31,15 +31,17 @@ func MakeFish(min, max)
     fish.art = fishData.art[fishIndex]
     fish.rodPivotX = fishData.rodPivot[fishIndex][0]
     fish.rodPivotY = fishData.rodPivot[fishIndex][1]
-    fish.height = fishData.height[fishIndex]
     fish.acceleration = fishData.acceleration[fishIndex]
+
+    var scalesMin = fishData.scalesRange[fishIndex][0]
+    var scalesMax = fishData.scalesRange[fishIndex][1]
+    fish.scales = RngRange(scalesMin, scalesMax)
+    var weightD = (fish.scales / 10)
+    fish.weight = weightD + "." + (fish.scales - weightD * 10)
+    //>@fish.scalesMin@, @fish.scalesMax@, @fish.scales@; @weightD@, @fish.weight@
   :
     utils.Panic("Unsupported fish index: " + fishIndex)
   
-  fish.scales = RngRange(fish.scalesMin, fish.scalesMax)
-  var weightD = (fish.scales / 10)
-  fish.weight = weightD + "." + (fish.scales - weightD * 10)
-  //>@fish.scalesMin@, @fish.scalesMax@, @fish.scales@; @weightD@, @fish.weight@
 
   return fish
 
