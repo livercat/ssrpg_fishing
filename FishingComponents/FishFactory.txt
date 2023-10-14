@@ -1,30 +1,29 @@
 var utils = import Games/Fishing2/Utils
 var fishData = import Games/Fishing2/Data/FishData
-var loot = import Games/Fishing2/FishingComponents/FishLootTable
 
-func MakeFish(min, max)
+func PickLoot(lootTable)
+  var weightTotal = 0
+  // Total Weight
+  for i = 0..(lootTable.Count() - 1)
+    weightTotal = weightTotal + lootTable[i][0]
+  
+  // Weighted Choice
+  var cummulativeSum = 0
+  var selectedIndex = 0
+  var roll = utils.RngRange(0, weightTotal - 1)
+
+  for i = 0..(lootTable.Count() - 1)
+    ?cummulativeSum > roll
+      break
+    cummulativeSum = cummulativeSum + lootTable[i][0]
+    selectedIndex = i
+
+  return lootTable[selectedIndex][1]
+
+func MakeFish(lootTable)
   var fish = new Games/Fishing2/FishingComponents/Fish
 
-  var selectedFish = utils.RngRange(min, max)
-
-  // TODO: Rework loot table system
-  var fishIndex = -1
-  ?selectedFish >= loot.selMin0 & selectedFish < loot.selMax0
-    fishIndex = 0
-  :?selectedFish >= loot.selMin1 & selectedFish < loot.selMax1
-    fishIndex = 1
-  :?selectedFish >= loot.selMin2 & selectedFish < loot.selMax2
-    fishIndex = 2
-  :?selectedFish >= loot.selMin3 & selectedFish < loot.selMax3
-    fishIndex = 3
-  :?selectedFish >= loot.selMin4 & selectedFish < loot.selMax4
-    fishIndex = 4
-  :?selectedFish >= loot.selMin5 & selectedFish < loot.selMax5
-    fishIndex = 5
-  :?selectedFish >= loot.selMin6 & selectedFish < loot.selMax6
-    fishIndex = 6
-  :?selectedFish >= loot.selMin7 & selectedFish < loot.selMax7
-    fishIndex = 7
+  var fishIndex = PickLoot(lootTable)
 
   ?fishIndex >= fishData.minIndex & fishIndex <= fishData.maxIndex
     fish.name = fishData.name[fishIndex]

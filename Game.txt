@@ -434,7 +434,7 @@ func UpdateStateWaiting()
     fishPos = fishLimit / 2
     fishSpeed = 0
 
-    fish = fishFactory.MakeFish(rod.minFish, rod.maxFish)
+    fish = fishFactory.MakeFish(rod.lootTable)
     fishAccel = fish.acceleration
 
 
