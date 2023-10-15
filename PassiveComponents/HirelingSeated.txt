@@ -1,4 +1,4 @@
-var common = import Games/Fishing2/PassiveComponents/Common
+var styles = import Games/Fishing2/Assets/Styles
 
 var state = null
 var root = null
@@ -20,7 +20,7 @@ func InitActive() // Init active anim in rootActive, hidden until started
 
   rootActive = ui.AddPanel()
   root.Add(rootActive)
-  rootActive.style = common.invisStyle
+  rootActive.style = styles.invisStyle
   rootActive.dock = top_left
   rootActive.anchor = top_left
   rootActive.w = 1
@@ -61,7 +61,7 @@ func InitNewHire() // Init new hire anim in rootNewHire
 
   rootNewhire = ui.AddPanel()
   root.Add(rootNewhire)
-  rootNewhire.style = common.invisStyle
+  rootNewhire.style = styles.invisStyle
   rootNewhire.dock = top_left
   rootNewhire.anchor = top_left
   rootNewhire.w = 1

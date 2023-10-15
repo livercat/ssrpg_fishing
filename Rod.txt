@@ -1,5 +1,6 @@
 var utils = import Games/Fishing2/Utils
 var rodData = import Games/Fishing2/Data/RodData
+var sprites = import Games/Fishing2/Assets/ShopSprites
 
 var level = 0
 
@@ -8,13 +9,7 @@ var lineColor = rodData.lineColor[0]
 var cost = rodData.cost[0]
 var lootTable = rodData.lootTable[0]
 
-var sprite = ascii
-#
-#####,
-####/;
-###/´
-##/!
-asciiend
+var sprite = sprites.spriteRod
 
 func ToString()
   return "Rod(lvl=" + level + ",color=" + color + ",cost=" + 

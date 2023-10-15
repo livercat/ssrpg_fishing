@@ -1,0 +1,24 @@
+var itemStyle = ui.AddStyle("
+^#─#
+^│#│
+^#─#")
+
+var invisStyle = ui.AddStyle("
+^###
+^###
+^###")
+
+var noBorderStyle = ui.AddStyle("
+^   
+^   
+^   ")
+
+var horizontalBarsStyle = ui.AddStyle("
+^───
+^###
+^───")
+
+var fullBoxStyle = ui.AddStyle("
+^███
+^███
+^███")

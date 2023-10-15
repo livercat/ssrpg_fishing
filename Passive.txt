@@ -1,18 +1,19 @@
 var progress = import Games/Fishing2/Progress
 var offline = import Games/Fishing2/PassiveComponents/Offline
 var topHud = import Games/Fishing2/FishingComponents/HUD
-var common = import Games/Fishing2/PassiveComponents/Common
+var hirelingData = import Games/Fishing2/Data/HirelingData
+var styles = import Games/Fishing2/Assets/Styles
+var sprites = import Games/Fishing2/Assets/PassiveSprites
 
 var actives = []
 var activeRoot = null
-var maxHirelingLevel = 6
 var offlineDialog = null
 var newestHire = null
 
 func Init()
   // Create root panel for hirelings & labels
   activeRoot = ui.AddPanel()
-  activeRoot.style = common.invisStyle
+  activeRoot.style = styles.invisStyle
   activeRoot.dock = top_center
   activeRoot.anchor = top_center
   activeRoot.w = 1
@@ -25,7 +26,7 @@ func Init()
   // Init offline values for calcs
   offline.Init()
   // Iterate purchased hirelings
-  for idx = 0..maxHirelingLevel
+  for idx = 0..hirelingData.maxLevel
     // End iteration once hireling level found with amount zero
     var count = progress.hirelings[idx]
     ?count = 0
@@ -64,9 +65,10 @@ func AddNewHire(level)
 func DisplayOfflineGain()
   ?offlineDialog = null
     // Create bubble dialog animation
+    var dialogText = "Boss! We got {0}\nscales when you were away"
     offlineDialog = ui.AddPanel()
     activeRoot.Add(offlineDialog)
-    offlineDialog.style = common.invisStyle
+    offlineDialog.style = styles.invisStyle
     offlineDialog.dock = top_left
     offlineDialog.anchor = top_left
     offlineDialog.w = 1
@@ -76,14 +78,14 @@ func DisplayOfflineGain()
     offlineDialog.y = actives[0].root.y + 2
 
     // BG fill so entirety of bubble is opaque
-    var backer = ui.AddAnim(common.spriteDialogBG)
+    var backer = ui.AddAnim(sprites.spriteOfflineDialogBG)
     offlineDialog.Add(backer)
     backer.anchor = bottom_right
     backer.x = -3
     backer.y = -1
 
     // Text box for update msg
-    var msg = string.Format(common.offlineDialog, offline.totalScalesOffline)
+    var msg = string.Format(dialogText, offline.totalScalesOffline)
     var label = ui.AddText(te.xt(msg))
     offlineDialog.Add(label)
     label.anchor = bottom_right
@@ -94,7 +96,7 @@ func DisplayOfflineGain()
     label.align = center
 
     // Actual bubble anim
-    var bubble = ui.AddAnim(common.spriteDialog)
+    var bubble = ui.AddAnim(sprites.spriteOfflineDialog)
     offlineDialog.Add(bubble)
     bubble.anchor = bottom_right
     bubble.color =  #white

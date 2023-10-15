@@ -2,7 +2,7 @@ var utils = import Games/Fishing2/Utils
 var progress = import Games/Fishing2/Progress
 var topHud = import Games/Fishing2/FishingComponents/HUD
 var flyup = new Games/FlyupText
-var common = import Games/Fishing2/PassiveComponents/Common
+var styles = import Games/Fishing2/Assets/Styles
 
 var root = null
 var hirelingAnim = null
@@ -27,7 +27,7 @@ func MakeActiveHire(level, activeRoot)
   // Create root 
   root = ui.AddPanel()
   activeRoot.Add(root)
-  root.style = common.invisStyle
+  root.style = styles.invisStyle
   root.dock = top_center
   root.anchor = top_center
   root.w = 1

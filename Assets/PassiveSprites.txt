@@ -1,12 +1,4 @@
-
-var invisStyle = ui.AddStyle("
-^###
-^###
-^###")
-
-var offlineDialog = "Boss! We got {0}\nscales when you were away"
-
-var spriteDialog = ascii
+var spriteOfflineDialog = ascii
 #
 #__________________________
 (__________________________>
@@ -23,7 +15,7 @@ var spriteDialog = ascii
 #`──────────────────────────´
 asciiend
 
-var spriteDialogBG = ascii
+var spriteOfflineDialogBG = ascii
 #
 ##                         #
 ##                         #

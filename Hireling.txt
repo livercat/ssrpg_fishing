@@ -1,6 +1,7 @@
 var utils = import Games/Fishing2/Utils
 var progress = import Games/Fishing2/Progress
 var hirelingData = import Games/Fishing2/Data/HirelingData
+var sprites = import Games/Fishing2/Assets/ShopSprites
 
 var level = 0
 
@@ -15,12 +16,7 @@ var stepScalesPerS = hirelingData.stepScalesPerS[0]
 var baseMinWaitTime = hirelingData.baseWaitTimeRange[0][0]
 var baseMaxWaitTime = hirelingData.baseWaitTimeRange[0][1]
 
-var sprite = ascii
-#
-##_{)
-#''¯)
-###/(
-asciiend
+var sprite = sprites.spriteHireling
 
 func ToString()
   return "Hireling(lvl=" + level + ",color=" + color + ",cost=" + 

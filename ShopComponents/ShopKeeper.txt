@@ -1,74 +1,15 @@
+var sprites = import Games/Fishing2/Assets/ShopSprites
+
 var icon = null
 var dialog = null
 var label = null
 var state = null
 
-var spriteWalking = ascii
-####_▄_
-#____O__
-`-´"/|´ !
-####/ \
-%%
-####_▄_
-#____O__
-`-´"/|´ !
-#####>\
-%%
-####_▄_
-#____O__
-`-´"/|´ !
-#####|\
-%%
-####_▄_
-#____O__
-`-´"/|´ !
-#####|>
-asciiend
-
-var spriteArrived = ascii
-#!\▄_
-##`O
-##(|\
-##/ \
-%%
-##_▄|
-###O|
-###\|
-##/ \
-%%
-##_▄_#/;
-###O_/´
-###\/!
-##/ \
-%%
-##_▄_  ,
-###O  /;
-##(|`/´
-##/ /!
-asciiend
-
-var spriteDialog = ascii
-########  __________________________
-######## <__________________________)
-########                             
-########
-%%
-########   .─────────────────────────.
-######## <´                           )
-########  `──────────────────────────´
-########   
-%%
-########   .─────────────────────────.
-######## <´ ######################### \
-########  \ ######################### /
-########   `─────────────────────────´
-asciiend
-
 var msgArrived = "Ahoy t' me shop!\nSpend yer scales on loot…"
 var msgReturned = "Back fer more are ye?\nMe loot must be the best!"
 
 func Init(parent)
-  icon = ui.AddAnim(spriteWalking)
+  icon = ui.AddAnim(sprites.spriteKeeperWalking)
   icon.color = #white
   icon.flipX = true
   icon.dock = top_center
@@ -92,7 +33,7 @@ func Init(parent)
   label.visible = false
   parent.Add(label)
 
-  dialog = ui.AddAnim(spriteDialog)
+  dialog = ui.AddAnim(sprites.spriteKeeperDialog)
   dialog.color = #white
   dialog.flipX = true
   dialog.dock = top_center

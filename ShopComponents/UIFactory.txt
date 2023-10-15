@@ -1,21 +1,8 @@
+var styles = import Games/Fishing2/Assets/Styles
+
 var inactiveColor = #808080
 var activeColor = #white
 var errorColor = #red
-
-var itemStyle = ui.AddStyle("
-^#─#
-^│#│
-^#─#")
-
-var invisStyle = ui.AddStyle("
-^###
-^###
-^###")
-
-var noBorderStyle = ui.AddStyle("
-^   
-^   
-^   ")
 
 func MakeShopRow(y)
   var row = ui.AddPanel()
@@ -25,7 +12,7 @@ func MakeShopRow(y)
   row.h = 8
   row.dock = top_left
   row.anchor = top_left
-  row.style = this.invisStyle
+  row.style = styles.invisStyle
   return row
 
 func MakeItemPanel(x)
@@ -36,7 +23,7 @@ func MakeItemPanel(x)
   panel.w = 9
   panel.h = 8
   panel.color = this.inactiveColor
-  panel.style = this.itemStyle
+  panel.style = styles.itemStyle
   return panel
 
 func MakeItemButton(handler)
@@ -45,7 +32,7 @@ func MakeItemButton(handler)
   button.h = 8
   button.text = "" // important, default is "Label"
   button.SetPressed(handler)
-  button.style = this.itemStyle
+  button.style = styles.itemStyle
   return button
 
 func MakeItemLabel(y)
