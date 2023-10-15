@@ -1,0 +1,29 @@
+var fishFactory = import Games/Fishing2/FishingComponents/FishFactory
+
+var rodData = import Games/Fishing2/Data/RodData
+var lootTable = rodData.lootTable[2]
+var totalWeight = 125.0
+
+var totalFish = 0
+var fishDistribution = [0,0,0,0,0,0,0,0]
+
+var batchSize = 100
+
+var iteration = 0
+
+func displayResults()
+  >`1,1,Results for @totalFish@ Fish
+  for i = 0..(fishDistribution.Count() - 1)
+    >`1,@2 + i@,@i@: @totalWeight*fishDistribution[i]/totalFish@ (@100.0*fishDistribution[i]/totalFish@%)
+
+func runTest()
+  var fishIndex
+  for i = 0..(batchSize - 1)
+    fishIndex = fishFactory.PickLoot(lootTable)
+    fishDistribution[fishIndex] = fishDistribution[fishIndex] + 1
+    totalFish++
+
+? iteration < 10000
+  runTest()
+  iteration++
+displayResults()
