@@ -24,3 +24,6 @@ func FindButtonParent(button, array)
     ?shopItem.button = button
       return shopItem
   return null
+
+func RngRange(min, max)
+  return math.FloorToInt(min + rngf * (max - min + 1))

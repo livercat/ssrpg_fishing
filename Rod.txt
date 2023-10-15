@@ -6,8 +6,7 @@ var level = 0
 var color = rodData.color[0]
 var lineColor = rodData.lineColor[0]
 var cost = rodData.cost[0]
-var minFish = rodData.fishRange[0][0]
-var maxFish = rodData.fishRange[0][1]
+var lootTable = rodData.lootTable[0]
 
 var sprite = ascii
 #
@@ -28,8 +27,7 @@ func Make(level)
     color = rodData.color[level]
     lineColor = rodData.lineColor[level]
     cost = rodData.cost[level]
-    minFish = rodData.fishRange[level][0]
-    maxFish = rodData.fishRange[level][1]
+    lootTable = rodData.lootTable[level]
   :
     utils.Panic("Unsupported rod level: " + level)
 

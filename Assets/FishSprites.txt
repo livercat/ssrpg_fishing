@@ -1,0 +1,52 @@
+var speedyfin = ascii
+#########
+#><))8>##
+asciiend
+
+var bowfish = ascii
+#.  )  ##
+# )( o>##
+#´  )´ ##
+asciiend
+
+var spookfin = ascii
+#  (°_ ##
+#_/_ o\##
+#´  `'"##
+asciiend
+
+var poker = ascii
+##,\_####
+≥´_ °`──-
+##/´‾####
+asciiend
+
+var outchboi = ascii
+# .`'´,##
+#); <°c##
+# ´.,.`##
+asciiend
+
+var whopper = ascii
+##(‾‾`._#
+(\,' ‾ o\
+(:   >( <
+(/`;-.,-´
+###‾‾####
+asciiend
+
+var moonfin = ascii
+###.--.##
+(./ o,-\#
+#)) (   #
+(´\  `-;#
+###`--´##
+asciiend
+
+var angrish = ascii
+###__####
+_.-. `. _
+`.  `; ò/
+-´_.´`,´#
+####/´###
+asciiend

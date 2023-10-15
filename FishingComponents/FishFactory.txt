@@ -1,146 +1,45 @@
-var loot = import Games/Fishing2/FishingComponents/FishLootTable
+var utils = import Games/Fishing2/Utils
+var fishData = import Games/Fishing2/Data/FishData
 
-func MakeFish(min, max)
-  var fish = new Games/Fishing2/FishingComponents/FishData
+func PickLoot(lootTable)
+  var weightTotal = 0
+  // Total Weight
+  for i = 0..(lootTable.Count() - 1)
+    weightTotal = weightTotal + lootTable[i][0]
+  
+  // Weighted Choice
+  var cummulativeSum = 0
+  var selectedIndex = 0
+  var roll = utils.RngRange(0, weightTotal - 1)
 
-  var selectedFish = RngRange(min, max)
+  for i = 0..(lootTable.Count() - 1)
+    ?cummulativeSum > roll
+      break
+    cummulativeSum = cummulativeSum + lootTable[i][0]
+    selectedIndex = i
 
-  ?selectedFish >= loot.selMin0 & selectedFish < loot.selMax0
-    fish.name = te.xt(tid_fish_speedyfin)
-    fish.art = ascii
-#########
-#><))8>##
-asciiend
-    fish.rodPivotX = 7
-    fish.rodPivotY = 0
-    fish.height = 3
-    fish.scalesMin = loot.scalesMin0
-    fish.scalesMax = loot.scalesMax0
-    fish.acceleration = 15
+  return lootTable[selectedIndex][1]
 
+func MakeFish(lootTable)
+  var fish = new Games/Fishing2/FishingComponents/Fish
 
-  :?selectedFish >= loot.selMin1 & selectedFish < loot.selMax1
-    fish.name = te.xt(tid_fish_bowfish)
-    fish.art = ascii
-#.  )  ##
-# )( o>##
-#´  )´ ##
-asciiend
-    fish.rodPivotX = 7
-    fish.rodPivotY = 0
-    fish.height = 3
-    fish.scalesMin = loot.scalesMin1
-    fish.scalesMax = loot.scalesMax1
-    fish.acceleration = 16
+  var fishIndex = PickLoot(lootTable)
 
+  ?fishIndex >= fishData.minIndex & fishIndex <= fishData.maxIndex
+    fish.name = fishData.name[fishIndex]
+    fish.art = fishData.art[fishIndex]
+    fish.color = fishData.color[fishIndex]
+    fish.rodPivotX = fishData.rodPivot[fishIndex][0]
+    fish.rodPivotY = fishData.rodPivot[fishIndex][1]
+    fish.acceleration = fishData.acceleration[fishIndex]
 
-  :?selectedFish >= loot.selMin2 & selectedFish < loot.selMax2
-    fish.name = te.xt(tid_fish_spookfin)
-    fish.art = ascii
-#  (°_ ##
-#_/_ o\##
-#´  `'"##
-asciiend
-    fish.rodPivotX = 7
-    fish.rodPivotY = 0
-    fish.height = 3
-    fish.scalesMin = loot.scalesMin2
-    fish.scalesMax = loot.scalesMax2
-    fish.acceleration = 17
-
-
-  :?selectedFish >= loot.selMin3 & selectedFish < loot.selMax3
-    fish.name = te.xt(tid_fish_poker)
-    fish.art = ascii
-##,\_####
-≥´_ °`──-
-##/´‾####
-asciiend
-    fish.rodPivotX = 6
-    fish.rodPivotY = 0
-    fish.height = 3
-    fish.scalesMin = loot.scalesMin3
-    fish.scalesMax = loot.scalesMax3
-    fish.acceleration = 18
-
-
-  :?selectedFish >= loot.selMin4 & selectedFish < loot.selMax4
-    fish.name = te.xt(tid_fish_outchboi)
-    fish.art = ascii
-# .`'´,##
-#); <°c##
-# ´.,.`##
-asciiend
-    fish.rodPivotX = 7
-    fish.rodPivotY = 0
-    fish.height = 3
-    fish.scalesMin = loot.scalesMin4
-    fish.scalesMax = loot.scalesMax4
-    fish.acceleration = 19
-
-  :?selectedFish >= loot.selMin5 & selectedFish < loot.selMax5
-    fish.name = te.xt(tid_fish_whopper)
-    fish.art = ascii
-##(‾‾`._#
-(\,' ‾ o\
-(:   >( <
-(/`;-.,-´
-###‾‾####
-asciiend
-    fish.rodPivotX = 9
-    fish.rodPivotY = 1
-    fish.height = 5
-    fish.scalesMin = loot.scalesMin5
-    fish.scalesMax = loot.scalesMax5
-    fish.acceleration = 20
-
-  :?selectedFish >= loot.selMin6 & selectedFish < loot.selMax6
-    fish.name = te.xt(tid_fish_moonfin)
-    fish.art = ascii
-###.--.##
-(./ o,-\#
-#)) (   #
-(´\  `-;#
-###`--´##
-asciiend
-    fish.rodPivotX = 7
-    fish.rodPivotY = 1
-    fish.height = 5
-    fish.scalesMin = loot.scalesMin6
-    fish.scalesMax = loot.scalesMax6
-    fish.acceleration = 21
-
+    var scalesMin = fishData.scalesRange[fishIndex][0]
+    var scalesMax = fishData.scalesRange[fishIndex][1]
+    fish.scales = utils.RngRange(scalesMin, scalesMax)
+    var weightD = (fish.scales / 10)
+    fish.weight = weightD + "." + (fish.scales - weightD * 10)
+    //>@fish.scalesMin@, @fish.scalesMax@, @fish.scales@; @weightD@, @fish.weight@
   :
-    fish.name = te.xt(tid_fish_angrish)
-    fish.art = ascii
-###__####
-_.-. `. _
-`.  `; ò/
--´_.´`,´#
-####/´###
-asciiend
-    fish.rodPivotX = 8
-    fish.rodPivotY = 1
-    fish.height = 5
-    fish.scalesMin = loot.scalesMin7
-    fish.scalesMax = loot.scalesMax7
-    fish.acceleration = 22
-
-
-  fish.scales = RngRange(fish.scalesMin, fish.scalesMax)
-  var weightD = (fish.scales / 10)
-  fish.weight = weightD + "." + (fish.scales - weightD * 10)
-  //>@fish.scalesMin@, @fish.scalesMax@, @fish.scales@; @weightD@, @fish.weight@
+    utils.Panic("Unsupported fish index: " + fishIndex)
 
   return fish
-
-
-
-func RngRange(min, max)
-  var n
-  n = min + rng % (max - min + 1)
-  return n
-
-
-
-
