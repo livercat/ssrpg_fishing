@@ -1,0 +1,83 @@
+// Internal
+
+var _log = []
+var _indent = 0
+
+
+// Config
+
+var offsetX = 1
+var offsetY = 1
+var maxHeight = 24
+var indentStr = "  "
+
+
+// Core
+
+func LogC(msg, color)
+  var indent = ""
+  ?_indent > 0
+    for i = 0..(_indent - 1)
+      indent = indent + indentStr
+  _log.Add([indent + msg, color])
+  ?_log.Count() > maxHeight
+    _log.RemoveAt(0)
+
+func Clear()
+  _log.Clear()
+  _indent = 0
+
+
+// Grouping
+
+func Group()
+  _indent++
+
+func LabeledGroup(label)
+  Log(label)
+  Group()
+
+func LabeledGroupC(label, color)
+  LogC(label, color)
+  Group()
+
+func GroupEnd()
+  ?_indent > 0
+    _indent--
+
+func GroupEndAll()
+  _indent = 0
+
+
+// Derivative
+
+func Log(msg)
+  LogC(msg, "#white")
+
+func Success(msg)
+  LogC(msg, "#green")
+
+func Failure(msg)
+  LogC(msg, "#red")
+
+func Info(msg)
+  LogC(msg, "#cyan")
+
+func Warn(msg)
+  LogC(msg, "#yellow")
+
+func Error(msg)
+  LogC(msg, "#red")
+
+func NewLine()
+  Log("")
+
+
+// Rendering
+
+func RenderLog()
+  ?_log.Count() > 0
+    for i = 0..(_log.Count() - 1)
+      var msg = _log[i][0]
+      var col = _log[i][1]
+      >`@offsetX@,@offsetY + i@,@col@,@msg@
