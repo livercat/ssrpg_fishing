@@ -35,7 +35,8 @@ func Div(num)
   _value = _value / _ToBigNumber(num)
   return this
 
-func Equals(num)
+// TODO: Make sure to rename where this is used when switching to the actual BigNumber type
+func Equalz(num)
   return (_value = _ToBigNumber(num))
 
 func ToString()
@@ -43,13 +44,13 @@ func ToString()
 
 func ToUI()
   // I think this function is correct?
-  ? value = 0
+  ?_value = 0
     return "0"
 
   var suffixIndex = math.FloorToInt(math.Log(math.Abs(_value), 1000))
 
   var suffix = "E" + (3 * suffixIndex) // Engineering notation fallback
-  ? suffixIndex < _suffixes.Count()
+  ? suffixIndex >= 0 & suffixIndex < _suffixes.Count()
     suffix = _suffixes[suffixIndex] // Use suffix if one is available
 
   var sign = ""
