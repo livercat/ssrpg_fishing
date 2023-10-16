@@ -1,0 +1,6 @@
+var fn
+var formatStr
+
+func Make(fn, formatStr)
+  this.fn = fn
+  this.formatStr = formatStr
