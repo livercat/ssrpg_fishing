@@ -13,6 +13,11 @@ var StringEquals = _MakePredicate(_StringEquals, "string.Equals({0}, {1})")
 func _StringEquals(arg1, arg2)
   return string.Equals(arg1, arg2)
 
+// TODO: Change one the critical bug with functions named `Equals` is fixed.
+var PropertyEquals = _MakePredicate(_PropertyEquals, "{0}.Equals({1})")
+func _PropertyEquals(arg1, arg2)
+  return arg1.Equalz(arg2)
+
 var TypeEquals = _MakePredicate(_TypeEquals, "Type({0}) = Type({1})")
 func _TypeEquals(arg1, arg2)
   return (Type(arg1) = Type(arg2))
