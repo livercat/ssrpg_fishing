@@ -1,0 +1,91 @@
+// Write the following into the mindstone to run the tests:
+// import Games/Fishing2/UnitTest/BigNumberTest
+
+var logger = new Games/Fishing2/UnitTest/Utils/Logger
+logger.offsetX = 0
+logger.offsetY = 0
+logger.maxHeight = screen.h
+logger.maxLineLength = screen.w / 3 - 1
+logger.columnWidth = screen.w / 3
+logger.multipleColumns = true
+logger.indentStr = " "
+
+var testUtils = import Games/Fishing2/UnitTest/Utils/TestUtils
+
+var utils = import Games/Fishing2/Utils
+
+func BigNum(arg) // shorthand
+  return utils.math_BigNumber(arg)
+
+// Tests
+
+var testCasesConstructor = [
+  [BigNum(null)._value, 0, testUtils.OperatorEquals],
+  [BigNum(3)._value, 3, testUtils.OperatorEquals],
+  [BigNum("5")._value, 5, testUtils.OperatorEquals],
+]
+
+var testCasesEquals = [
+  [BigNum(null), 0, testUtils.PropertyEquals],
+  [BigNum(3), 3, testUtils.PropertyEquals],
+  [BigNum("5"), 5, testUtils.PropertyEquals],
+]
+
+var testCasesArithmetic = [
+  [BigNum(5).Add(7), 12, testUtils.PropertyEquals],
+  [BigNum(5).Add(BigNum(7)), 12, testUtils.PropertyEquals],
+  [BigNum(-20).Add(30), 10, testUtils.PropertyEquals],
+  [BigNum(7).Add(-8), -1, testUtils.PropertyEquals],
+  [BigNum(5).Sub(7), -2, testUtils.PropertyEquals],
+  [BigNum(5).Sub(BigNum(7)), -2, testUtils.PropertyEquals],
+  [BigNum(5).Mul(7), 35, testUtils.PropertyEquals],
+  [BigNum(5).Mul(BigNum(7)), 35, testUtils.PropertyEquals],
+  [BigNum(32).Div(7), 4, testUtils.PropertyEquals],
+  [BigNum(32).Div(BigNum(7)), 4, testUtils.PropertyEquals],
+]
+
+var testCasesToString = [
+  [BigNum(null).ToString(), "0", testUtils.StringEquals],
+  [BigNum(3).ToString(), "3", testUtils.StringEquals],
+  [BigNum("5").ToString(), "5", testUtils.StringEquals],
+  [BigNum("-5").ToString(), "-5", testUtils.StringEquals],
+]
+
+var testCasesToUI = [
+  [BigNum(null).ToUI(), "0", testUtils.StringEquals],
+  [BigNum(3).ToUI(), "3", testUtils.StringEquals],
+  [BigNum("5").ToUI(), "5", testUtils.StringEquals],
+  [BigNum(-5).ToUI(), "-5", testUtils.StringEquals],
+  [BigNum(-1234).ToUI(), "-1.234K", testUtils.StringEquals],
+  [BigNum(-123456).ToUI(), "-123.5K", testUtils.StringEquals],
+  [BigNum(1).ToUI(), "1", testUtils.StringEquals],
+  [BigNum(12).ToUI(), "12", testUtils.StringEquals],
+  [BigNum(123).ToUI(), "123", testUtils.StringEquals],
+  [BigNum(1234).ToUI(), "1.234K", testUtils.StringEquals], // Thousands
+  [BigNum(12345).ToUI(), "12.35K", testUtils.StringEquals],
+  [BigNum(123456).ToUI(), "123.5K", testUtils.StringEquals],
+  [BigNum(1234567).ToUI(), "1.235M", testUtils.StringEquals], // Millions
+  [BigNum(12345678).ToUI(), "12.35M", testUtils.StringEquals],
+  [BigNum(123456789).ToUI(), "123.5M", testUtils.StringEquals],
+  [BigNum("1234567890").ToUI(), "1.235B", testUtils.StringEquals], // Billions
+  // These are too large to test currently:
+  // [BigNum("12345678901").ToUI(), "12.35B", testUtils.StringEquals],
+  // [BigNum("123456789012").ToUI(), "123.5B", testUtils.StringEquals],
+  // [BigNum("1234567890123").ToUI(), "1.235T", testUtils.StringEquals], // Trillions
+  // [BigNum("12345678901234").ToUI(), "12.35T", testUtils.StringEquals],
+  // [BigNum("123456789012345").ToUI(), "123.5T", testUtils.StringEquals],
+  // [BigNum("1234567890123456").ToUI(), "1.235E15", testUtils.StringEquals], // Quadrillions
+  // [BigNum("12345678901234567").ToUI(), "12.35E15", testUtils.StringEquals],
+  // [BigNum("123456789012345678").ToUI(), "123.5E15", testUtils.StringEquals],
+]
+
+var hasRunOnce = false
+?!hasRunOnce
+  testUtils.RunTests(logger, "BigNumber Constructor", testCasesConstructor)
+  testUtils.RunTests(logger, "BigNumber Equals", testCasesEquals)
+  testUtils.RunTests(logger, "BigNumber Arithmetic", testCasesArithmetic)
+  testUtils.RunTests(logger, "BigNumber ToString", testCasesToString)
+  testUtils.RunTests(logger, "BigNumber ToUI", testCasesToUI)
+  hasRunOnce = true
+
+logger.RenderLog()
