@@ -1,0 +1,19 @@
+// Write the following into the mindstone to run the tests:
+// import Games/Fishing2/UnitTest/ExampleTest
+
+var logger = new Games/Fishing2/UnitTest/Utils/Logger
+var testUtils = import Games/Fishing2/UnitTest/Utils/TestUtils
+
+var testCases = [
+  [3, 1+2, testUtils.OperatorEquals],
+  [3 * 2, 3 + 3, testUtils.OperatorEquals],
+  [3, 5, testUtils.OperatorEquals], // Should fail
+  [6.0, 6, testUtils.OperatorEquals],
+]
+
+var hasRunOnce = false
+?!hasRunOnce
+  testUtils.RunTests(logger, "ExampleTest", testCases)
+  hasRunOnce = true
+
+logger.RenderLog()
