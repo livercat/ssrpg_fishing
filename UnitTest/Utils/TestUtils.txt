@@ -66,7 +66,3 @@ func RunTests(logger, testName, testCaseList)
     logger.GroupEnd()
   
   logger.GroupEnd()
-    
-  
-
-
