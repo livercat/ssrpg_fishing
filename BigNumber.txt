@@ -48,10 +48,9 @@ func ToUI()
   ? value = 0
     return "0"
 
-  var exponent = math.FloorToInt(math.Log(math.Abs(_value), 10))
   var suffixIndex = math.FloorToInt(math.Log(math.Abs(_value), 1000))
 
-  var suffix = "E" + exponent
+  var suffix = "E" + (3 * suffixIndex)
   ? suffixIndex < _suffixes.Count()
     suffix = _suffixes[suffixIndex]
 
