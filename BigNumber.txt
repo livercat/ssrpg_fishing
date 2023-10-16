@@ -1,0 +1,46 @@
+var _value = 0
+
+var _suffixes = ["", "K", "M", "B", "T", "Qa", "Qu", "Sx", "Sp", "Oc", "Nn", "Dc"]
+
+func Add(num) // num: int | BigNumber
+  _value = _value + num
+  return this
+
+func Sub(num) // num: int | BigNumber
+  _value = _value - num
+  return this
+
+func Mul(num) // num: int | BigNumber
+  _value = _value * num
+  return this
+
+func Div(num) // num: int | BigNumber
+  _value = _value / num
+  return this
+
+func Equals(num) // num: int | BigNumber
+  return (_value = num)
+
+func ToString()
+  return "" + _value
+
+func ToUI()
+  // I think this function is correct?
+  ? value = 0
+    return "0"
+
+  var exponent = math.FloorToInt(math.Log(math.Abs(_value), 10))
+  var suffixIndex = math.FloorToInt(math.Log(math.Abs(_value), 1000))
+
+  var suffix = "E" + exponent
+  ? suffixIndex < _suffixes.Count()
+    suffix = _suffixes[suffixIndex]
+
+  var sign = ""
+  ?math.Sign(_value) = -1
+    sign = "-"
+
+  var significantDigits = (1.0 * math.Abs(_value)) / math.Pow(1000.0, suffixIndex)
+
+  var formatStr = "{0:G4}" // I think?
+  return string.Format(sign + formatStr + suffix, significantDigits)

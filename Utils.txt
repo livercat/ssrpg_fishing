@@ -27,3 +27,18 @@ func FindButtonParent(button, array)
 
 func RngRange(min, max)
   return math.FloorToInt(min + rngf * (max - min + 1))
+
+func math_BigNumber()
+  var b = new Games/Fishing2/BigNumber
+  b._value = 0
+  return b
+
+func math_BigNumber_int(num)
+  var b = new Games/Fishing2/BigNumber
+  b._value = num
+  return b
+
+func math_BigNumber_str(num)
+  var b = new Games/Fishing2/BigNumber
+  b._value = int.Parse(num)
+  return b
