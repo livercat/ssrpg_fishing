@@ -2,24 +2,43 @@ var _value = 0
 
 var _suffixes = ["", "K", "M", "B", "T", "Qa", "Qu", "Sx", "Sp", "Oc", "Nn", "Dc"]
 
-func Add(num) // num: int | BigNumber
+func Add_int(num)
   _value = _value + num
   return this
 
-func Sub(num) // num: int | BigNumber
+func Sub_int(num)
   _value = _value - num
   return this
 
-func Mul(num) // num: int | BigNumber
+func Mul_int(num)
   _value = _value * num
   return this
 
-func Div(num) // num: int | BigNumber
+func Div_int(num)
   _value = _value / num
   return this
 
-func Equals(num) // num: int | BigNumber
+func Equals_int(num)
   return (_value = num)
+
+func Add_BigNumber(num)
+  _value = _value + num._value
+  return this
+
+func Sub_BigNumber(num)
+  _value = _value - num._value
+  return this
+
+func Mul_BigNumber(num)
+  _value = _value * num._value
+  return this
+
+func Div_BigNumber(num)
+  _value = _value / num._value
+  return this
+
+func Equals_BigNumber(num)
+  return (_value = num._value)
 
 func ToString()
   return "" + _value
