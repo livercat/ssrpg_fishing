@@ -12,8 +12,8 @@ var _suffixes = ["", "K", "M", "B", "T"]
 func _ToBigNumber(num) // internal use only
   ?Type(num) = "int"
     return num
-  :?Type(num) = "float"
-    return Math.FloorToInt(num)
+  // :?Type(num) = "float" // Not in spec currently
+  //   return Math.FloorToInt(num)
   :?Type(num) = "object"
     return num._value
   :
