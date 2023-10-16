@@ -7,7 +7,7 @@ var utils = import Games/Fishing2/Utils
 
 var _value = 0
 
-var _suffixes = ["", "K", "M", "B", "T", "Qa", "Qu", "Sx", "Sp", "Oc", "Nn", "Dc"]
+var _suffixes = ["", "K", "M", "B", "T"]
 
 func _ToBigNumber(num) // internal use only
   ?Type(num) = "int"
@@ -48,9 +48,9 @@ func ToUI()
 
   var suffixIndex = math.FloorToInt(math.Log(math.Abs(_value), 1000))
 
-  var suffix = "E" + (3 * suffixIndex)
+  var suffix = "E" + (3 * suffixIndex) // Engineering notation fallback
   ? suffixIndex < _suffixes.Count()
-    suffix = _suffixes[suffixIndex]
+    suffix = _suffixes[suffixIndex] // Use suffix if one is available
 
   var sign = ""
   ?math.Sign(_value) = -1
