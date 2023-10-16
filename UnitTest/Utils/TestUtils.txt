@@ -1,0 +1,68 @@
+// Predicates
+
+func _MakePredicate(fn, formatStr)
+  var p = new Games/Fishing2/UnitTest/Utils/Predicate
+  p.Make(fn, formatStr)
+  return p
+
+var OperatorEquals = _MakePredicate(_OperatorEquals, "{0} = {1}")
+func _OperatorEquals(arg1, arg2)
+  return (arg1 = arg2)
+
+var StringEquals = _MakePredicate(_StringEquals, "string.Equals({0}, {1})")
+func _StringEquals(arg1, arg2)
+  return string.Equals(arg1, arg2)
+
+var TypeEquals = _MakePredicate(_TypeEquals, "Type({0}) = Type({1})")
+func _TypeEquals(arg1, arg2)
+  return (Type(arg1) = Type(arg2))
+
+
+// Test Utilities
+
+func Assert(logger, index, arg1, arg2, predicate)
+  ?predicate.fn(arg1, arg2)
+    logger.Success(string.Format("{0}) Assert `{1}` Passed", index, string.Format(predicate.formatStr, arg1, arg2)))
+    return true
+  :
+    logger.Failure(string.Format("{0}) Assert `{1}` Failed", index, string.Format(predicate.formatStr, arg1, arg2)))
+    return false
+
+func RunTests(logger, testName, testCaseList)
+  // testCaseList format: [ [arg1, arg2, predicate], ... ]
+  logger.LabeledGroup(testName)
+
+  ?testCaseList.Count() = 0
+    logger.Warn("No test cases provided.")
+  :
+    var passCount = 0
+    var failCount = 0
+    var total = 0
+    
+    // Test Cases
+    logger.LabeledGroup("Test Cases")
+    for i = 0..(testCaseList.Count() - 1)
+      var arg1 = testCaseList[i][0]
+      var arg2 = testCaseList[i][1]
+      var predicate = testCaseList[i][2]
+
+      var result = Assert(logger, i + 1, arg1, arg2, predicate)
+      ?result
+        passCount++
+      :
+        failCount++
+      total++
+    logger.GroupEnd()
+
+    // Results
+    logger.LabeledGroup(string.Format("Results ({0} tests)", total))
+    ?passCount > 0
+      ?passCount = total
+        logger.Success("All passed!")
+      :
+        logger.Success(string.Format("{0} passed.", passCount))
+    ?failCount > 0
+      logger.Failure(string.Format("{0} failed.", failCount))
+    logger.GroupEnd()
+  
+  logger.GroupEnd()
