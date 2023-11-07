@@ -1,6 +1,6 @@
-var fishFactory = import Games/Fishing2/FishingComponents/FishFactory
+var fishFactory = import Games/Fishing/FishingComponents/FishFactory
 
-var rodData = import Games/Fishing2/Data/RodData
+var rodData = import Games/Fishing/Data/RodData
 var lootTable = rodData.lootTable[2]
 var totalWeight = 125.0
 

@@ -1,7 +1,7 @@
-var utils = import Games/Fishing2/Utils
-var progress = import Games/Fishing2/Progress
-var hirelingData = import Games/Fishing2/Data/HirelingData
-var sprites = import Games/Fishing2/Assets/ShopSprites
+var utils = import Games/Fishing/Utils
+var progress = import Games/Fishing/Progress
+var hirelingData = import Games/Fishing/Data/HirelingData
+var sprites = import Games/Fishing/Assets/ShopSprites
 
 var level = 0
 

@@ -39,7 +39,7 @@ asciiend
     img.y = 1
 
     panel.Add(versionNumber)
-    versionNumber.text = "阿尔法 v" + versionStr
+    versionNumber.text = "贝塔 v" + versionStr // Needs update to BETA
     versionNumber.x = 26
     versionNumber.y = 8
   :
@@ -71,7 +71,7 @@ asciiend
     img.y = 5
 
     panel.Add(versionNumber)
-    versionNumber.text = "ALPHA v" + versionStr
+    versionNumber.text = "BETA v" + versionStr
     versionNumber.x = 25
     versionNumber.y = 9
 

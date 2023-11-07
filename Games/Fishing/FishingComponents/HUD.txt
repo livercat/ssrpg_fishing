@@ -1,6 +1,6 @@
 
 var currencyGlyph = "♠"
-var progress = import Games/Fishing2/Progress
+var progress = import Games/Fishing/Progress
 var topPanel
 var moneyText
 

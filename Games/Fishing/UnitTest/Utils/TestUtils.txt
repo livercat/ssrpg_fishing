@@ -1,7 +1,7 @@
 // Predicates
 
 func _MakePredicate(fn, formatStr)
-  var p = new Games/Fishing2/UnitTest/Utils/Predicate
+  var p = new Games/Fishing/UnitTest/Utils/Predicate
   p.Make(fn, formatStr)
   return p
 

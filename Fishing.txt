@@ -1,0 +1,9 @@
+
+// Deadwood Fishing
+// beta v1.0
+// contributors: standardcombo, dima, brilliance, supdawg, fruloo
+
+var game = new Games/Fishing/Game
+
+?string.Equals(loc.id, waterfall)
+  game.Update()

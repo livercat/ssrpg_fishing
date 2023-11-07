@@ -32,15 +32,15 @@ func RngRange(min, max)
 // It was used to represent calling math.BigNumber with 0 arguments
 func math_BigNumber(num)
   ?Type(num) = "int"
-    var b = new Games/Fishing2/BigNumber
+    var b = new Games/Fishing/BigNumber
     b._value = num
     return b
   :?Type(num) = "string"
-    var b = new Games/Fishing2/BigNumber
+    var b = new Games/Fishing/BigNumber
     b._value = int.Parse(num)
     return b
   :?Type(num) = "null"
-    var b = new Games/Fishing2/BigNumber
+    var b = new Games/Fishing/BigNumber
     b._value = 0
     return b
   :

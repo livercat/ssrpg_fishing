@@ -1,4 +1,4 @@
-var sprites = import Games/Fishing2/Assets/ShopSprites
+var sprites = import Games/Fishing/Assets/ShopSprites
 
 var icon = null
 var dialog = null

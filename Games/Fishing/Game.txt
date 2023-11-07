@@ -1,15 +1,15 @@
-var fisher = import Games/Fishing2/FishingComponents/Player
-var progress = import Games/Fishing2/Progress
-var topHud = import Games/Fishing2/FishingComponents/HUD
-var passive = import Games/Fishing2/Passive
-var shop = import Games/Fishing2/Shop
-var logo = import Games/Fishing2/FishingComponents/Logo
-var resultDialog = import Games/Fishing2/FishingComponents/ResultsDialog
-var fishFactory = import Games/Fishing2/FishingComponents/FishFactory
+var fisher = import Games/Fishing/FishingComponents/Player
+var progress = import Games/Fishing/Progress
+var topHud = import Games/Fishing/FishingComponents/HUD
+var passive = import Games/Fishing/Passive
+var shop = import Games/Fishing/Shop
+var logo = import Games/Fishing/FishingComponents/Logo
+var resultDialog = import Games/Fishing/FishingComponents/ResultsDialog
+var fishFactory = import Games/Fishing/FishingComponents/FishFactory
 var flyup = new Games/FlyupText
-var styles = import Games/Fishing2/Assets/Styles
+var styles = import Games/Fishing/Assets/Styles
 
-var version = "0.99"
+var version = "1.0"
 
 var x = 0
 var y = 0
@@ -249,7 +249,7 @@ func SetState(newState)
     // Update the rod if it changed after exiting the shop
     // TODO: Animate new rod?
     ?rod.level ! progress.rod
-      var rodFactory = new Games/Fishing2/Rod
+      var rodFactory = new Games/Fishing/Rod
       rod = rodFactory.Make(progress.rod)
       fisher.playerAnimNewRod.frame = 0
       fisher.playerAnimNewRod.visible = true
@@ -349,7 +349,7 @@ var rod = null
 
 func Init()
   ?rod = null
-    var rodFactory = new Games/Fishing2/Rod
+    var rodFactory = new Games/Fishing/Rod
     rod = rodFactory.Make(progress.rod)
     fisher.rod = rod
 

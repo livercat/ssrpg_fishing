@@ -1,4 +1,4 @@
-var FishSprites = import Games/Fishing2/Assets/FishSprites
+var FishSprites = import Games/Fishing/Assets/FishSprites
 
 var minIndex = 0
 var maxIndex = 7

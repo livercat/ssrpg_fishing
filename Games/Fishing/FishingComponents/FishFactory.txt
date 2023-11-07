@@ -1,5 +1,5 @@
-var utils = import Games/Fishing2/Utils
-var fishData = import Games/Fishing2/Data/FishData
+var utils = import Games/Fishing/Utils
+var fishData = import Games/Fishing/Data/FishData
 
 func PickLoot(lootTable)
   var weightTotal = 0
@@ -21,7 +21,7 @@ func PickLoot(lootTable)
   return lootTable[selectedIndex][1]
 
 func MakeFish(lootTable)
-  var fish = new Games/Fishing2/FishingComponents/Fish
+  var fish = new Games/Fishing/FishingComponents/Fish
 
   var fishIndex = PickLoot(lootTable)
 

@@ -1,8 +1,8 @@
 // Write the following into the mindstone to run the tests:
-// import Games/Fishing2/UnitTest/ExampleTest
+// import Games/Fishing/UnitTest/ExampleTest
 
-var logger = new Games/Fishing2/UnitTest/Utils/Logger
-var testUtils = import Games/Fishing2/UnitTest/Utils/TestUtils
+var logger = new Games/Fishing/UnitTest/Utils/Logger
+var testUtils = import Games/Fishing/UnitTest/Utils/TestUtils
 
 var testCases = [
   [3, 1+2, testUtils.OperatorEquals],

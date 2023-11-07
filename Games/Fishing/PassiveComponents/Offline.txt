@@ -1,5 +1,5 @@
-var progress = import Games/Fishing2/Progress
-var utils = import Games/Fishing2/Utils
+var progress = import Games/Fishing/Progress
+var utils = import Games/Fishing/Utils
 
 var totalScalesOffline = null
 var totalSecOffline = null

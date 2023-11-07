@@ -1,4 +1,4 @@
-var styles = import Games/Fishing2/Assets/Styles
+var styles = import Games/Fishing/Assets/Styles
 
 var inactiveColor = #808080
 var activeColor = #white

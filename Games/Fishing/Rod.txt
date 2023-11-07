@@ -1,6 +1,6 @@
-var utils = import Games/Fishing2/Utils
-var rodData = import Games/Fishing2/Data/RodData
-var sprites = import Games/Fishing2/Assets/ShopSprites
+var utils = import Games/Fishing/Utils
+var rodData = import Games/Fishing/Data/RodData
+var sprites = import Games/Fishing/Assets/ShopSprites
 
 var level = 0
 

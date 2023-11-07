@@ -1,9 +1,9 @@
-var progress = import Games/Fishing2/Progress
-var offline = import Games/Fishing2/PassiveComponents/Offline
-var topHud = import Games/Fishing2/FishingComponents/HUD
-var hirelingData = import Games/Fishing2/Data/HirelingData
-var styles = import Games/Fishing2/Assets/Styles
-var sprites = import Games/Fishing2/Assets/PassiveSprites
+var progress = import Games/Fishing/Progress
+var offline = import Games/Fishing/PassiveComponents/Offline
+var topHud = import Games/Fishing/FishingComponents/HUD
+var hirelingData = import Games/Fishing/Data/HirelingData
+var styles = import Games/Fishing/Assets/Styles
+var sprites = import Games/Fishing/Assets/PassiveSprites
 
 var actives = []
 var activeRoot = null
@@ -33,7 +33,7 @@ func Init()
       idx = -2
     :
       // Create new active hireling instance and add to list
-      var online = new Games/Fishing2/PassiveComponents/Online
+      var online = new Games/Fishing/PassiveComponents/Online
       online.MakeActiveHire(idx, activeRoot)
       actives.Add(online)
       // Calculate scales earned by hireling while offline
@@ -48,7 +48,7 @@ func AddNewHire(level)
   // Check if new hire is first hireling of given level puchased
   ?progress.hirelings[level] = 1
     // Create "new hire" active hireling and add to list
-    var online = new Games/Fishing2/PassiveComponents/Online
+    var online = new Games/Fishing/PassiveComponents/Online
     online.MakeActiveHire(level, activeRoot)
     actives.Add(online)
     // Set newest hire to intro state and reset any previous from shop session

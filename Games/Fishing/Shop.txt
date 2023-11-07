@@ -1,13 +1,13 @@
-var progress = import Games/Fishing2/Progress
-var shopKeeper = import Games/Fishing2/ShopComponents/ShopKeeper
-var _ui = import Games/Fishing2/ShopComponents/UIFactory
-var utils = import Games/Fishing2/Utils
-var topHud = import Games/Fishing2/FishingComponents/HUD
-var passive = import Games/Fishing2/Passive
-var hirelingData = import Games/Fishing2/Data/HirelingData
-var rodData = import Games/Fishing2/Data/RodData
-var styles = import Games/Fishing2/Assets/Styles
-var sprites = import Games/Fishing2/Assets/ShopSprites
+var progress = import Games/Fishing/Progress
+var shopKeeper = import Games/Fishing/ShopComponents/ShopKeeper
+var _ui = import Games/Fishing/ShopComponents/UIFactory
+var utils = import Games/Fishing/Utils
+var topHud = import Games/Fishing/FishingComponents/HUD
+var passive = import Games/Fishing/Passive
+var hirelingData = import Games/Fishing/Data/HirelingData
+var rodData = import Games/Fishing/Data/RodData
+var styles = import Games/Fishing/Assets/Styles
+var sprites = import Games/Fishing/Assets/ShopSprites
 
 var failedPurchaseDuration = 30 // frames
 
@@ -73,10 +73,10 @@ func Init()
   as "owned" instead of their cost. We mark the best owned rod as "current",
   and hide prices of all the following rods. */
   for idx = 0 .. rodData.maxLevel
-    var rodFactory = new Games/Fishing2/Rod
+    var rodFactory = new Games/Fishing/Rod
     var rod = rodFactory.Make(idx)
 
-    var shopRodFactory = new Games/Fishing2/ShopComponents/ShopItemSingle
+    var shopRodFactory = new Games/Fishing/ShopComponents/ShopItemSingle
     var shopRod = shopRodFactory.Init(rod, PurchaseRod, rodsRow)
 
     rods.Add(shopRod)
@@ -94,10 +94,10 @@ func Init()
   hirelings other than the ones we already have purchased at least one of, and the 
   next immediate one. */
   for idx = 0 .. hirelingData.maxLevel
-    var hirelingFactory = new Games/Fishing2/Hireling
+    var hirelingFactory = new Games/Fishing/Hireling
     var hireling = hirelingFactory.Make(idx)
 
-    var shopHireFactory = new Games/Fishing2/ShopComponents/ShopItemMulti
+    var shopHireFactory = new Games/Fishing/ShopComponents/ShopItemMulti
     var shopHire = shopHireFactory.Init(hireling, PurchaseHireling, hirelingsRow)
 
     hirelings.Add(shopHire)

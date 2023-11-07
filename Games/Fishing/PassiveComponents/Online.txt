@@ -1,8 +1,8 @@
-var utils = import Games/Fishing2/Utils
-var progress = import Games/Fishing2/Progress
-var topHud = import Games/Fishing2/FishingComponents/HUD
+var utils = import Games/Fishing/Utils
+var progress = import Games/Fishing/Progress
+var topHud = import Games/Fishing/FishingComponents/HUD
 var flyup = new Games/FlyupText
-var styles = import Games/Fishing2/Assets/Styles
+var styles = import Games/Fishing/Assets/Styles
 
 var root = null
 var hirelingAnim = null
@@ -21,7 +21,7 @@ func MakeActiveHire(level, activeRoot)
     return
 
   // Create hireling
-  var hirelingFactory = new Games/Fishing2/Hireling
+  var hirelingFactory = new Games/Fishing/Hireling
   hireling = hirelingFactory.Make(level)
 
   // Create root 
@@ -46,19 +46,19 @@ func MakeActiveHire(level, activeRoot)
     root.y = 5
     label.x = root.x + 3
     label.y = root.y + 3
-    hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingSeated
+    hirelingAnim = new Games/Fishing/PassiveComponents/HirelingSeated
   :?level >= 1
     root.x = -10 - 10*(level-1)
     root.y = 20 + 2*((level-1)%2)
     label.x = root.x + 5
     label.y = root.y
-    hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingCanoe
+    hirelingAnim = new Games/Fishing/PassiveComponents/HirelingCanoe
   :
     root.x = 2
     root.y = 16
     label.x = root.x + 2
     label.y = root.y + 3
-    hirelingAnim = new Games/Fishing2/PassiveComponents/HirelingFall
+    hirelingAnim = new Games/Fishing/PassiveComponents/HirelingFall
 
   // Pass hireling root and color to animation
   hirelingAnim.root = root

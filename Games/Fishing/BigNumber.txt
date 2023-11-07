@@ -3,7 +3,7 @@
 // THIS FILE SHOULD BE DELETED BEFORE RELEASE
 
 
-var utils = import Games/Fishing2/Utils
+var utils = import Games/Fishing/Utils
 
 var _value = 0
 
