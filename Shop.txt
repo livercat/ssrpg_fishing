@@ -197,7 +197,7 @@ func Update(SetGameState)
         enable pause
 
         ?shopKeeper.state = msg1
-          shopKeeper.label.text = te.xt(shopKeeper.msgReturned)
+          shopKeeper.label.text = te.xt(tid_fish_shop_2)
           shopKeeper.state = msg2
 
         shopRoot.y = screen.h
