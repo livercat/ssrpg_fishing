@@ -1,6 +1,8 @@
 // Write the following into the mindstone to run the tests:
 // import Games/Fishing2/UnitTest/BigNumberTest
 
+// TODO: Some test cases might need to be updated
+
 var logger = new Games/Fishing2/UnitTest/Utils/Logger
 logger.offsetX = 0
 logger.offsetY = 0
@@ -15,7 +17,7 @@ var testUtils = import Games/Fishing2/UnitTest/Utils/TestUtils
 var utils = import Games/Fishing2/Utils
 
 func BigNum(arg) // shorthand
-  return utils.math_BigNumber(arg)
+  return math.BigNumber(arg)
 
 // Tests
 
