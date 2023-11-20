@@ -25,8 +25,12 @@ func Init()
   Update()
 
 
-func Update()
-  moneyText.text = currencyGlyph + progress.scales
+func Update() 
+  var updatedText = currencyGlyph + progress.scales
+  ?string.Size(updatedText) > moneyText.w
+    moneyText.w = string.Size(updatedText)
+    topPanel.w = string.Size(updatedText)
+  moneyText.text = updatedText
 
 func DrawOnTop()
   ui.root.Add(topPanel)
