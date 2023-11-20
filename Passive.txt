@@ -65,7 +65,6 @@ func AddNewHire(level)
 func DisplayOfflineGain()
   ?offlineDialog = null
     // Create bubble dialog animation
-    var dialogText = "Boss! We got {0}\nscales when you were away"
     offlineDialog = ui.AddPanel()
     activeRoot.Add(offlineDialog)
     offlineDialog.style = styles.invisStyle
@@ -85,8 +84,8 @@ func DisplayOfflineGain()
     backer.y = -1
 
     // Text box for update msg
-    var msg = string.Format(dialogText, offline.totalScalesOffline.ToString())
-    var label = ui.AddText(te.xt(msg))
+    var msg = string.Format(te.xt(tid_fish_return), offline.totalScalesOffline.ToString())
+    var label = ui.AddText(msg)
     offlineDialog.Add(label)
     label.anchor = bottom_right
     label.w = 25

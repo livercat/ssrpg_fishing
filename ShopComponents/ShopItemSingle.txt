@@ -32,12 +32,12 @@ func Init(baseItem, handler, parent)
   return this
 
 func SetOwned()
-  costLabel.text = te.xt("-owned-")
+  costLabel.text = te.xt(tid_fish_owned)
   costLabel.color = _ui.inactiveColor
   button.visible = false
 
 func SetCurrent()
-  costLabel.text = te.xt("current")
+  costLabel.text = te.xt(tid_fish_current)
   costLabel.color = _ui.inactiveColor
   button.visible = false
 

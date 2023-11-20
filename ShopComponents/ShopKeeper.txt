@@ -5,8 +5,6 @@ var dialog = null
 var label = null
 var state = null
 
-var msgArrived = "Ahoy t' me shop!\nSpend yer scales on loot…"
-var msgReturned = "Back fer more are ye?\nMe loot must be the best!"
 
 func Init(parent)
   icon = ui.AddAnim(sprites.spriteKeeperWalking)
@@ -29,7 +27,7 @@ func Init(parent)
   label.y = 3
   label.w = 25
   label.h = 2
-  label.text = te.xt(msgArrived)
+  label.text = te.xt(tid_fish_shop_1)
   label.visible = false
   parent.Add(label)
 
