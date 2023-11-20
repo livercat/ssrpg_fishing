@@ -5,19 +5,8 @@ func Panic(message)
   loc.Pause()
 
 func FormatCost(cost)
-  var formatStr = currencyGlyph + "{0:G4}"
-  ?cost = "owned" | cost = "?"
-    return cost
-  :?cost < math.Pow(10, 3)
-    return string.Format(formatStr, cost)
-  :?cost < math.Pow(10, 6)
-    return string.Format(formatStr + "K", (cost / math.Pow(10, 3)))
-  :?cost < math.Pow(10, 9)
-    return string.Format(formatStr + "M", (cost / math.Pow(10, 6)))
-  :?cost < math.Pow(10, 12)
-    return string.Format(formatStr + "B", (cost / math.Pow(10, 9)))
-  :
-    Panic("Cost is too large to format: " + cost)
+  var formatStr = currencyGlyph + math.BigNumber().Add(cost).ToUI()
+  return formatStr
 
 func FindButtonParent(button, array)
   for shopItem : array

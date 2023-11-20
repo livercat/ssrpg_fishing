@@ -85,7 +85,7 @@ func DisplayOfflineGain()
     backer.y = -1
 
     // Text box for update msg
-    var msg = string.Format(dialogText, offline.totalScalesOffline)
+    var msg = string.Format(dialogText, offline.totalScalesOffline.ToString())
     var label = ui.AddText(te.xt(msg))
     offlineDialog.Add(label)
     label.anchor = bottom_right
