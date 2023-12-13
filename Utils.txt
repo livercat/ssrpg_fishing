@@ -5,19 +5,8 @@ func Panic(message)
   loc.Pause()
 
 func FormatCost(cost)
-  var formatStr = currencyGlyph + "{0:G4}"
-  ?cost = "owned" | cost = "?"
-    return cost
-  :?cost < math.Pow(10, 3)
-    return string.Format(formatStr, cost)
-  :?cost < math.Pow(10, 6)
-    return string.Format(formatStr + "K", (cost / math.Pow(10, 3)))
-  :?cost < math.Pow(10, 9)
-    return string.Format(formatStr + "M", (cost / math.Pow(10, 6)))
-  :?cost < math.Pow(10, 12)
-    return string.Format(formatStr + "B", (cost / math.Pow(10, 9)))
-  :
-    Panic("Cost is too large to format: " + cost)
+  var formatStr = currencyGlyph + math.BigNumber().Add(cost).ToUI()
+  return formatStr
 
 func FindButtonParent(button, array)
   for shopItem : array
@@ -27,21 +16,3 @@ func FindButtonParent(button, array)
 
 func RngRange(min, max)
   return math.FloorToInt(min + rngf * (max - min + 1))
-
-// Note for future, replace "math_BigNumber(null)" with "math.BigNumber()"
-// It was used to represent calling math.BigNumber with 0 arguments
-func math_BigNumber(num)
-  ?Type(num) = "int"
-    var b = new Games/Fishing2/BigNumber
-    b._value = num
-    return b
-  :?Type(num) = "string"
-    var b = new Games/Fishing2/BigNumber
-    b._value = int.Parse(num)
-    return b
-  :?Type(num) = "null"
-    var b = new Games/Fishing2/BigNumber
-    b._value = 0
-    return b
-  :
-    Panic("math_BigNumber: Unsupported type " + Type(num))

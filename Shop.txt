@@ -118,7 +118,7 @@ func PurchaseRod(button)
     return utils.Panic("Rod purchase failed, can't identify its button")
 
   var cost = shopRod.baseItem.cost
-  ?progress.scales >= cost
+  ?progress.scales.Ge(cost)
     play buy
     progress.SubtractScales(cost)
     progress.UpgradeRod()
@@ -146,7 +146,7 @@ func PurchaseHireling(button)
     return
   
   var cost = shopHire.baseItem.RealCost()
-  ?progress.scales >= cost
+  ?progress.scales.Ge(cost)
     play buy
     progress.SubtractScales(cost)
     var idx = hirelings.IndexOf(shopHire)

@@ -6,38 +6,12 @@ var totalSecOffline = null
 
 func Init()
   totalSecOffline = GetSecSinceLastOnline()
-  totalScalesOffline = 0
+  totalScalesOffline = math.BigNumber()
 
 func CalculateGain(hireling)
-  var scalesGained = math.RoundToInt(hireling.GetScalesPerSecond() * totalSecOffline)
-  totalScalesOffline = totalScalesOffline + scalesGained
-  ?totalScalesOffline < 0 | scalesGained < 0
-    utils.Panic("Integer overflow, offline scales: " + totalScalesOffline)
+  var scalesGained = math.BigNumber().Add(totalSecOffline).Mul(hireling.GetScalesPerSecond())
+  totalScalesOffline.Add(scalesGained)
   return scalesGained
 
 func GetSecSinceLastOnline()
-  var lastDT = string.Split(progress.lastOnline, ":")
-  // Use year of lastOnline as epoch
-  var epoch = int.Parse(lastDT[0])
-  // Add up seconds of lastOnline since epoch
-  var secLastOnline = SecSinceEpoch(epoch,
-                                   ^epoch,
-                                   ^int.Parse(lastDT[1]),
-                                   ^int.Parse(lastDT[2]),
-                                   ^int.Parse(lastDT[3]),
-                                   ^int.Parse(lastDT[4]),
-                                   ^int.Parse(lastDT[5]))
-  // Add up seconds of current since epoch
-  var secCurrent = SecSinceEpoch(epoch,
-                                ^time.year,
-                                ^time.month,
-                                ^time.day,
-                                ^time.hour,
-                                ^time.minute,
-                                ^time.second)
-  // Compare epoch->lastOnline vs epoch->current
-  return secCurrent - secLastOnline
-
-func SecSinceEpoch(epoch,year,month,day,hour,minute,second)
-  var sec = (((year-epoch)*365 + (month-1)*30.42 + day)*24 + hour)*60*60 + minute*60 + second 
-  return math.RoundToInt(sec)
+  return (time.msbn).Sub(progress.lastOnline).Div(1000)

@@ -84,7 +84,7 @@ func DisplayOfflineGain()
     backer.y = -1
 
     // Text box for update msg
-    var msg = string.Format(te.xt(tid_fish_return), offline.totalScalesOffline)
+    var msg = string.Format(te.xt(tid_fish_return), offline.totalScalesOffline.ToString())
     var label = ui.AddText(msg)
     offlineDialog.Add(label)
     label.anchor = bottom_right

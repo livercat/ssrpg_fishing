@@ -54,4 +54,4 @@ func GetScalesPerSecond()
   return baseScalesPerS + stepScalesPerS*progress.hirelings[level]
 
 func RealCost() // For componded value: x = base*(1+factor)^owned
-  return math.RoundToInt(baseCost * math.Pow(1 + costFactor, progress.hirelings[level]))
+  return math.BigNumber(baseCost).Mul(math.Pow(1 + costFactor, progress.hirelings[level]))

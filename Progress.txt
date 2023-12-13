@@ -1,8 +1,8 @@
 
-var scales = storage.Get("key_scales", 0)
+var scales = math.BigNumber(storage.Get("key_scales", "0"))
 var recordWeight = storage.Get("key_record", 0)
 var rod = storage.Get("key_rod", 0)
-var lastOnline = storage.Get("key_last_online", 0)
+var lastOnline = math.BigNumber(storage.Get("key_last_online", "0"))
 var hirelings = [ storage.Get("key_hireling_0", 0),
                   storage.Get("key_hireling_1", 0),
                   storage.Get("key_hireling_2", 0),
@@ -12,12 +12,16 @@ var hirelings = [ storage.Get("key_hireling_0", 0),
                   storage.Get("key_hireling_6", 0)]
 
 func AddScales(amount)
-  scales = scales + amount
-  storage.Set("key_scales", scales)
+  scales.Add(amount)
+  storage.Set("key_scales", scales.ToString())
 
 func SubtractScales(amount)
-  scales = scales - amount
-  storage.Set("key_scales", scales)
+  scales.Sub(amount)
+  storage.Set("key_scales", scales.ToString())
+
+func MulScales(amount)
+  scales.Mul(amount)
+  storage.Set("key_scales", scales.ToString())
 
 func CheckRecord(newWeight)
   ?recordWeight < newWeight
@@ -36,17 +40,11 @@ func UpgradeRod()
   storage.Set("key_rod", rod)
 
 func UpdateLastOnline()
-  lastOnline = string.Format("{0}:{1}:{2}:{3}:{4}:{5}",
-    ^time.year,
-    ^time.month,
-    ^time.day,
-    ^time.hour,
-    ^time.minute,
-    ^time.second)
-  storage.Set("key_last_online", lastOnline)
+  lastOnline = time.msbn
+  storage.Set("key_last_online", lastOnline.ToString())
 
 func IsFTUE()
-  ?scales = 0
+  ?scales.Eq(0)
     return true
   return false
 

@@ -12,7 +12,7 @@ var state = null
 var timer = null
 
 var lastCollectTime = null
-var collectedScales = 0.0
+var collectedScales = math.BigNumber()
 
 var hireling = null
 
@@ -76,10 +76,10 @@ func UpdateTimer()
 func CollectScales()
   play cross_deadwood_row
   // Calculate scales collected since last collection
-  collectedScales = collectedScales + hireling.GetScalesPerSecond() * ((time - lastCollectTime) / 30.0)
+  collectedScales.Add(hireling.GetScalesPerSecond() * ((time - lastCollectTime) / 30.0))
   lastCollectTime = time
-  var scales = math.FloorToInt(collectedScales)
-  collectedScales = collectedScales - scales // remainder
+  var scales = math.BigNumber().Add(collectedScales)
+  collectedScales = math.BigNumber(0)
   // Create flyup for scales gained
   flyup.Show(root.absoluteX-3, root.absoluteY, string.Format(te.xt(tid_fish_scales), scales))
   // Update progress & HUD with scales
